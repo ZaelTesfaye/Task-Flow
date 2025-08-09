@@ -1,6 +1,6 @@
 const dotenv = require('dotenv');
 dotenv.config();
-
+import type {Request, Response, NextFunction} from 'express';
 const express = require('express');
 const taskRoutes = require('./routes/task.routes');
 const userRoutes = require('./routes/user.routes');
@@ -15,16 +15,16 @@ app.use(express.json());
 app.use('/tasks', taskRoutes);
 app.use('/users', userRoutes);
 
-app.get('/home', (req: Express.Request, res: express.Response) => {
+app.get('/home', (req: Request, res: Response) => {
   console.log('Serving /home page');
   res.render('index', { title: 'Task Manager', message: 'Welcome to the Task Manager Application!' });
 });
 
-app.use((req: express.Request, res: express.Response) => {
+app.use((req: Request, res: Response) => {
   res.status(404).send('Not Found!');
 });
 
-app.use((error: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
+app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
   console.error(error);
   res.status(500).send('An error occurred');
 });
