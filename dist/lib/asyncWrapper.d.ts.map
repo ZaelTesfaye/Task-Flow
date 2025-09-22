@@ -1,0 +1,1 @@
+{"version":3,"file":"asyncWrapper.d.ts","sourceRoot":"","sources":["../../lib/asyncWrapper.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,OAAO,EAAE,QAAQ,EAAE,YAAY,EAAE,MAAM,SAAS,CAAC;AAE/D,QAAA,MAAM,YAAY,GAAI,IAAI,QAAQ,MACxB,KAAK,OAAO,EAAE,KAAK,QAAQ,EAAE,MAAM,YAAY,SAKxD,CAAC;AAEF,eAAe,YAAY,CAAC"}

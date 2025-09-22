@@ -1,35 +1,34 @@
-const joi = require("joi");
-
-const addTaskSchema = {
-  body: joi.object({
-    userId: joi.string().uuid(),
-    description: joi.string,
-  }),
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var joi_1 = require("joi");
+var addTaskSchema = {
+    body: joi_1.default.object({
+        userId: joi_1.default.string().uuid(),
+        description: joi_1.default.string,
+    }),
 };
-
-const removeTaskSchema = {
-  body: joi.object({
-    userId: joi.string().uuid(),
-    taskId: joi.string().uuid(),
-  }),
+var removeTaskSchema = {
+    body: joi_1.default.object({
+        userId: joi_1.default.string().uuid(),
+        taskId: joi_1.default.string().uuid(),
+    }),
 };
-
-const updateTaskStatusSchema = {
-  body: joi.object({
-    userId: joi.string().uuid(),
-    taskId: joi.string().uuid(),
-    status: joi.string().valid("active", "complete", "canceled"),
-  }),
+var updateTaskStatusSchema = {
+    body: joi_1.default.object({
+        userId: joi_1.default.string().uuid(),
+        taskId: joi_1.default.string().uuid(),
+        status: joi_1.default.string().valid("active", "complete", "canceled"),
+    }),
 };
-
-const getTaskSchema = {
-  body: joi.object({
-    userId: joi.string().uuid(),
-  }),
+var getTaskSchema = {
+    body: joi_1.default.object({
+        userId: joi_1.default.string().uuid(),
+    }),
 };
-module.exports = {
-  addTaskSchema,
-  getTaskSchema,
-  removeTaskSchema,
-  updateTaskStatus: updateTaskStatusSchema,
+var taskSchemas = {
+    addTaskSchema: addTaskSchema,
+    getTaskSchema: getTaskSchema,
+    removeTaskSchema: removeTaskSchema,
+    updateTaskStatus: updateTaskStatusSchema,
 };
+exports.default = taskSchemas;

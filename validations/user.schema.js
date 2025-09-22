@@ -1,11 +1,12 @@
-const joi = require("joi");
-
-const addUserSchema = {
-  body: joi.object({
-    name: joi.string(),
-  }),
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var joi_1 = require("joi");
+var addUserSchema = {
+    body: joi_1.default.object({
+        name: joi_1.default.string(),
+    }),
 };
-
-module.exports = {
-  addUserSchema,
+var userSchemas = {
+    addUserSchema: addUserSchema,
 };
+exports.default = userSchemas;
