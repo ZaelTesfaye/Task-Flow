@@ -4,11 +4,12 @@ import { APIError } from "../utils/error.js";
 import jwt from "jsonwebtoken";
 import config from "../config/config.js";
 
+
 const register = async (name: string, email: string, password: string) => {
   //check if email already exists
   const userExists = await userModel.findByEmail(email);
   if (userExists) {
-    throw new Error("User already exists");
+    throw new APIError("User already exists", 409);
   }
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
@@ -20,7 +21,7 @@ const register = async (name: string, email: string, password: string) => {
       email: user.email,
     };
   } else {
-    throw new Error("User registration failed");
+    throw new APIError("User registration failed", 500);
   }
 };
 

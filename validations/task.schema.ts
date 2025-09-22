@@ -4,7 +4,7 @@ import type { GetTasksParams, RemoveTaskBody, UpdateTaskStatusBody, AddTaskBody 
 const addTaskSchema = {
   body: joi.object<AddTaskBody>({
     userId: joi.string().uuid(),
-    description: joi.string,
+    description: joi.string().min(1).max(255),
   }),
 };
 
@@ -12,7 +12,7 @@ const removeTaskSchema = {
   body: joi.object<RemoveTaskBody>({
     userId: joi.string().uuid(),
     taskId: joi.string().uuid(),
-  }),
+  }).unknown(),
 };
 
 const updateTaskStatusSchema = {
@@ -33,7 +33,7 @@ const taskSchemas = {
   addTaskSchema,
   getTaskSchema,
   removeTaskSchema,
-  updateTaskStatus: updateTaskStatusSchema,
+  updateTaskStatusSchema,
 };
 
 export default taskSchemas;

@@ -6,7 +6,7 @@ export interface AddTaskBody {
 export interface UpdateTaskStatusBody {
     userId: string;
     taskId: string;
-    status: string;
+    status: "complete" | "Complete" | "canceled";
 }
 
 export interface RemoveTaskBody {
