@@ -1,9 +1,19 @@
-import joi from 'joi';
+import joi from "joi";
 
-const envSchema = joi.object({
+export interface EnvSchemaType {
+  PORT: number;
+  NODE_ENV: string;
+  JWT_SECRET: string;
+  COOKIE_SECRET: string;
+}
+
+const envSchema = joi
+  .object<EnvSchemaType>({
     PORT: joi.number().default(5000),
-    NODE_ENV: joi.string().default("development"),
+    NODE_ENV: joi.string().default("development").required(),
     JWT_SECRET: joi.string().required(),
-}).unknown(); 
+    COOKIE_SECRET: joi.string().required(),
+  })
+  .unknown();
 
 export default envSchema;

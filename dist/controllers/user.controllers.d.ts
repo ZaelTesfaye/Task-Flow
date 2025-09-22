@@ -1,6 +1,5 @@
-import type { Request, Response, NextFunction } from "express";
 declare const _default: {
-    addUser: (req: Request, res: Response, next: NextFunction) => void;
+    addUser: import("express").RequestHandler<import("express-serve-static-core").ParamsDictionary, any, any, import("qs").ParsedQs, Record<string, any>>;
 };
 export default _default;
 //# sourceMappingURL=user.controllers.d.ts.map

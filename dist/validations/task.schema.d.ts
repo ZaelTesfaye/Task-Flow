@@ -1,16 +1,17 @@
 import joi from "joi";
+import type { GetTasksParams, RemoveTaskBody, UpdateTaskStatusBody, AddTaskBody } from "../dtos/task.dto.js";
 declare const taskSchemas: {
     addTaskSchema: {
-        body: joi.ObjectSchema<any>;
+        body: joi.ObjectSchema<AddTaskBody>;
     };
     getTaskSchema: {
-        body: joi.ObjectSchema<any>;
+        params: joi.ObjectSchema<GetTasksParams>;
     };
     removeTaskSchema: {
-        body: joi.ObjectSchema<any>;
+        body: joi.ObjectSchema<RemoveTaskBody>;
     };
     updateTaskStatus: {
-        body: joi.ObjectSchema<any>;
+        body: joi.ObjectSchema<UpdateTaskStatusBody>;
     };
 };
 export default taskSchemas;

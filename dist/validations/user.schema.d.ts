@@ -1,7 +1,8 @@
 import joi from "joi";
+import type { AddUserBody } from "../dtos/user.dto.js";
 declare const userSchemas: {
     addUserSchema: {
-        body: joi.ObjectSchema<any>;
+        body: joi.ObjectSchema<AddUserBody>;
     };
 };
 export default userSchemas;

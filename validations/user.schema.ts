@@ -1,7 +1,8 @@
 import joi from "joi";
+import type { AddUserBody } from "../dtos/user.dto.js";
 
 const addUserSchema = {
-  body: joi.object({
+  body: joi.object<AddUserBody>({
     name: joi.string(),
   }),
 };

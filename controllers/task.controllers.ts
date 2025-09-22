@@ -1,8 +1,9 @@
 import taskServices from '../services/task.services.js';
 import asyncWrapper from '../lib/asyncWrapper.js';
 import type {Request, Response, NextFunction}  from 'express'
+import type { AddTaskBody, RemoveTaskBody, UpdateTaskStatusBody, GetTasksParams } from '../dtos/task.dto.js';
 
-const addTask =  asyncWrapper( async (req: Request,res: Response,next: NextFunction) => {
+const addTask =  asyncWrapper( async (req: Request<{}, {}, AddTaskBody>, res: Response, next: NextFunction) => {
     const {userId, description} = req.body;    ;
     await taskServices.addTask(userId,description);
     res.status(201).json ({
@@ -11,7 +12,7 @@ const addTask =  asyncWrapper( async (req: Request,res: Response,next: NextFunct
     })
 });
 
-const removeTask = asyncWrapper( async  (req: Request, res: Response, next: NextFunction) => {
+const removeTask = asyncWrapper( async  (req: Request<{}, {}, RemoveTaskBody>, res: Response, next: NextFunction) => {
     const {userId, taskId} = req.body;    
     await taskServices.removeTask(userId, taskId);
     res.status(200).json ({
@@ -20,7 +21,7 @@ const removeTask = asyncWrapper( async  (req: Request, res: Response, next: Next
     })
 });
 
-const updateTaskStatus = asyncWrapper( async (req: Request, res: Response, next: NextFunction) => {
+const updateTaskStatus = asyncWrapper( async (req: Request<{}, {}, UpdateTaskStatusBody>, res: Response, next: NextFunction) => {
     const {userId, taskId, status } = req.body;    
     await taskServices.updateTaskStatus(userId, taskId, status);
     res.status(200).json ({
@@ -29,8 +30,8 @@ const updateTaskStatus = asyncWrapper( async (req: Request, res: Response, next:
     })
 });
 
-const getTasks = asyncWrapper( async  (req: Request, res: Response, next: NextFunction) => {
-    const {userId} = req.body;    
+const getTasks = asyncWrapper( async (req: Request<GetTasksParams>, res: Response, next: NextFunction) => {
+    const {userId} = req.params;    
     const tasks = await taskServices.getTasks(userId);
     res.status(200).json({
         status : true,

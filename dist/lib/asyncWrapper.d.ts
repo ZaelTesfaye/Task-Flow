@@ -1,4 +1,4 @@
-import type { Request, Response, NextFunction } from "express";
-declare const asyncWrapper: (fn: Function) => (req: Request, res: Response, next: NextFunction) => void;
+import type { RequestHandler } from "express";
+declare const asyncWrapper: (fn: Function) => RequestHandler;
 export default asyncWrapper;
 //# sourceMappingURL=asyncWrapper.d.ts.map

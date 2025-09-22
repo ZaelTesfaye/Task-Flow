@@ -1,21 +1,22 @@
 import joi from "joi";
+import type { GetTasksParams, RemoveTaskBody, UpdateTaskStatusBody, AddTaskBody } from "../dtos/task.dto.js";
 
 const addTaskSchema = {
-  body: joi.object({
+  body: joi.object<AddTaskBody>({
     userId: joi.string().uuid(),
     description: joi.string,
   }),
 };
 
 const removeTaskSchema = {
-  body: joi.object({
+  body: joi.object<RemoveTaskBody>({
     userId: joi.string().uuid(),
     taskId: joi.string().uuid(),
   }),
 };
 
 const updateTaskStatusSchema = {
-  body: joi.object({
+  body: joi.object<UpdateTaskStatusBody>({
     userId: joi.string().uuid(),
     taskId: joi.string().uuid(),
     status: joi.string().valid("active", "complete", "canceled"),
@@ -23,7 +24,7 @@ const updateTaskStatusSchema = {
 };
 
 const getTaskSchema = {
-  body: joi.object({
+  params: joi.object<GetTasksParams>({
     userId: joi.string().uuid(),
   }),
 };

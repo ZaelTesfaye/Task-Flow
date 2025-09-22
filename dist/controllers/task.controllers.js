@@ -35,7 +35,7 @@ const updateTaskStatus = asyncWrapper((req, res, next) => __awaiter(void 0, void
     });
 }));
 const getTasks = asyncWrapper((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const { userId } = req.body;
+    const { userId } = req.params;
     const tasks = yield taskServices.getTasks(userId);
     res.status(200).json({
         status: true,

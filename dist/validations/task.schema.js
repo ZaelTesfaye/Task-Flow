@@ -19,7 +19,7 @@ const updateTaskStatusSchema = {
     }),
 };
 const getTaskSchema = {
-    body: joi.object({
+    params: joi.object({
         userId: joi.string().uuid(),
     }),
 };

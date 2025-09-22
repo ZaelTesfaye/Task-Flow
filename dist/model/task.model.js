@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import prisma from "../lib/prisma.js";
 const addTask = (userId, description) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield prisma.task.create({
+    return prisma.task.create({
         data: {
             description,
             userId: userId,
@@ -17,7 +17,7 @@ const addTask = (userId, description) => __awaiter(void 0, void 0, void 0, funct
     });
 });
 const removeTask = (userId, taskId) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield prisma.task.delete({
+    return prisma.task.delete({
         where: {
             userId: userId,
             id: taskId,
@@ -25,7 +25,7 @@ const removeTask = (userId, taskId) => __awaiter(void 0, void 0, void 0, functio
     });
 });
 const updateTaskStatus = (userId, taskId, status) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield prisma.task.update({
+    return prisma.task.update({
         where: {
             id: taskId,
         },
@@ -35,7 +35,7 @@ const updateTaskStatus = (userId, taskId, status) => __awaiter(void 0, void 0, v
     });
 });
 const getTasks = (userId) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield prisma.task.findMany({
+    return prisma.task.findMany({
         where: {
             userId: userId,
         },
