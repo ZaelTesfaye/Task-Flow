@@ -1,5 +1,5 @@
 import express from "express";
-import authSchema from "../validations/auth.schema.js";
+import authSchema from "../validations/auth.validation.js";
 import authController from "../controllers/auth.controller.js";
 import validator from "../middlewares/validator.middleware.js";
 

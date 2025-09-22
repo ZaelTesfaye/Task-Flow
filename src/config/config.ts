@@ -1,5 +1,5 @@
-import envSchema from "../validations/env.schema.js";
-import { type EnvSchemaType } from "../validations/env.schema.js";
+import envSchema from "../validations/env.validation.js";
+import { type EnvSchemaType } from "../validations/env.validation.js";
 const { value, error } = envSchema.validate(process.env);
 
 const envVars : EnvSchemaType | null = value as EnvSchemaType;
