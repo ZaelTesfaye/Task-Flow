@@ -3,29 +3,23 @@ services:
     build: .
     ports:
       - 5000:5000
+    env_file:
+      - ./.env
     environment:
-      DATABASE_URL: "postgresql://postgres:1122@localhost:5432/tasks"
-      PORT: 5000
-      NODE_ENV: development
-      JWT_SECRET : WhBFec5onz8GpxSvyTSQd5jJi8b9iHTbq
-      COOKIE_SECRET : 8qEIvpVp7/mKS0VBOhX8deBOvhis0gLFEd6lvcdQCwk=
+      CONTAINER_NAME: process1  
   process2: 
     build: ./
     ports:
       - 5001:5000
+    env_file:
+      - ./.env
     environment:
-      DATABASE_URL: "postgresql://postgres:1122@localhost:5432/tasks"
-      PORT: 5000
-      NODE_ENV: development
-      JWT_SECRET : WhBFec5onz8GpxSvyTSQd5jJi8b9iHTbq
-      COOKIE_SECRET : 8qEIvpVp7/mKS0VBOhX8deBOvhis0gLFEd6lvcdQCwk=
+      CONTAINER_NAME: process2
   process3: 
     build: ./
     ports:
       - 5002:5000
+    env_file:
+      - ./.env
     environment:
-      DATABASE_URL: "postgresql://postgres:1122@localhost:5432/tasks"
-      PORT: 5000
-      NODE_ENV: development
-      JWT_SECRET : WhBFec5onz8GpxSvyTSQd5jJi8b9iHTbq
-      COOKIE_SECRET : 8qEIvpVp7/mKS0VBOhX8deBOvhis0gLFEd6lvcdQCwk=
+      CONTAINER_NAME: process3

@@ -1,0 +1,61 @@
+name: Deploy to EC2 with Docker Compose
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # Allows manual trigger
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # 1. Checkout Code
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # 2. Build Docker Image
+      - name: Build
+        run: |
+          IMAGE_ID=${{ secrets.DOCKER_USERNAME }}/your-image-name
+          VERSION_TAG=$(echo $GITHUB_SHA | cut -c1-7)
+          docker build -t $IMAGE_ID:latest -t $IMAGE_ID:$VERSION_TAG .
+
+      # 3. Log in to Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          
+      # 4. Push Docker Image
+      - name: Push Image
+        run: |
+          IMAGE_ID=${{ secrets.DOCKER_USERNAME }}/your-image-name
+          VERSION_TAG=$(echo $GITHUB_SHA | cut -c1-7)
+          docker push $IMAGE_ID:latest
+          docker push $IMAGE_ID:$VERSION_TAG
+      
+      # 5. Deploy via SSH to EC2
+      - name: Deploy to EC2 via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          # The commands to run on the EC2 server
+          script: |
+            # Navigate to the application directory on the EC2 server
+            cd ~/todo
+            
+            # Pull the latest image (using the 'latest' tag)
+            docker pull ${{ secrets.DOCKER_USERNAME }}/your-image-name:latest
+            
+            # Recreate containers using the updated image.
+            # --force-recreate ensures the containers are stopped and rebuilt with the new image.
+            # -d runs them in detached mode.
+            docker compose up -d --force-recreate
+            
+            # Clean up old, unused images
+            docker image prune -f

@@ -21,7 +21,10 @@ app.use(cookieParser(config.cookieSecret));
 app.use("/api/auth", authRoutes);
 app.use("/api/tasks", authMiddleware, taskRoutes);
 app.use("/api/users", authMiddleware, userRoutes);
-app.get("/api/health", (req, res) => res.send("OK"));
+app.get("/api/health", (req, res) => {
+  console.log(`Health check on container ${process.env.CONTAINER_NAME}`);
+  res.send("OK")
+});
 
 // ejs
 app.get("/home", (req, res) => {
