@@ -1,5 +1,9 @@
-# Build Stage
+# ------------------------ Build Stage ------------------------
 FROM node:18-alpine AS build
+
+# change the user to non-root user inside the container
+RUN addgroup app && adduser -S -G app app
+USER app
 
 WORKDIR /app
 
@@ -10,8 +14,11 @@ COPY . .
 RUN npx prisma generate
 RUN npm run build
 
-# Runtime Stage
+# ---------------------- Runtime Stage ----------------------
 FROM node:18-alpine AS runtime
+
+RUN addgroup app && adduser -S -G app app
+USER app
 
 WORKDIR /app
 

@@ -1,22 +1,24 @@
 services:
   process1:
-    build: .
+    image: ${DOCKER_USERNAME}/${IMAGE_NAME}:latest
     ports:
       - 5000:5000
     env_file:
       - ./.env
     environment:
-      CONTAINER_NAME: process1  
+      CONTAINER_NAME: process1
+  
   process2: 
-    build: ./
+    image: ${DOCKER_USERNAME}/${IMAGE_NAME}:latest
     ports:
       - 5001:5000
     env_file:
       - ./.env
     environment:
       CONTAINER_NAME: process2
+  
   process3: 
-    build: ./
+    image: ${DOCKER_USERNAME}/${IMAGE_NAME}:latest
     ports:
       - 5002:5000
     env_file:

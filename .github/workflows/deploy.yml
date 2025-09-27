@@ -18,7 +18,7 @@ jobs:
       # 2. Build Docker Image
       - name: Build
         run: |
-          IMAGE_ID=${{ secrets.DOCKER_USERNAME }}/your-image-name
+          IMAGE_ID=${{ secrets.DOCKER_USERNAME }}/todo-app
           VERSION_TAG=$(echo $GITHUB_SHA | cut -c1-7)
           docker build -t $IMAGE_ID:latest -t $IMAGE_ID:$VERSION_TAG .
 
@@ -32,7 +32,7 @@ jobs:
       # 4. Push Docker Image
       - name: Push Image
         run: |
-          IMAGE_ID=${{ secrets.DOCKER_USERNAME }}/your-image-name
+          IMAGE_ID=${{ secrets.DOCKER_USERNAME }}/todo-app
           VERSION_TAG=$(echo $GITHUB_SHA | cut -c1-7)
           docker push $IMAGE_ID:latest
           docker push $IMAGE_ID:$VERSION_TAG
@@ -44,17 +44,15 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          # The commands to run on the EC2 server
+          # commands to run on the EC2 server
           script: |
             # Navigate to the application directory on the EC2 server
             cd ~/todo
             
-            # Pull the latest image (using the 'latest' tag)
-            docker pull ${{ secrets.DOCKER_USERNAME }}/your-image-name:latest
+            # Pull the latest image
+            docker pull ${{ secrets.DOCKER_USERNAME }}/todo-app:latest
             
             # Recreate containers using the updated image.
-            # --force-recreate ensures the containers are stopped and rebuilt with the new image.
-            # -d runs them in detached mode.
             docker compose up -d --force-recreate
             
             # Clean up old, unused images
