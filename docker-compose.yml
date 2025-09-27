@@ -2,7 +2,7 @@ services:
   process1:
     image: ${DOCKER_USERNAME}/${IMAGE_NAME}:latest
     ports:
-      - 5000:5000
+      - 5000:50002
     env_file:
       - ./.env
     environment:
