@@ -6,6 +6,11 @@ export interface EnvSchemaType {
   JWT_SECRET: string;
   COOKIE_SECRET: string;
   FRONTEND_URL: string;
+  ADMIN_NAME: string;
+  ADMIN_EMAIL: string;
+  ADMIN_PASSWORD: string;
+
+
 }
 
 const envSchema = joi
@@ -15,6 +20,9 @@ const envSchema = joi
     JWT_SECRET: joi.string().required(),
     COOKIE_SECRET: joi.string().required(),
     FRONTEND_URL: joi.string().required(),
+    ADMIN_NAME: joi.string().required(),
+    ADMIN_EMAIL: joi.string().required(),
+    ADMIN_PASSWORD: joi.string().required(),
   })
   .unknown();
 

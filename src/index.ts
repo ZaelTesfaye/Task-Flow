@@ -14,7 +14,7 @@ import adminRoutes from './routes/admin.routes.js'
 const app = express();
 
 const CorsOptions = {
-  origin: ['http://localhost:3000', 'http://localhost:3001'],
+  origin: [`${config.env === 'development' ? 'http://localhost:3000' : config.frontEndUrl} `],
 };
 
 app.set("view engine", "ejs");
@@ -56,6 +56,7 @@ app.use(
     if (error instanceof APIError) {
       return res.status(400).send(error.message);
     }
+    
     res.status(500).send("An error occurred");
   }
 );

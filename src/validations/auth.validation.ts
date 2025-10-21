@@ -13,7 +13,7 @@ const registerSchema = {
 const loginSchema = {
   body: joi.object<LoginBody>({
     email : joi.string().email().required(),
-    password: joi.string().min(6).required()
+    password: joi.string().min(4).required()
   })
   .unknown(true),
 };

@@ -1,22 +1,26 @@
 import express from "express";
 import * as adminController from "../controllers/admin.controller.js";
 import validator from "../middlewares/validator.middleware.js";
-import { getAllUsersSceham } from "../validations/admin.validation.js";
+import {
+  getAllUsersSchema,
+  removeUserSchema,
+} from "../validations/admin.validation.js";
 
 const router = express.Router();
 
 // View All Users & Tasks
 router.post(
   "/users",
-  validator(getAllUsersSceham),
+  validator(getAllUsersSchema),
   adminController.viewAllUsers
 );
 
-// Create User
-router.post("/add-user", adminController.addUser);
-
 // Remove user
-router.delete("/remove-user", adminController.removeUser);
+router.delete(
+  "/remove-user",
+  validator(removeUserSchema),
+  adminController.removeUser
+);
 
 // Suspend User
 router.patch("/update-user-status", adminController.updateUserStatus);

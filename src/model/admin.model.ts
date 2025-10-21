@@ -19,3 +19,12 @@ export const getAllUsers = (page: number, limit: number) => {
     }
   });
 };
+
+
+export const deleteUser = (userId: string) => {
+  return prisma.user.deleteMany({
+    where: {
+      id: userId
+    },
+  })
+};

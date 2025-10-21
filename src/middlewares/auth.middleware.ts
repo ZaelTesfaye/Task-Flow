@@ -16,12 +16,16 @@ const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
 
   try {
     const userData = jwt.verify(token, config.jwtSecret) as JwtPayload;
+    console.log("User data: ", userData);
+
     req.user = userData;
   
     // Role-based access control
+    const isAdminPath = req.baseUrl === "/admin";
 
-    const isAdminPath = req.path.startsWith("/admin");
-
+    console.log("path: ", req.path);
+    console.log("Is admin path: ", isAdminPath);
+  
     if (
       (!userData.isAdmin && !isAdminPath) ||
       (userData.isAdmin && isAdminPath)

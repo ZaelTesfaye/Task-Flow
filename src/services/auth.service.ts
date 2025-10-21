@@ -43,23 +43,23 @@ const register = async (name: string, email: string, password: string) => {
 const login = async (email: string, password: string) => {
   console.log("Login attempt for email:", email, "password : ", password);
   // check if the user exists and password matches
-  const userData = await userModel.findByEmail(email);
-  if (!userData) {
+  const user = await userModel.findByEmail(email);
+  if (!user) {
     throw new APIError("User not found", 404);
   }
 
-  const isPasswordValid = await bcrypt.compare(password, userData.password);
+  const isPasswordValid = await bcrypt.compare(password, user.password);
   if (!isPasswordValid) {
     throw new APIError("Invalid username / password", 401);
   }
-  const tokenData = {
-    id: userData.id,
-    name: userData.name,
-    email: userData.email,
-    isAdmin: userData.isAdmin,
+  const userData = {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    isAdmin: user.isAdmin,
   };
 
-  const token = jwt.sign(tokenData, config.jwtSecret, {
+  const token = jwt.sign(userData, config.jwtSecret, {
     expiresIn: "7d",
   });
 

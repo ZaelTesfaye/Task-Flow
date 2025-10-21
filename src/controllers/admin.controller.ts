@@ -1,28 +1,37 @@
-import type { NextFunction, Request, Response } from "express"
-import type { GetAllUsers } from "../dtos/admin.dto.js"
-import * as adminService from '../services/admin.service.js'
-import httpStatus from "http-status"
-
-export const viewAllUsers = async (req: Request<{}, {}, GetAllUsers>, res: Response) => {
-    const {page, limit} = req.body;
+import type { NextFunction, Request, Response } from "express";
+import type { GetAllUsers, RemoveUser } from "../dtos/admin.dto.js";
+import * as adminService from "../services/admin.service.js";
+import httpStatus from "http-status";
+import asyncWrapper from "../lib/asyncWrapper.js";
+export const viewAllUsers = asyncWrapper(
+  async (req: Request<{}, {}, GetAllUsers>, res: Response) => {
+    const { page, limit } = req.body;
     const result = await adminService.getAllUsers(page, limit);
     if (result) {
-        res.status(httpStatus.OK).json(result);
+      res.status(httpStatus.OK).json(result);
     }
-}
+  }
+);
+export const removeUser = asyncWrapper(
+  async (req: Request<{}, {}, RemoveUser>, res: Response) => {
+    const userId = req.body.userId;
 
-export const addUser = () => {
+    const result = await adminService.removeUser(userId);
 
-}
+    if (result?.count > 0) {
+      res.status(httpStatus.OK).json({
+        status: true,
+        message: "User deleted successfully",
+      });
+    } else {
+      res.status(httpStatus.OK).json({
+        status: false,
+        message: "User Not Found",
+      });
+    }
+  }
+);
 
-export const removeUser = () => {
+export const updateUserStatus = () => {};
 
-}
-
-export const updateUserStatus = () => {
-
-}
-
-export const blacklistToken = () => {
-
-}
+export const blacklistToken = () => {};

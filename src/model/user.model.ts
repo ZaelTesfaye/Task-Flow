@@ -18,9 +18,18 @@ const findByEmail = async (email: string) => {
   });
 };
 
+const getUser = async (userId: string) => {
+  return prisma.user.findUnique({
+    where: {
+      id: userId,
+    }
+  })
+}
+
 const userModel = {
   createUser,
   findByEmail,
+  getUser,
 };
 
 export default userModel;

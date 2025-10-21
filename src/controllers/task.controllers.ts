@@ -5,7 +5,8 @@ import type { AddTaskBody, RemoveTaskBody, UpdateTaskStatusBody, GetTasksParams 
 
 const addTask =  asyncWrapper( async (req: Request<{}, {}, AddTaskBody>, res: Response, next: NextFunction) => {
     const {userId, description} = req.body;    ;
-    await taskServices.addTask(userId,description);
+    await taskServices.addTask(userId, description);
+    
     res.status(201).json ({
         status : true,
         message: "Task Added successfully"

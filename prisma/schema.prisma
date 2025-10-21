@@ -13,7 +13,7 @@ model Task {
   status String @default("Active")
 
   userId String
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model User {
@@ -22,5 +22,6 @@ model User {
   email String @unique
   password String
   isAdmin Boolean @default(false)
+
   tasks Task[]
 }

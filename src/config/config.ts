@@ -15,6 +15,9 @@ const env = {
   env: envVars.NODE_ENV,
   jwtSecret: envVars.JWT_SECRET,
   frontEndUrl: envVars.FRONTEND_URL,
+  adminName: envVars.ADMIN_NAME,
+  adminEmail: envVars.ADMIN_EMAIL,
+  adminPassword: envVars.ADMIN_PASSWORD
 };
 
 export default env;

@@ -1,7 +1,13 @@
 import taskModel from '../model/task.model.js';
-
+import userModel from '../model/user.model.js';
+import { APIError } from '../utils/error.js';
+import httpStatus from 'http-status';
 
 const addTask = async (userId: string, description: string) => {
+  const user = await userModel.getUser(userId);
+  if(!user) {
+    throw new APIError("User doesnt exist", httpStatus.BAD_REQUEST);
+  }
   return await taskModel.addTask(userId, description);
 };
 
