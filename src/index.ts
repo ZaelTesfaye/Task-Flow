@@ -1,7 +1,6 @@
 import dotenv from "dotenv/config.js";
 import type http from "http";
 import express from "express";
-import { Server } from "socket.io";
 import cookieParser from "cookie-parser";
 import type { Request, Response, NextFunction } from "express";
 import { APIError } from "./utils/error.js";
@@ -10,6 +9,7 @@ import authRoutes from "./routes/auth.routes.js";
 import config from "./config/config.js";
 import authMiddleware from "./middlewares/auth.middleware.js";
 import cors from 'cors';
+import adminRoutes from './routes/admin.routes.js'
 
 const app = express();
 
@@ -23,10 +23,11 @@ app.use(express.static("public"));
 app.use(express.json());
 app.use(cookieParser());
 
+app.use("/admin", authMiddleware, adminRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/tasks", authMiddleware, taskRoutes);
 app.get("/api/health", (req, res) => {
-  console.log(`Health check on container ${process.env.CONTAINER_NAME}`);
+  console.log(`Requested container: ${process.env.CONTAINER_NAME}`);
   res.send("OK");
 });
 
@@ -63,17 +64,6 @@ const server = app.listen(config.port, () => {
   console.log(`Server running on port ${config.port}`);
 });
 
-const io = new Server(server, {
-  cors: {
-    origin:[config.env === "dev" ? "locahost:3000" : config.frontEndUrl],
-    methods: ["GET", "POST"],
-  },
-});
-
-io.on("connection", (socket: any) => {
-  console.log("Socket connection established: ", socket);
-});
-
 const exitHandler = (serverInstance: http.Server | undefined) => {
   if (serverInstance) {
     serverInstance.close(() => {
@@ -87,11 +77,11 @@ const exitHandler = (serverInstance: http.Server | undefined) => {
 };
 
 process.on("uncaughtException", (error) => {
-  console.error(error);
+  console.error("uncaughtException", error);
   exitHandler(server);
 });
 
 process.on("unhandledRejection", (error) => {
-  console.error(error);
+  console.error("unhandledRejection", error);
   exitHandler(server);
 });

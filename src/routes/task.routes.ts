@@ -9,8 +9,8 @@ router.get('/get-tasks/:userId', validator(taskSchema.getTaskSchema), taskContro
 
 router.post('/add-task', validator(taskSchema.addTaskSchema), taskController.addTask);
 
-router.patch("/update", validator(taskSchema.updateTaskStatusSchema),taskController.updateTaskStatus)
+router.patch("/update", validator(taskSchema.updateTaskStatusSchema),taskController.updateTaskStatus);
 
-router.delete("/remove", validator(taskSchema.removeTaskSchema), taskController.removeTask) 
+router.delete("/remove", validator(taskSchema.removeTaskSchema), taskController.removeTask);
 
 export default router;
