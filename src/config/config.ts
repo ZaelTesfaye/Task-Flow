@@ -1,19 +1,20 @@
-import envSchema from "../validations/env.validation.js";
-import { type EnvSchemaType } from "../validations/env.validation.js";
+import { APIError } from "../utils/error.js";
+import envSchema, { type EnvSchemaType } from "../validations/env.validation.js";
+
 const { value, error } = envSchema.validate(process.env);
 
-const envVars : EnvSchemaType | null = value as EnvSchemaType;
 
 if (error) {
-  console.log(`Config validation error: ${error.message}`);
-  process.exit(1);
+  throw new APIError(`Config validation error: ${error.message}`, 500);
 }
+
+const envVars : EnvSchemaType  = value as EnvSchemaType;
 
 const env = {
   port: envVars.PORT,
   env: envVars.NODE_ENV,
   jwtSecret: envVars.JWT_SECRET,
-  cookieSecret: envVars.COOKIE_SECRET,
+  frontEndUrl: envVars.FRONTEND_URL,
 };
 
 export default env;

@@ -5,6 +5,7 @@ export interface EnvSchemaType {
   NODE_ENV: string;
   JWT_SECRET: string;
   COOKIE_SECRET: string;
+  FRONTEND_URL: string;
 }
 
 const envSchema = joi
@@ -13,6 +14,7 @@ const envSchema = joi
     NODE_ENV: joi.string().default("development").required(),
     JWT_SECRET: joi.string().required(),
     COOKIE_SECRET: joi.string().required(),
+    FRONTEND_URL: joi.string().required(),
   })
   .unknown();
 

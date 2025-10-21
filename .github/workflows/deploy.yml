@@ -46,6 +46,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "docker-compose.yml"
           target: "~/todo"
+          
       # 6. Deploy via SSH to EC2
       - name: Deploy to EC2 via SSH
         uses: appleboy/ssh-action@v1.0.3

@@ -24,4 +24,4 @@ const taskServices = {
   getTasks,
 }
 
-export default taskServices;
+export default taskServices; 
