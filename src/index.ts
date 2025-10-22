@@ -10,6 +10,7 @@ import config from "./config/config.js";
 import authMiddleware from "./middlewares/auth.middleware.js";
 import cors from "cors";
 import adminRoutes from "./routes/admin.routes.js";
+import logger from "./lib/logger.js";
 
 const app = express();
 
@@ -39,7 +40,6 @@ app.get("/api/health", (req, res) => {
 
 // ejs
 app.get("/home", (req, res) => {
-  console.log("Serving home page");
   res.render("index", {
     title: "Task Manager",
     message: "Welcome to the Task Manager Application!",
@@ -77,17 +77,17 @@ app.use(
 );
 
 const server = app.listen(config.port, () => {
-  console.log(`Server running on port ${config.port}`);
+  logger.info(`Server running on port ${config.port}`);
 });
 
 const exitHandler = (serverInstance: http.Server | undefined) => {
   if (serverInstance) {
     serverInstance.close(() => {
-      console.log("Server closed gracefully");
+      logger.critical("Server closed gracefully");
       process.exit(1);
     });
   } else {
-    console.log("Server exit");
+    logger.critical("Server exit");
     process.exit(1);
   }
 };

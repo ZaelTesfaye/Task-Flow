@@ -10,7 +10,6 @@ const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const token = req.cookies.auth;
 
   if (!token) {
-    console.log("No token found");
     throw new APIError("Unauthorized", httpStatus.UNAUTHORIZED);
   }
 
@@ -21,10 +20,6 @@ const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
   
     // Role-based access control
     const isAdminPath = req.baseUrl === "/admin";
-
-    console.log("path: ", req.path);
-    console.log("Is admin path: ", isAdminPath);
-  
     if (
       (!userData.isAdmin && !isAdminPath) ||
       (userData.isAdmin && isAdminPath)

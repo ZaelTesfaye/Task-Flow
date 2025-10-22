@@ -41,7 +41,6 @@ const register = async (name: string, email: string, password: string) => {
 };
 
 const login = async (email: string, password: string) => {
-  console.log("Login attempt for email:", email, "password : ", password);
   // check if the user exists and password matches
   const user = await userModel.findByEmail(email);
   if (!user) {
