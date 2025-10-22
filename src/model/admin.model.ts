@@ -1,4 +1,4 @@
-import prisma from "../lib/prisma.ts";
+import prisma from "../lib/prisma.js";
 
 export const getAllUsers = (page: number, limit: number) => {
   const offset = (page - 1) * limit;

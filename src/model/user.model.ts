@@ -1,4 +1,4 @@
-import prisma from "../lib/prisma.ts";
+import prisma from "../lib/prisma.js";
 
 const createUser = async (name: string, email: string, password: string) => {
   return prisma.user.create({

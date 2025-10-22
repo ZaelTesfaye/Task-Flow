@@ -1,13 +1,13 @@
-import taskServices from "../services/task.services.ts";
-import asyncWrapper from "../lib/asyncWrapper.ts";
+import taskServices from "../services/task.services.js";
+import asyncWrapper from "../lib/asyncWrapper.js";
 import type { Request, Response, NextFunction } from "express";
 import type {
   AddTaskBody,
   RemoveTaskBody,
   UpdateTaskSchema,
   GetTasksParams,
-} from "../dtos/task.dto.ts";
-import { APIError } from "../utils/error.ts";
+} from "../dtos/task.dto.js";
+import { APIError } from "../utils/error.js";
 import httpStatus from "http-status";
 
 const addTask = asyncWrapper(

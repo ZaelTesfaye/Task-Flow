@@ -1,7 +1,7 @@
 import dotenv from "dotenv/config.js";
 import bcrypt from 'bcrypt';
-import config from '../config/config.ts'
-import prisma from '../lib/prisma.ts';
+import config from '../config/config.js';
+import prisma from '../lib/prisma.js';
 
 async function seedAdmin() {
   const hashedPassword = await bcrypt.hash(config.adminPassword, 10);

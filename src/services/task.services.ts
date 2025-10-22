@@ -1,6 +1,6 @@
-import taskModel from "../model/task.model.ts";
-import userModel from "../model/user.model.ts";
-import { APIError } from "../utils/error.ts";
+import taskModel from "../model/task.model.js";
+import userModel from "../model/user.model.js";
+import { APIError } from "../utils/error.js";
 import httpStatus from "http-status";
 
 const addTask = async (userId: string, description: string) => {

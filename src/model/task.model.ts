@@ -1,4 +1,4 @@
-import prisma from "../lib/prisma.ts";
+import prisma from "../lib/prisma.js";
 
 const addTask = async (userId: string, description: string) => {
   return prisma.task.create({

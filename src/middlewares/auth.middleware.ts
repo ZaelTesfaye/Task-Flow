@@ -1,9 +1,9 @@
-import { APIError } from "../utils/error.ts";
+import { APIError } from "../utils/error.js";
 import httpStatus from "http-status";
 import type { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import config from "../config/config.ts";
-import type { JwtPayload } from "../types/jwt.ts";
+import config from "../config/config.js";
+import type { JwtPayload } from "../types/jwt.js";
 
 
 const authMiddleware = (req: Request, res: Response, next: NextFunction) => {

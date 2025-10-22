@@ -10,7 +10,7 @@
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
     "module": "nodenext",
-    "target": "es6",
+    "target": "es2022",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "isolatedModules": true,
@@ -44,8 +44,6 @@
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
-    "allowImportingTsExtensions" : true, // ts-node expects ts importss
-    "noEmit": true // required by allowImportingTsExtensions 
   },
   "include": [
     "**/*.ts",

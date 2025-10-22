@@ -3,13 +3,13 @@ import type http from "http";
 import express from "express";
 import cookieParser from "cookie-parser";
 import type { Request, Response, NextFunction } from "express";
-import { APIError } from "./utils/error.ts";
-import taskRoutes from "./routes/task.routes.ts";
-import authRoutes from "./routes/auth.routes.ts";
-import config from "./config/config.ts";
-import authMiddleware from "./middlewares/auth.middleware.ts";
+import { APIError } from "./utils/error.js";
+import taskRoutes from "./routes/task.routes.js";
+import authRoutes from "./routes/auth.routes.js";
+import config from "./config/config.js";
+import authMiddleware from "./middlewares/auth.middleware.js";
 import cors from "cors";
-import adminRoutes from "./routes/admin.routes.ts";
+import adminRoutes from "./routes/admin.routes.js";
 
 const app = express();
 

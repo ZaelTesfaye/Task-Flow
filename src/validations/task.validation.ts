@@ -1,5 +1,5 @@
 import joi from "joi";
-import type { GetTasksParams, RemoveTaskBody, UpdateTaskSchema, AddTaskBody } from "../dtos/task.dto.ts";
+import type { GetTasksParams, RemoveTaskBody, UpdateTaskSchema, AddTaskBody } from "../dtos/task.dto.js";
 
 const addTaskSchema = {
   body: joi.object<AddTaskBody>({

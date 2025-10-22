@@ -1,7 +1,7 @@
 import express from 'express';
-import taskController from '../controllers/task.controllers.ts';
-import taskSchema from "../validations/task.validation.ts";
-import validator from "../middlewares/validator.middleware.ts";
+import taskController from '../controllers/task.controllers.js';
+import taskSchema from "../validations/task.validation.js";
+import validator from "../middlewares/validator.middleware.js";
 
 const router = express.Router();
 

@@ -1,8 +1,8 @@
-import userModel from "../model/user.model.ts";
+import userModel from "../model/user.model.js";
 import bcrypt from "bcrypt";
-import { APIError } from "../utils/error.ts";
+import { APIError } from "../utils/error.js";
 import jwt from "jsonwebtoken";
-import config from "../config/config.ts";
+import config from "../config/config.js";
 
 const register = async (name: string, email: string, password: string) => {
   //check if email already exists

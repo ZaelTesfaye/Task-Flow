@@ -1,8 +1,8 @@
-import asyncWrapper from "../lib/asyncWrapper.ts";
-import authService from "../services/auth.service.ts";
+import asyncWrapper from "../lib/asyncWrapper.js";
+import authService from "../services/auth.service.js";
 import type { CookieOptions, Request, Response } from "express";
-import config from "../config/config.ts";
-import { type RegisterBody, type LoginBody } from "../dtos/auth.dto.ts";
+import config from "../config/config.js";
+import { type RegisterBody, type LoginBody } from "../dtos/auth.dto.js";
 
 const defaultCookieConfig : CookieOptions = {
   httpOnly: true,
