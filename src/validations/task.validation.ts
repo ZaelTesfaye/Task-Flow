@@ -1,39 +1,37 @@
 import joi from "joi";
-import type { GetTasksParams, RemoveTaskBody, UpdateTaskStatusBody, AddTaskBody } from "../dtos/task.dto.js";
+import type { GetTasksParams, RemoveTaskBody, UpdateTaskSchema, AddTaskBody } from "../dtos/task.dto.ts";
 
 const addTaskSchema = {
   body: joi.object<AddTaskBody>({
-    userId: joi.string().uuid(),
-    description: joi.string().min(1).max(255),
-  }),
+    description: joi.string().min(1).max(255).required(),
+  }).unknown(),
 };
 
 const removeTaskSchema = {
   body: joi.object<RemoveTaskBody>({
-    userId: joi.string().uuid(),
-    taskId: joi.string().uuid(),
+    taskId: joi.string().uuid().required(),
   }).unknown(),
 };
 
-const updateTaskStatusSchema = {
-  body: joi.object<UpdateTaskStatusBody>({
-    userId: joi.string().uuid(),
-    taskId: joi.string().uuid(),
-    status: joi.string().valid("active", "complete", "canceled"),
-  }),
+const updateTaskSchema = {
+  body: joi.object<UpdateTaskSchema>({
+    taskId: joi.string().uuid().required(),
+    status: joi.string().valid("active", "complete", "canceled").required(),
+    description: joi.string().min(1).required(),
+  }).unknown(),
 };
 
 const getTaskSchema = {
   params: joi.object<GetTasksParams>({
-    userId: joi.string().uuid(),
-  }),
+    userId: joi.string().uuid().required(),
+  }).unknown(),
 };
 
 const taskSchemas = {
   addTaskSchema,
   getTaskSchema,
   removeTaskSchema,
-  updateTaskStatusSchema,
+  updateTaskStatusSchema: updateTaskSchema,
 };
 
 export default taskSchemas;

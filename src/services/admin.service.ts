@@ -1,4 +1,4 @@
-import * as adminModel from '../model/admin.model.js'
+import * as adminModel from '../model/admin.model.ts'
 
 export const getAllUsers = (page:number, limit: number) => {
     return adminModel.getAllUsers(page, limit);

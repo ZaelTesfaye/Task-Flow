@@ -43,11 +43,13 @@
     "verbatimModuleSyntax": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "allowImportingTsExtensions" : true, // ts-node expects ts importss
+    "noEmit": true // required by allowImportingTsExtensions 
   },
   "include": [
     "**/*.ts",
-     "**/*.d.ts"
+     "**/*.d.ts",
   ],
   "exclude": [
     "node_modules"

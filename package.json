@@ -21,8 +21,8 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
-    "dev": "nodemon --exec node --loader ts-node/esm src/index.ts",
-    "seed:admin" : "node dist/scripts/adminSeed.js"
+    "dev": "npx nodemon --exec ts-node src/index.ts",
+    "seed:admin": "node dist/scripts/adminSeed.js"
   },
   "author": "",
   "license": "ISC",

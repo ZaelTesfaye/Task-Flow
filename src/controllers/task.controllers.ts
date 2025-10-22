@@ -1,51 +1,95 @@
-import taskServices from '../services/task.services.js';
-import asyncWrapper from '../lib/asyncWrapper.js';
-import type {Request, Response, NextFunction}  from 'express'
-import type { AddTaskBody, RemoveTaskBody, UpdateTaskStatusBody, GetTasksParams } from '../dtos/task.dto.js';
+import taskServices from "../services/task.services.ts";
+import asyncWrapper from "../lib/asyncWrapper.ts";
+import type { Request, Response, NextFunction } from "express";
+import type {
+  AddTaskBody,
+  RemoveTaskBody,
+  UpdateTaskSchema,
+  GetTasksParams,
+} from "../dtos/task.dto.ts";
+import { APIError } from "../utils/error.ts";
+import httpStatus from "http-status";
 
-const addTask =  asyncWrapper( async (req: Request<{}, {}, AddTaskBody>, res: Response, next: NextFunction) => {
-    const {userId, description} = req.body;    ;
+const addTask = asyncWrapper(
+  async (
+    req: Request<{}, {}, AddTaskBody>,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const {id: userId} = req.user!;
+    const { description } = req.body;
     await taskServices.addTask(userId, description);
-    
-    res.status(201).json ({
-        status : true,
-        message: "Task Added successfully"
-    })
-});
 
-const removeTask = asyncWrapper( async  (req: Request<{}, {}, RemoveTaskBody>, res: Response, next: NextFunction) => {
-    const {userId, taskId} = req.body;    
-    await taskServices.removeTask(userId, taskId);
-    res.status(200).json ({
-        status : true,
-        message: "Task Removed successfully"
-    })
-});
+    res.status(201).json({
+      status: true,
+      message: "Task Added successfully",
+    });
+  }
+);
 
-const updateTaskStatus = asyncWrapper( async (req: Request<{}, {}, UpdateTaskStatusBody>, res: Response, next: NextFunction) => {
-    const {userId, taskId, status } = req.body;    
-    await taskServices.updateTaskStatus(userId, taskId, status);
-    res.status(200).json ({
-        status : true,
-        message: "Task updated successfully"
-    })
-});
+const removeTask = asyncWrapper(
+  async (
+    req: Request<{}, {}, RemoveTaskBody>,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const { id: userId } = req.user!;
+    const { taskId } = req.body;
+    const result = await taskServices.removeTask(userId, taskId);
 
-const getTasks = asyncWrapper( async (req: Request<GetTasksParams>, res: Response, next: NextFunction) => {
-    const {userId} = req.params;    
+    if (result.count > 0) {
+      res.status(200).json({
+        status: true,
+        message: "Task Removed successfully",
+      });
+    } else {
+      throw new APIError("Task not found", httpStatus.BAD_REQUEST);
+    }
+  }
+);
+
+const updateTask = asyncWrapper(
+  async (
+    req: Request<{}, {}, UpdateTaskSchema>,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const { id: userId } = req.user!;
+    const { taskId, status, description } = req.body;
+
+    const result = await taskServices.updateTask(
+      userId,
+      taskId,
+      status,
+      description
+    );
+    if (result) {
+      res.status(200).json({
+        status: true,
+        message: "Task updated successfully",
+      });
+    } else {
+      throw new APIError("Task Not Found", httpStatus.BAD_REQUEST);
+    }
+  }
+);
+
+const getTasks = asyncWrapper(
+  async (req: Request<GetTasksParams>, res: Response, next: NextFunction) => {
+    const { id: userId } = req.user!;
     const tasks = await taskServices.getTasks(userId);
     res.status(200).json({
-        status : true,
-        tasks
-    })
-});
+      status: true,
+      tasks,
+    });
+  }
+);
 
 const userControllers = {
-    addTask,
-    removeTask,
-    updateTaskStatus,
-    getTasks,
-}
-
+  addTask,
+  removeTask,
+  updateTask,
+  getTasks,
+};
 
 export default userControllers;

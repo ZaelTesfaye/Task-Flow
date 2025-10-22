@@ -1,10 +1,10 @@
 import express from "express";
-import * as adminController from "../controllers/admin.controller.js";
-import validator from "../middlewares/validator.middleware.js";
+import * as adminController from "../controllers/admin.controller.ts";
+import validator from "../middlewares/validator.middleware.ts";
 import {
   getAllUsersSchema,
   removeUserSchema,
-} from "../validations/admin.validation.js";
+} from "../validations/admin.validation.ts";
 
 const router = express.Router();
 

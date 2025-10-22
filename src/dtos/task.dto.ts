@@ -1,19 +1,17 @@
 export interface AddTaskBody {
-    userId: string;
-    description: string;
+  description: string;
 }
 
-export interface UpdateTaskStatusBody {
-    userId: string;
-    taskId: string;
-    status: "complete" | "Complete" | "canceled";
+export interface UpdateTaskSchema {
+  taskId: string;
+  status: "complete" | "Complete" | "canceled";
+  description: string;
 }
 
 export interface RemoveTaskBody {
-    userId: string;
-    taskId: string;
+  taskId: string;
 }
 
 export interface GetTasksParams {
-    userId: string;
+  userId: string;
 }

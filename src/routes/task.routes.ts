@@ -1,7 +1,7 @@
 import express from 'express';
-import taskController from '../controllers/task.controllers.js';
-import taskSchema from "../validations/task.validation.js";
-import validator from "../middlewares/validator.middleware.js";
+import taskController from '../controllers/task.controllers.ts';
+import taskSchema from "../validations/task.validation.ts";
+import validator from "../middlewares/validator.middleware.ts";
 
 const router = express.Router();
 
@@ -9,7 +9,7 @@ router.get('/get-tasks/:userId', validator(taskSchema.getTaskSchema), taskContro
 
 router.post('/add-task', validator(taskSchema.addTaskSchema), taskController.addTask);
 
-router.patch("/update", validator(taskSchema.updateTaskStatusSchema),taskController.updateTaskStatus);
+router.patch("/update", validator(taskSchema.updateTaskStatusSchema),taskController.updateTask);
 
 router.delete("/remove", validator(taskSchema.removeTaskSchema), taskController.removeTask);
 

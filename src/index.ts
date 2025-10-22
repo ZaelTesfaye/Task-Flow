@@ -3,18 +3,24 @@ import type http from "http";
 import express from "express";
 import cookieParser from "cookie-parser";
 import type { Request, Response, NextFunction } from "express";
-import { APIError } from "./utils/error.js";
-import taskRoutes from "./routes/task.routes.js";
-import authRoutes from "./routes/auth.routes.js";
-import config from "./config/config.js";
-import authMiddleware from "./middlewares/auth.middleware.js";
-import cors from 'cors';
-import adminRoutes from './routes/admin.routes.js'
+import { APIError } from "./utils/error.ts";
+import taskRoutes from "./routes/task.routes.ts";
+import authRoutes from "./routes/auth.routes.ts";
+import config from "./config/config.ts";
+import authMiddleware from "./middlewares/auth.middleware.ts";
+import cors from "cors";
+import adminRoutes from "./routes/admin.routes.ts";
 
 const app = express();
 
 const CorsOptions = {
-  origin: [`${config.env === 'development' ? 'http://localhost:3000' : config.frontEndUrl} `],
+  origin: [
+    `${
+      config.env === "development"
+        ? "http://localhost:3000"
+        : config.frontEndUrl
+    } `,
+  ],
 };
 
 app.set("view engine", "ejs");
@@ -28,7 +34,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/tasks", authMiddleware, taskRoutes);
 app.get("/api/health", (req, res) => {
   console.log(`Requested container: ${process.env.CONTAINER_NAME}`);
-  res.send("OK");
+  res.send("Ok!");
 });
 
 // ejs
@@ -41,7 +47,10 @@ app.get("/home", (req, res) => {
 });
 
 app.use((req, res) => {
-  res.status(404).send("Not Found!");
+  res.status(404).json({
+    status: false,
+    message: "Not Found!",
+  });
 });
 
 app.use(
@@ -54,10 +63,16 @@ app.use(
     console.error(error);
 
     if (error instanceof APIError) {
-      return res.status(400).send(error.message);
+      return res.status(400).json({
+        status: false,
+        message: error.message,
+      });
     }
-    
-    res.status(500).send("An error occurred");
+
+    res.status(500).json({
+      status: false,
+      message: "An error occurred",
+    });
   }
 );
 

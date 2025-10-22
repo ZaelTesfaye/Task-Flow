@@ -1,9 +1,9 @@
-import { APIError } from "../utils/error.js";
+import { APIError } from "../utils/error.ts";
 import httpStatus from "http-status";
 import type { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import config from "../config/config.js";
-import type { JwtPayload } from "../types/jwt.js";
+import config from "../config/config.ts";
+import type { JwtPayload } from "../types/jwt.ts";
 
 
 const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
@@ -16,7 +16,6 @@ const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
 
   try {
     const userData = jwt.verify(token, config.jwtSecret) as JwtPayload;
-    console.log("User data: ", userData);
 
     req.user = userData;
   

@@ -1,5 +1,5 @@
 import joi from"joi";
-import type { LoginBody, RegisterBody } from "../dtos/auth.dto.js";
+import type { LoginBody, RegisterBody } from "../dtos/auth.dto.ts";
 
 const registerSchema = {
   body: joi.object<RegisterBody>({

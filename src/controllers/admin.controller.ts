@@ -1,8 +1,8 @@
 import type { NextFunction, Request, Response } from "express";
-import type { GetAllUsers, RemoveUser } from "../dtos/admin.dto.js";
-import * as adminService from "../services/admin.service.js";
+import type { GetAllUsers, RemoveUser } from "../dtos/admin.dto.ts";
+import * as adminService from "../services/admin.service.ts";
 import httpStatus from "http-status";
-import asyncWrapper from "../lib/asyncWrapper.js";
+import asyncWrapper from "../lib/asyncWrapper.ts";
 export const viewAllUsers = asyncWrapper(
   async (req: Request<{}, {}, GetAllUsers>, res: Response) => {
     const { page, limit } = req.body;

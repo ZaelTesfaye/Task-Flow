@@ -1,4 +1,4 @@
-import prisma from "../lib/prisma.js";
+import prisma from "../lib/prisma.ts";
 
 const addTask = async (userId: string, description: string) => {
   return prisma.task.create({
@@ -10,7 +10,7 @@ const addTask = async (userId: string, description: string) => {
 };
 
 const removeTask = async (userId: string, taskId: string) => {
-  return prisma.task.delete({
+  return prisma.task.deleteMany({
     where: {
       userId: userId,
       id: taskId,
@@ -18,13 +18,15 @@ const removeTask = async (userId: string, taskId: string) => {
   });
 };
 
-const updateTaskStatus = async (userId: string, taskId: string, status: string) => {
-  return prisma.task.update({
+const updateTask = async (userId: string, taskId: string, status: string, description: string) => {
+  return prisma.task.updateMany({
     where: {
+      userId,
       id: taskId,
     },
     data: {
       status,
+      description
     },
   });
 };
@@ -40,7 +42,7 @@ const getTasks = async (userId: string) => {
 const taskModel = {
   addTask,
   removeTask,
-  updateTaskStatus,
+  updateTask,
   getTasks,
 };
 

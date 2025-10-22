@@ -1,4 +1,4 @@
-import { APIError } from "../utils/error.js";
+import { APIError } from "../utils/error.ts";
 import { status } from "http-status";
 import type { Request, Response, NextFunction } from "express";
 import type { ObjectSchema } from "joi";
