@@ -1,5 +1,10 @@
 import type { NextFunction, Request, Response } from "express";
-import type { GetAllUsers, RemoveUser, UpdateUserPassword } from "../dtos/admin.dto.js";
+import type {
+  AddAdmin,
+  GetAllUsers,
+  RemoveUser,
+  UpdateUserPassword,
+} from "../dtos/admin.dto.js";
 import * as adminService from "../services/admin.service.js";
 import httpStatus from "http-status";
 import asyncWrapper from "../lib/asyncWrapper.js";
@@ -19,13 +24,13 @@ export const removeUser = asyncWrapper(
 
     const result = await adminService.removeUser(userId);
 
-    if (result?.count > 0) {
+    if (result) {
       res.status(httpStatus.OK).json({
         status: true,
         message: "User deleted successfully",
       });
     } else {
-      res.status(httpStatus.OK).json({
+      res.status(httpStatus.NOT_FOUND).json({
         status: false,
         message: "User Not Found",
       });
@@ -33,19 +38,23 @@ export const removeUser = asyncWrapper(
   }
 );
 
+export const updateUserPassword = asyncWrapper(
+  async (req: Request<{}, {}, UpdateUserPassword>, res, next) => {
+    console.log("Update User Password called with body:", req.body);
+    const { userId, password } = req.body;
 
-export const updateUserPassword = asyncWrapper(async (req: Request<{}, {}, UpdateUserPassword>, res, next) => {
-  console.log("Update User Password called with body:", req.body);
-  const { userId, password } = req.body;
-  
-  const result = await adminService.updateUserPassword(userId, password);
-  
-  if (result) {
-    res.status(httpStatus.OK).json({
-      status: true,
-      message: "Password updated successfully",
-    });
-  } else {
-    throw new APIError("Failed to update password", httpStatus.BAD_REQUEST);
+    await adminService.updateUserPassword(userId, password);
+
+      res.status(httpStatus.OK).json({
+        status: true,
+        message: "Password updated successfully",
+      });
   }
-});
+);
+
+export const addAdmin = asyncWrapper(
+  async (req: Request<{}, {}, AddAdmin>, res: Response, next: NextFunction) => {
+    const { username, name, password } = req.body;
+    const result = await adminService.addAdmin(username, name, password);
+  }
+);

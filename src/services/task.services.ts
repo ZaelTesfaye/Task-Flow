@@ -1,38 +1,24 @@
 import taskModel from "../model/task.model.js";
-import userModel from "../model/user.model.js";
-import { APIError } from "../utils/error.js";
-import httpStatus from "http-status";
 
-const addTask = async (userId: string, description: string) => {
-  const user = await userModel.getUser(userId);
-  if (!user) {
-    throw new APIError("User doesnt exist", httpStatus.BAD_REQUEST);
-  }
-  return await taskModel.addTask(userId, description);
+const addTask = (userId: string, description: string) => {
+  return taskModel.addTask(userId, description);
 };
 
-const removeTask = async (userId: string, taskId: string) => {
-  return await taskModel.removeTask(userId, taskId);
+const removeTask = (userId: string, taskId: string) => {
+  return taskModel.removeTask(userId, taskId);
 };
 
-const updateTask = async (
+const updateTask = (
   userId: string,
   taskId: string,
   status: string,
   description: string
 ) => {
-  const result = await taskModel.updateTask(
-    userId,
-    taskId,
-    status,
-    description
-  );
-  if (result.count > 0) return result;
-  else return null;
+  return taskModel.updateTask(userId, taskId, status, description);
 };
 
-const getTasks = async (userId: string) => {
-  return await taskModel.getTasks(userId);
+const getTasks = (userId: string) => {
+  return taskModel.getTasks(userId);
 };
 
 const taskServices = {

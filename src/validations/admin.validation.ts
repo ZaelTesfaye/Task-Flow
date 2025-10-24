@@ -1,5 +1,5 @@
 import Joi from "joi"
-import type { GetAllUsers, RemoveUser, UpdateUserPassword } from "../dtos/admin.dto.js"
+import type { AddAdmin, GetAllUsers, RemoveUser, UpdateUserPassword } from "../dtos/admin.dto.js"
 
 export const getAllUsersSchema = {
     body: Joi.object<GetAllUsers>({
@@ -19,6 +19,15 @@ export const removeUserSchema = {
 export const updateUserPasswordSchema = {
     body: Joi.object<UpdateUserPassword>({
         userId: Joi.string().uuid().required(),
+        password: Joi.string().min(4).required(),
+    })
+    .required().unknown(true),
+}
+
+export const addAdminSchema = {
+    body: Joi.object<AddAdmin>({
+        username: Joi.string().alphanum().min(3).max(30).required(),
+        name: Joi.string().min(3).max(50).required(),
         password: Joi.string().min(4).required(),
     })
     .required().unknown(true),

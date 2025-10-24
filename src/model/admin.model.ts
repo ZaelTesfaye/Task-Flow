@@ -21,7 +21,7 @@ export const getAllUsers = (page: number, limit: number) => {
 };
 
 export const deleteUser = (userId: string) => {
-  return prisma.user.deleteMany({
+  return prisma.user.delete({
     where: {
       id: userId,
     },
@@ -29,7 +29,7 @@ export const deleteUser = (userId: string) => {
 };
 
 export const updateUserPassword = (userId: string, password: string) => {
-  return prisma.user.updateMany({
+  return prisma.user.update({
     where: {
       id: userId,
     },
@@ -38,3 +38,14 @@ export const updateUserPassword = (userId: string, password: string) => {
     },
   });
 };
+
+export const createAdmin = (username: string, name: string, password: string) => {
+  return prisma.user.create({
+    data: {
+      email: username,
+      password: password,
+      name: name,
+      isAdmin: true,  
+    }
+  });
+}

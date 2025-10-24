@@ -10,7 +10,7 @@ const addTask = async (userId: string, description: string) => {
 };
 
 const removeTask = async (userId: string, taskId: string) => {
-  return prisma.task.deleteMany({
+  return prisma.task.delete({
     where: {
       userId: userId,
       id: taskId,
@@ -19,7 +19,7 @@ const removeTask = async (userId: string, taskId: string) => {
 };
 
 const updateTask = async (userId: string, taskId: string, status: string, description: string) => {
-  return prisma.task.updateMany({
+  return prisma.task.update({
     where: {
       userId,
       id: taskId,

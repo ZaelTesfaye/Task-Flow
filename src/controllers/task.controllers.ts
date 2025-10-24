@@ -16,7 +16,7 @@ const addTask = asyncWrapper(
     res: Response,
     next: NextFunction
   ) => {
-    const {id: userId} = req.user!;
+    const { id: userId } = req.user!;
     const { description } = req.body;
     await taskServices.addTask(userId, description);
 
@@ -35,16 +35,12 @@ const removeTask = asyncWrapper(
   ) => {
     const { id: userId } = req.user!;
     const { taskId } = req.body;
-    const result = await taskServices.removeTask(userId, taskId);
+    await taskServices.removeTask(userId, taskId);
 
-    if (result.count > 0) {
-      res.status(200).json({
-        status: true,
-        message: "Task Removed successfully",
-      });
-    } else {
-      throw new APIError("Task not found", httpStatus.BAD_REQUEST);
-    }
+    res.status(200).json({
+      status: true,
+      message: "Task Removed successfully",
+    });
   }
 );
 
@@ -57,21 +53,17 @@ const updateTask = asyncWrapper(
     const { id: userId } = req.user!;
     const { taskId, status, description } = req.body;
 
-    const result = await taskServices.updateTask(
+    await taskServices.updateTask(
       userId,
       taskId,
       status,
       description
     );
-    if (result) {
       res.status(200).json({
         status: true,
         message: "Task updated successfully",
       });
-    } else {
-      throw new APIError("Task Not Found", httpStatus.BAD_REQUEST);
     }
-  }
 );
 
 const getTasks = asyncWrapper(

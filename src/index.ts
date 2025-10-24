@@ -11,6 +11,7 @@ import authMiddleware from "./middlewares/auth.middleware.js";
 import cors from "cors";
 import adminRoutes from "./routes/admin.routes.js";
 import logger from "./lib/logger.js";
+import errorHandler from "./middlewares/error-handler.js";
 
 const app = express();
 
@@ -53,28 +54,7 @@ app.use((req, res) => {
   });
 });
 
-app.use(
-  (
-    error: Error | APIError,
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    console.error(error);
-
-    if (error instanceof APIError) {
-      return res.status(400).json({
-        status: false,
-        message: error.message,
-      });
-    }
-
-    res.status(500).json({
-      status: false,
-      message: "An error occurred",
-    });
-  }
-);
+app.use(errorHandler);
 
 const server = app.listen(config.port, () => {
   logger.info(`Server running on port ${config.port}`);
