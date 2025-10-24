@@ -13,7 +13,7 @@ const register = async (name: string, email: string, password: string) => {
     id: userData.id,
     name: userData.name,
     email: userData.email,
-    isAdmin: userData.isAdmin,
+    role: userData.role,
   };
   const token = await jwt.sign(tokenData, config.jwtSecret, {
     expiresIn: "7d",
@@ -24,7 +24,7 @@ const register = async (name: string, email: string, password: string) => {
       id: userData.id,
       name: userData.name,
       email: userData.email,
-      isAdmin: userData.isAdmin,
+      role: userData.role,
     },
     token: token,
   };
@@ -47,7 +47,7 @@ const login = async (email: string, password: string) => {
     id: user.id,
     name: user.name,
     email: user.email,
-    isAdmin: user.isAdmin,
+    role: user.role,
   };
 
   const token = jwt.sign(userData, config.jwtSecret, {

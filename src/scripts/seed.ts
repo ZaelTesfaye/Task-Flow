@@ -1,3 +1,5 @@
+// seeds the super admin to DB
+
 import dotenv from "dotenv/config.js";
 import bcrypt from 'bcrypt';
 import config from '../config/config.js';
@@ -9,12 +11,12 @@ async function seedAdmin() {
   
   await prisma.user.upsert({
     where: { email: config.adminEmail },
-    update: { isAdmin: true },
+    update: { role: "super-admin"},
     create: {
       email: config.adminEmail,
       name: config.adminName,
       password: hashedPassword,
-      isAdmin: true
+      role: 'super-admin',
     }
   });
   

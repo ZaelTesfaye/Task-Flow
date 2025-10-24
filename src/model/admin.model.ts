@@ -45,7 +45,7 @@ export const createAdmin = (username: string, name: string, password: string) =>
       email: username,
       password: password,
       name: name,
-      isAdmin: true,  
+      role: 'admin',  
     }
   });
 }

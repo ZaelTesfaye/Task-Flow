@@ -20,9 +20,11 @@ const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
   
     // Role-based access control
     const isAdminPath = req.baseUrl === "/admin";
+    const isAdmin = userData.role === 'admin' || userData.role === 'super-admin';
+    
     if (
-      (!userData.isAdmin && !isAdminPath) ||
-      (userData.isAdmin && isAdminPath)
+      (!isAdmin && !isAdminPath) ||
+      (isAdmin && isAdminPath)
     ) {
       return next(); // allowed
     } else {
