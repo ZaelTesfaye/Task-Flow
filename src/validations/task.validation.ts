@@ -4,13 +4,15 @@ import type { GetTasksParams, RemoveTaskBody, UpdateTaskSchema, AddTaskBody } fr
 const addTaskSchema = {
   body: joi.object<AddTaskBody>({
     description: joi.string().min(1).max(255).required(),
-  }).unknown(),
+  })
+  .required().unknown(true),
 };
 
 const removeTaskSchema = {
   body: joi.object<RemoveTaskBody>({
     taskId: joi.string().uuid().required(),
-  }).unknown(),
+  })
+  .required().unknown(true),
 };
 
 const updateTaskSchema = {
@@ -18,13 +20,15 @@ const updateTaskSchema = {
     taskId: joi.string().uuid().required(),
     status: joi.string().valid("active", "complete", "canceled").required(),
     description: joi.string().min(1).required(),
-  }).unknown(),
+  })
+  .required().unknown(true),
 };
 
 const getTaskSchema = {
   params: joi.object<GetTasksParams>({
     userId: joi.string().uuid().required(),
-  }).unknown(),
+  })
+  .required().unknown(true),
 };
 
 const taskSchemas = {

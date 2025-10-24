@@ -13,8 +13,7 @@ export interface EnvSchemaType {
 
 }
 
-const envSchema = joi
-  .object<EnvSchemaType>({
+const envSchema = joi.object<EnvSchemaType>({
     PORT: joi.number().default(5000),
     NODE_ENV: joi.string().default("development").required(),
     JWT_SECRET: joi.string().required(),
@@ -24,6 +23,6 @@ const envSchema = joi
     ADMIN_EMAIL: joi.string().required(),
     ADMIN_PASSWORD: joi.string().required(),
   })
-  .unknown();
+  .required().unknown(true)
 
 export default envSchema;

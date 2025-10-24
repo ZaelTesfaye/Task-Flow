@@ -4,6 +4,7 @@ import validator from "../middlewares/validator.middleware.js";
 import {
   getAllUsersSchema,
   removeUserSchema,
+  updateUserPasswordSchema,
 } from "../validations/admin.validation.js";
 
 const router = express.Router();
@@ -22,10 +23,11 @@ router.delete(
   adminController.removeUser
 );
 
-// Suspend User
-router.patch("/update-user-status", adminController.updateUserStatus);
-
-// Blacklist token
-router.post("black-list-token", adminController.blacklistToken);
+// Change  user password
+router.patch(
+  "/update-password",
+  validator(updateUserPasswordSchema),
+  adminController.updateUserPassword
+);
 
 export default router;

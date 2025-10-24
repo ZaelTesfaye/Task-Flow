@@ -16,7 +16,7 @@ async function seedAdmin() {
       password: hashedPassword,
       isAdmin: true
     }
-  }); 
+  });
   
   logger.info('Admin user seeded');
 }

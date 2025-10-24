@@ -7,7 +7,7 @@ const registerSchema = {
     email: joi.string().email().required(),
     password: joi.string().min(6).max(18).required(),
   })
-  .unknown(true),
+  .required().unknown(true),
 };
 
 const loginSchema = {
@@ -15,7 +15,7 @@ const loginSchema = {
     email : joi.string().email().required(),
     password: joi.string().min(4).required()
   })
-  .unknown(true),
+ .required().unknown(true),
 };
 
 const authSchemas = {

@@ -11,8 +11,8 @@ const register = async (name: string, email: string, password: string) => {
   if (userExists) {
     throw new APIError("User already exists", 409);
   }
-  const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(password, salt);
+  
+  const hashedPassword = await bcrypt.hash(password, 10);
   const userData = await userModel.createUser(name, email, hashedPassword);
   
   const tokenData = {

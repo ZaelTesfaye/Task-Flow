@@ -7,3 +7,8 @@ export interface GetAllUsers {
 export interface RemoveUser {
     userId: string;
 }
+
+export interface UpdateUserPassword {
+    userId: string;
+    password: string;
+}
