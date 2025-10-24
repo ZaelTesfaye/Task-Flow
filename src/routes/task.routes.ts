@@ -1,16 +1,16 @@
 import express from 'express';
-import taskController from '../controllers/task.controllers.js';
+import * as taskController from '../controllers/task.controllers.js';
 import taskSchema from "../validations/task.validation.js";
-import validator from "../middlewares/validator.middleware.js";
+import {validatorMiddleware} from "../middlewares/index.js";
 
 const router = express.Router();
 
-router.get('/get-tasks/:userId', validator(taskSchema.getTaskSchema), taskController.getTasks);
+router.get('/get-tasks/:userId', validatorMiddleware(taskSchema.getTaskSchema), taskController.getTasks);
 
-router.post('/add-task', validator(taskSchema.addTaskSchema), taskController.addTask);
+router.post('/add-task', validatorMiddleware(taskSchema.addTaskSchema), taskController.addTask);
 
-router.patch("/update", validator(taskSchema.updateTaskStatusSchema),taskController.updateTask);
+router.patch("/update", validatorMiddleware(taskSchema.updateTaskStatusSchema),taskController.updateTask);
 
-router.delete("/remove", validator(taskSchema.removeTaskSchema), taskController.removeTask);
+router.delete("/remove", validatorMiddleware(taskSchema.removeTaskSchema), taskController.removeTask);
 
 export default router;

@@ -8,7 +8,7 @@ import type {
 import * as adminService from "../services/admin.service.js";
 import httpStatus from "http-status";
 import asyncWrapper from "../lib/asyncWrapper.js";
-import { APIError } from "../utils/error.js";
+
 export const viewAllUsers = asyncWrapper(
   async (req: Request<{}, {}, GetAllUsers>, res: Response) => {
     const { page, limit } = req.body;
@@ -55,6 +55,10 @@ export const updateUserPassword = asyncWrapper(
 export const addAdmin = asyncWrapper(
   async (req: Request<{}, {}, AddAdmin>, res: Response, next: NextFunction) => {
     const { username, name, password } = req.body;
-    const result = await adminService.addAdmin(username, name, password);
+    await adminService.addAdmin(username, name, password);
+    res.status(httpStatus.OK).json({
+      status: true,
+      message: "Admin added successfully",
+    })
   }
 );

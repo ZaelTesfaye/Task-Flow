@@ -1,5 +1,6 @@
 import Joi from "joi"
-import type { AddAdmin, GetAllUsers, RemoveUser, UpdateUserPassword } from "../dtos/admin.dto.js"
+import type { AddAdmin, AdminLogin, GetAllUsers, RemoveUser, UpdateUserPassword } from "../dtos/admin.dto.js"
+
 
 export const getAllUsersSchema = {
     body: Joi.object<GetAllUsers>({

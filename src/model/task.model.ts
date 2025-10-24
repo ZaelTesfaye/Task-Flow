@@ -1,6 +1,6 @@
 import prisma from "../lib/prisma.js";
 
-const addTask = async (userId: string, description: string) => {
+export const addTask = async (userId: string, description: string) => {
   return prisma.task.create({
     data: {
       description,
@@ -9,7 +9,7 @@ const addTask = async (userId: string, description: string) => {
   });
 };
 
-const removeTask = async (userId: string, taskId: string) => {
+export const removeTask = async (userId: string, taskId: string) => {
   return prisma.task.delete({
     where: {
       userId: userId,
@@ -18,7 +18,7 @@ const removeTask = async (userId: string, taskId: string) => {
   });
 };
 
-const updateTask = async (userId: string, taskId: string, status: string, description: string) => {
+export const updateTask = async (userId: string, taskId: string, status: string, description: string) => {
   return prisma.task.update({
     where: {
       userId,
@@ -31,7 +31,7 @@ const updateTask = async (userId: string, taskId: string, status: string, descri
   });
 };
 
-const getTasks = async (userId: string) => {
+export const getTasks = async (userId: string) => {
   return prisma.task.findMany({
     where: {
       userId: userId,
@@ -39,7 +39,7 @@ const getTasks = async (userId: string) => {
   });
 };
 
-const taskModel = {
+export const taskModel = {
   addTask,
   removeTask,
   updateTask,

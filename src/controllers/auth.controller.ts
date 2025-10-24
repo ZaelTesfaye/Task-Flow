@@ -1,10 +1,10 @@
 import asyncWrapper from "../lib/asyncWrapper.js";
-import authService from "../services/auth.service.js";
+import * as authService from "../services/auth.service.js";
 import type { CookieOptions, Request, Response } from "express";
 import config from "../config/config.js";
 import { type RegisterBody, type LoginBody } from "../dtos/auth.dto.js";
 
-const defaultCookieConfig : CookieOptions = {
+export const defaultCookieConfig : CookieOptions = {
   httpOnly: true,
   secure: config.env === "production" ? true : false,
   sameSite: "lax",
@@ -12,7 +12,7 @@ const defaultCookieConfig : CookieOptions = {
   maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
 };
 
-const register = asyncWrapper(
+export const register = asyncWrapper(
   async (req: Request<{}, {}, RegisterBody>, res: Response) => {
     const { name, email, password } = req.body;
     const userData = await authService.register(name, email, password);
@@ -25,7 +25,7 @@ const register = asyncWrapper(
   }
 );
 
-const login = asyncWrapper(
+export const login = asyncWrapper(
   async (req: Request<{}, {}, LoginBody>, res: Response) => {
     const { email, password } = req.body;
     // check if the user exists
@@ -38,18 +38,10 @@ const login = asyncWrapper(
   }
 );
 
-const logout = asyncWrapper(async (req: Request, res: Response) => {
+export const logout = asyncWrapper(async (req: Request, res: Response) => {
   res
     .clearCookie("auth", {
       path: "/",
     })
     .send();
 });
-
-const authControllers = {
-  register,
-  login,
-  logout,
-};
-
-export default authControllers;

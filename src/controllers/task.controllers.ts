@@ -1,4 +1,4 @@
-import taskServices from "../services/task.services.js";
+import * as taskServices from "../services/task.services.js";
 import asyncWrapper from "../lib/asyncWrapper.js";
 import type { Request, Response, NextFunction } from "express";
 import type {
@@ -7,10 +7,8 @@ import type {
   UpdateTaskSchema,
   GetTasksParams,
 } from "../dtos/task.dto.js";
-import { APIError } from "../utils/error.js";
-import httpStatus from "http-status";
 
-const addTask = asyncWrapper(
+export const addTask = asyncWrapper(
   async (
     req: Request<{}, {}, AddTaskBody>,
     res: Response,
@@ -27,7 +25,7 @@ const addTask = asyncWrapper(
   }
 );
 
-const removeTask = asyncWrapper(
+export const removeTask = asyncWrapper(
   async (
     req: Request<{}, {}, RemoveTaskBody>,
     res: Response,
@@ -44,7 +42,7 @@ const removeTask = asyncWrapper(
   }
 );
 
-const updateTask = asyncWrapper(
+export const updateTask = asyncWrapper(
   async (
     req: Request<{}, {}, UpdateTaskSchema>,
     res: Response,
@@ -66,7 +64,7 @@ const updateTask = asyncWrapper(
     }
 );
 
-const getTasks = asyncWrapper(
+export const getTasks = asyncWrapper(
   async (req: Request<GetTasksParams>, res: Response, next: NextFunction) => {
     const { id: userId } = req.user!;
     const tasks = await taskServices.getTasks(userId);
@@ -76,12 +74,3 @@ const getTasks = asyncWrapper(
     });
   }
 );
-
-const userControllers = {
-  addTask,
-  removeTask,
-  updateTask,
-  getTasks,
-};
-
-export default userControllers;

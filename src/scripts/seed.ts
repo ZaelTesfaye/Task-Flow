@@ -20,7 +20,7 @@ async function seedAdmin() {
     }
   });
   
-  logger.info('Admin user seeded');
+  logger.info('Super-admin user seeded');
 }
 
 seedAdmin();

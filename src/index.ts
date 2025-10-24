@@ -7,11 +7,12 @@ import { APIError } from "./utils/error.js";
 import taskRoutes from "./routes/task.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 import config from "./config/config.js";
-import authMiddleware from "./middlewares/auth.middleware.js";
 import cors from "cors";
 import adminRoutes from "./routes/admin.routes.js";
+import superAdminRoutes from "./routes/super-admin.routes.js"
 import logger from "./lib/logger.js";
-import errorHandler from "./middlewares/error-handler.js";
+import {authMiddleware, errorHandler, notFoundHandler} from "./middlewares/index.js";
+
 
 const app = express();
 
@@ -31,7 +32,9 @@ app.use(express.static("public"));
 app.use(express.json());
 app.use(cookieParser());
 
+app.use("/super-admin", authMiddleware, superAdminRoutes);
 app.use("/admin", authMiddleware, adminRoutes);
+
 app.use("/api/auth", authRoutes);
 app.use("/api/tasks", authMiddleware, taskRoutes);
 app.get("/api/health", (req, res) => {
@@ -47,13 +50,10 @@ app.get("/home", (req, res) => {
   });
 });
 
-app.use((req, res) => {
-  res.status(404).json({
-    status: false,
-    message: "Not Found!",
-  });
-});
+// not found handler
+app.use(notFoundHandler);
 
+// global error handler
 app.use(errorHandler);
 
 const server = app.listen(config.port, () => {

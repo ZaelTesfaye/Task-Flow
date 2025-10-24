@@ -1,6 +1,6 @@
 import prisma from "../lib/prisma.js";
 
-const createUser = async (name: string, email: string, password: string) => {
+export const createUser = async (name: string, email: string, password: string) => {
   return prisma.user.create({
     data: {
       name,
@@ -10,7 +10,7 @@ const createUser = async (name: string, email: string, password: string) => {
   });
 };
 
-const findByEmail = async (email: string) => {
+export const findByEmail = async (email: string) => {
   return prisma.user.findUnique({
     where: {
       email,
@@ -18,7 +18,7 @@ const findByEmail = async (email: string) => {
   });
 };
 
-const getUser = async (userId: string) => {
+export const getUser = async (userId: string) => {
   return prisma.user.findUnique({
     where: {
       id: userId,
@@ -26,7 +26,7 @@ const getUser = async (userId: string) => {
   })
 }
 
-const userModel = {
+export const userModel = {
   createUser,
   findByEmail,
   getUser,

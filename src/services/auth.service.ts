@@ -1,10 +1,10 @@
-import userModel from "../model/user.model.js";
+import * as userModel from "../model/user.model.js";
 import bcrypt from "bcrypt";
 import { APIError } from "../utils/error.js";
 import jwt from "jsonwebtoken";
 import config from "../config/config.js";
 
-const register = async (name: string, email: string, password: string) => {
+export const register = async (name: string, email: string, password: string) => {
   //check if email already exists
   const hashedPassword = await bcrypt.hash(password, 10);
   const userData = await userModel.createUser(name, email, hashedPassword);
@@ -30,7 +30,7 @@ const register = async (name: string, email: string, password: string) => {
   };
 };
 
-const login = async (email: string, password: string) => {
+export const login = async (email: string, password: string) => {
   // check if the user exists and password matches
   const user = await userModel.findByEmail(email);
   
@@ -59,10 +59,3 @@ const login = async (email: string, password: string) => {
     token,
   };
 };
-
-const authServices = {
-  register,
-  login,
-};
-
-export default authServices;
