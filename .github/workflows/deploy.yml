@@ -71,27 +71,7 @@ jobs:
 
             # Clean up old, unused images
             docker image prune -f
-
-        # 7. Setup & Start Nginx
-      - name: Setup & Start Nginx
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            # Check if Nginx is installed, if not, install it.
-            if ! command -v nginx >/dev/null 2>&1; then
-                echo "Nginx not found. Installing..."
-                sudo apt update -y
-                sudo apt install -y nginx
-                sudo systemctl enable nginx
-                sudo systemctl start nginx -c ~/todo/nginx.conf
-            else
-                echo "Nginx is already installed."
-                sudo systemctl restart nginx 
-            fi
-            
+      # 7. Setup and Start Nginx
       - name: Setup & Start Nginx
         uses: appleboy/ssh-action@v1.0.3
         with:
