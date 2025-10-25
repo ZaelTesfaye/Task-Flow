@@ -78,6 +78,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          request_pty: true
           script: |
             # Check if Nginx is installed, if not, install it.
             if ! command -v nginx >/dev/null 2>&1; then
