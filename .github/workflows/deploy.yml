@@ -44,7 +44,9 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "docker-compose.yml"
+          source: |
+            docker-compose.yml
+            nginx.conf
           target: "~/todo"
 
       # 6. Deploy via SSH to EC2
