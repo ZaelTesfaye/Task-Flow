@@ -44,9 +44,17 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: |
-            docker-compose.yml
-            nginx.conf
+          source: "docker-compose.yml"
+          target: "~/todo"
+
+      # 5. Copy nginx.conf
+      - name: Copy nginx config
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "nginx.conf"
           target: "~/todo"
 
       # 6. Deploy via SSH to EC2
