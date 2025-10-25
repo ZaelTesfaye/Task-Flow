@@ -29,8 +29,8 @@ RUN npm ci --only=production
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/prisma ./prisma
 COPY --from=build /app/public ./public
-COPY --from=build /app/public ./views
-COPY --from=build /app/public ./nginx.conf
+COPY --from=build /app/views ./views
+COPY --from=build /app/nginx.conf ./nginx.conf
 # docker-compose.yml is not included in the image, instead, it is copied directly to the server inside the ci/cd pipeline as a best practice
 
 RUN npx prisma generate
