@@ -9,7 +9,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
       # 1. Checkout Code
       - name: Checkout Repository
@@ -28,7 +28,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          
+
       # 4. Push Docker Image
       - name: Push Image
         run: |
@@ -36,7 +36,7 @@ jobs:
           VERSION_TAG=$(echo $GITHUB_SHA | cut -c1-7)
           docker push $IMAGE_ID:latest
           docker push $IMAGE_ID:$VERSION_TAG
-      
+
       # 5. Copy docker-compose.yml
       - name: Copy docker-compose.yml to EC2
         uses: appleboy/scp-action@v0.1.4
@@ -46,7 +46,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "docker-compose.yml"
           target: "~/todo"
-          
+
       # 6. Deploy via SSH to EC2
       - name: Deploy to EC2 via SSH
         uses: appleboy/ssh-action@v1.0.3
@@ -58,16 +58,61 @@ jobs:
           script: |
             # Navigate to the application directory on the EC2 server
             cd ~/todo
-            
+
             # Pull the latest image
             docker pull ${{ secrets.DOCKER_USERNAME }}/todo-app:latest
-            
+
             # set required variables for docker compose
             export DOCKER_USERNAME="${{ secrets.DOCKER_USERNAME }}"
             export IMAGE_NAME="todo-app" 
 
             # Recreate containers using the updated image.
             docker compose up -d --force-recreate
-            
+
             # Clean up old, unused images
             docker image prune -f
+
+        # 7. Setup & Start Nginx
+      - name: Setup & Start Nginx
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            # Check if Nginx is installed, if not, install it.
+            if ! command -v nginx >/dev/null 2>&1; then
+                echo "Nginx not found. Installing..."
+                sudo apt update -y
+                sudo apt install -y nginx
+                sudo systemctl enable nginx
+                sudo systemctl start nginx -c ~/todo/nginx.conf
+            else
+                echo "Nginx is already installed."
+                sudo systemctl restart nginx 
+            fi
+            
+      - name: Setup & Start Nginx
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            # Check if Nginx is installed, if not, install it.
+            if ! command -v nginx >/dev/null 2>&1; then
+                echo "Nginx not found. Installing..."
+                sudo apt update -y
+                sudo apt install -y nginx
+            else
+                echo "Nginx is already installed."
+            fi
+
+            # Copy custom nginx.conf to /etc/nginx and back up existing one
+            sudo cp /etc/nginx/nginx.conf /etc/nginx/nginx.conf.backup || true
+            sudo cp ~/todo/nginx.conf /etc/nginx/nginx.conf
+
+            # Ensure Nginx starts on boot and is running
+            sudo systemctl enable nginx
+            sudo systemctl restart nginx
+
