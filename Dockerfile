@@ -1,7 +1,7 @@
 # ------------------------ Build Stage ------------------------
 FROM node:18-alpine AS build
 
-# change the user to non-root user inside the container
+# user changed to a non-root user inside the container
 RUN addgroup app && adduser -S -G app app
 USER app
 
@@ -29,7 +29,9 @@ RUN npm ci --only=production
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/prisma ./prisma
 COPY --from=build /app/public ./public
+COPY --from=build /app/public ./views
+# docker-compose.yml is not included in the image, instead, it is copied directly to the server inside the ci/cd pipeline as a best practice
 
 RUN npx prisma generate
 
-CMD ["node", "dist/index.js"]
+CMD ["node", "npm start"]

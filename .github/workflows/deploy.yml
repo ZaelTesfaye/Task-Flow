@@ -62,6 +62,10 @@ jobs:
             # Pull the latest image
             docker pull ${{ secrets.DOCKER_USERNAME }}/todo-app:latest
             
+            # set required variables for docker compose
+            export DOCKER_USERNAME="${{ secrets.DOCKER_USERNAME }}"
+            export IMAGE_NAME="todo-app" 
+
             # Recreate containers using the updated image.
             docker compose up -d --force-recreate
             

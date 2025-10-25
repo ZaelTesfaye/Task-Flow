@@ -7,8 +7,8 @@ services:
       - ./.env
     environment:
       CONTAINER_NAME: process1
-  
-  process2: 
+
+  process2:
     image: ${DOCKER_USERNAME}/${IMAGE_NAME}:latest
     ports:
       - 5001:5000
@@ -16,8 +16,8 @@ services:
       - ./.env
     environment:
       CONTAINER_NAME: process2
-  
-  process3: 
+
+  process3:
     image: ${DOCKER_USERNAME}/${IMAGE_NAME}:latest
     ports:
       - 5002:5000

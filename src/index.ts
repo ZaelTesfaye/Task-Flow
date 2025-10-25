@@ -2,8 +2,6 @@ import dotenv from "dotenv/config.js";
 import type http from "http";
 import express from "express";
 import cookieParser from "cookie-parser";
-import type { Request, Response, NextFunction } from "express";
-import { APIError } from "./utils/error.js";
 import taskRoutes from "./routes/task.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 import config from "./config/config.js";
@@ -37,10 +35,6 @@ app.use("/admin", authMiddleware, adminRoutes);
 
 app.use("/api/auth", authRoutes);
 app.use("/api/tasks", authMiddleware, taskRoutes);
-app.get("/api/health", (req, res) => {
-  console.log(`Requested container: ${process.env.CONTAINER_NAME}`);
-  res.send("Ok!");
-});
 
 // ejs
 app.get("/home", (req, res) => {
@@ -48,6 +42,12 @@ app.get("/home", (req, res) => {
     title: "Task Manager",
     message: "Welcome to the Task Manager Application!",
   });
+});
+
+// health check
+app.get("/api/health", (req, res) => {
+  console.log(`Requested container: ${process.env.CONTAINER_NAME}`);
+  res.send("Ok!");
 });
 
 // not found handler
