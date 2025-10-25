@@ -57,6 +57,29 @@ jobs:
           source: "nginx.conf"
           target: "~/todo"
 
+          # 6. Inject SSL Certificates
+      - name: Securely Inject SSL Certificates
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          request_pty: true
+          script: |
+            # Create the secure directory
+            sudo mkdir -p /etc/nginx/ssl
+            
+            # Inject Private Key (NGINX_KEY)
+            # Use 'tee' with 'sudo' to write file content as root, and 'EOF' to handle multi-line secrets.
+            echo "${{ secrets.NGINX_KEY }}" | sudo tee /etc/nginx/ssl/nginx-selfsigned.key > /dev/null
+            
+            # Inject Certificate (NGINX_CERT)
+            echo "${{ secrets.NGINX_CERTIFICATE }}" | sudo tee /etc/nginx/ssl/nginx-selfsigned.crt > /dev/null
+            
+            # Set secure permissions (600 for key, 644 for cert)
+            sudo chmod 600 /etc/nginx/ssl/nginx-selfsigned.key
+            sudo chmod 644 /etc/nginx/ssl/nginx-selfsigned.crt
+
       # 6. Deploy via SSH to EC2
       - name: Deploy to EC2 via SSH
         uses: appleboy/ssh-action@v1.0.3
