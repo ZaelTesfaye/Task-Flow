@@ -77,20 +77,20 @@ jobs:
             sudo chmod 600 /etc/nginx/ssl/nginx-selfsigned.key
             sudo chmod 644 /etc/nginx/ssl/nginx-selfsigned.crt
 
-        # 7. Inject Application .env File
+      # 7. Inject Application .env File
       - name: Inject Production .env File
         uses: appleboy/ssh-action@v1.0.3
+        env:
+          ENV_FILE: ${{ secrets.PROD_VARIABLES }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd ~/todo
-            # 1. Echo the Base64 string.
-            # 2. Pipe it to 'base64 -d' to decode it back into a multiline file.
-            # 3. Use tee to write it to .env.
-            echo "$ENV_SECRET_B64" | base64 -d | tee .env > /dev/null
+            echo "$ENV_FILE" > .env
             chmod 600 .env
+
 
       # 8. Deploy via SSH to EC2
       - name: Deploy to EC2 via SSH
