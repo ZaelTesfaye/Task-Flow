@@ -90,11 +90,11 @@ jobs:
             cd ~/todo
 
             # Pull latest image
-            docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_USERNAME }}:latest
+            docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.IMAGE_NAME }}:latest
 
             # set required variables for docker compose 
             export DOCKER_USERNAME="${{ secrets.DOCKER_USERNAME }}"
-            export IMAGE_NAME="${{ secrets.DOCKER_USERNAME }}" 
+            export IMAGE_NAME="${{ secrets.IMAGE_NAME }}" 
 
             # Recreate containers with update image (Docker compose doesn't detect image changes unless the yml file changes)
             docker compose up -d --force-recreate
