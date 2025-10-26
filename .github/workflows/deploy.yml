@@ -86,7 +86,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd ~/todo
-            echo "${{ secrets.PROD_VARIABLES }}" > .env
+            echo "${{ secrets.PROD_VARIABLES }}" | tee .env > /dev/null
             chmod 600 .env
 
       # 8. Deploy via SSH to EC2
