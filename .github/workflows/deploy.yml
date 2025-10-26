@@ -84,9 +84,6 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          # Use an environment variable to pass the secret (optional but cleaner)
-          env:
-            ENV_SECRET_B64: ${{ secrets.PROD_VARIABLES_B64 }}
           script: |
             cd ~/todo
             # 1. Echo the Base64 string.
