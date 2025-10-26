@@ -25,3 +25,11 @@ services:
       - ./.env
     environment:
       CONTAINER_NAME: process3
+
+  # NEW SERVICE: Used only for the one-off seeding command
+  seeder:
+    image: ${DOCKER_USERNAME}/${IMAGE_NAME}:latest
+    env_file:
+      - ./.env
+    # Override image's comand
+    command: npm run seed

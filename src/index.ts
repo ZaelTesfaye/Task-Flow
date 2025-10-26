@@ -73,11 +73,11 @@ const exitHandler = (serverInstance: http.Server | undefined) => {
 };
 
 process.on("uncaughtException", (error) => {
-  console.error("uncaughtException", error);
+  logger.error("uncaughtException", error);
   exitHandler(server);
 });
 
 process.on("unhandledRejection", (error) => {
-  console.error("unhandledRejection", error);
+  logger.error("unhandledRejection", error);
   exitHandler(server);
 });

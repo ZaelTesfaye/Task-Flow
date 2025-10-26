@@ -8,7 +8,7 @@ if (error) {
   throw new APIError(`Config validation error: ${error.message}`, 500);
 }
 
-const envVars : EnvSchemaType  = value as EnvSchemaType;
+const envVars = value as EnvSchemaType;
 
 const env = {
   port: envVars.PORT,
