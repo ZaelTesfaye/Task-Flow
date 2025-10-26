@@ -32,7 +32,7 @@ jobs:
       # 4. Push Docker Image (No change)
       - name: Push Image
         run: |
-          IMAGE_ID=${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_USERNAME }}
+          IMAGE_ID=${{ secrets.DOCKER_USERNAME }}/${{ secrets.IMAGE_NAME }}
           VERSION_TAG=$(echo $GITHUB_SHA | cut -c1-7)
           docker push $IMAGE_ID:latest
           docker push $IMAGE_ID:$VERSION_TAG
