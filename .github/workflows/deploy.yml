@@ -79,18 +79,17 @@ jobs:
 
       - name: Inject Production .env File
         uses: appleboy/ssh-action@v1.0.3
-        env:
-          ENV_FILE: ${{ secrets.PROD_VARIABLES}}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd ~/todo
-            cat <<'EOF' > .env
-            $ENV_FILE
+            # write secret contents into .env on remote (expanded at workflow-evaluation time)
+            cat > .env <<'EOF'
+            ${{ secrets.PROD_VARIABLES }}
             EOF
-            chmod 600 .env
+                  chmod 600 .env
 
       # 8. Deploy via SSH to EC2
       - name: Deploy to EC2 via SSH
