@@ -18,7 +18,12 @@ export const removeTask = async (userId: string, taskId: string) => {
   });
 };
 
-export const updateTask = async (userId: string, taskId: string, status: string, description: string) => {
+export const updateTask = async (
+  userId: string,
+  taskId: string,
+  status: string,
+  description: string,
+) => {
   return prisma.task.update({
     where: {
       userId,
@@ -26,7 +31,7 @@ export const updateTask = async (userId: string, taskId: string, status: string,
     },
     data: {
       status,
-      description
+      description,
     },
   });
 };

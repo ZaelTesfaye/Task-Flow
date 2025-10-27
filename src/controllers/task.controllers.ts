@@ -12,7 +12,7 @@ export const addTask = asyncWrapper(
   async (
     req: Request<{}, {}, AddTaskBody>,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ) => {
     const { id: userId } = req.user!;
     const { description } = req.body;
@@ -22,14 +22,14 @@ export const addTask = asyncWrapper(
       status: true,
       message: "Task Added successfully",
     });
-  }
+  },
 );
 
 export const removeTask = asyncWrapper(
   async (
     req: Request<{}, {}, RemoveTaskBody>,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ) => {
     const { id: userId } = req.user!;
     const { taskId } = req.body;
@@ -39,29 +39,24 @@ export const removeTask = asyncWrapper(
       status: true,
       message: "Task Removed successfully",
     });
-  }
+  },
 );
 
 export const updateTask = asyncWrapper(
   async (
     req: Request<{}, {}, UpdateTaskSchema>,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ) => {
     const { id: userId } = req.user!;
     const { taskId, status, description } = req.body;
 
-    await taskServices.updateTask(
-      userId,
-      taskId,
-      status,
-      description
-    );
-      res.status(200).json({
-        status: true,
-        message: "Task updated successfully",
-      });
-    }
+    await taskServices.updateTask(userId, taskId, status, description);
+    res.status(200).json({
+      status: true,
+      message: "Task updated successfully",
+    });
+  },
 );
 
 export const getTasks = asyncWrapper(
@@ -72,5 +67,5 @@ export const getTasks = asyncWrapper(
       status: true,
       tasks,
     });
-  }
+  },
 );

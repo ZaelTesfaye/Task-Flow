@@ -8,19 +8,19 @@ const router = express.Router();
 router.post(
   "/register",
   validatorMiddleware(authSchema.registerSchema),
-  authController.register
+  authController.register,
 );
 
 router.post(
   "/admin-login",
   validatorMiddleware(authSchema.adminLoginSchema),
-  authController.login
+  authController.login,
 );
 
 router.post(
   "/login",
   validatorMiddleware(authSchema.loginSchema),
-  authController.login
+  authController.login,
 );
 
 router.get("/logout", authController.logout);

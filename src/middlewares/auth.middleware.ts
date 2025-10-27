@@ -15,7 +15,7 @@ const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
   let userData;
   try {
     userData = jwt.verify(token, config.jwtSecret) as JwtPayload;
-  } catch (error) {
+  } catch {
     throw new APIError("Unauthorized", httpStatus.UNAUTHORIZED);
   }
 

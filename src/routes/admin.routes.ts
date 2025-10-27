@@ -1,6 +1,6 @@
 import express from "express";
 import * as adminController from "../controllers/admin.controller.js";
-import {validatorMiddleware} from "../middlewares/index.js";
+import { validatorMiddleware } from "../middlewares/index.js";
 import {
   getAllUsersSchema,
   removeUserSchema,
@@ -13,21 +13,21 @@ const router = express.Router();
 router.post(
   "/users",
   validatorMiddleware(getAllUsersSchema),
-  adminController.viewAllUsers
+  adminController.viewAllUsers,
 );
 
 // Remove user
 router.delete(
   "/remove-user",
   validatorMiddleware(removeUserSchema),
-  adminController.removeUser
+  adminController.removeUser,
 );
 
 // Change  user password
 router.patch(
   "/update-password",
   validatorMiddleware(updateUserPasswordSchema),
-  adminController.updateUserPassword
+  adminController.updateUserPassword,
 );
 
 export default router;

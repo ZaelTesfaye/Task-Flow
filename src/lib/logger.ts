@@ -1,9 +1,8 @@
 import "winston-daily-rotate-file";
 import winston from "winston";
 
-const { createLogger, format, transports, config } = winston;
+const { createLogger, format, transports } = winston;
 const { combine, timestamp, printf, colorize, errors, json } = format;
-
 
 const consoleFormat = combine(
   colorize({ all: true }), // ensure all levels are colorized
@@ -14,13 +13,13 @@ const consoleFormat = combine(
 Level: ${level}
 Message: ${message}
 ${stack ? `Stack: ${stack}` : ""}`;
-  })
+  }),
 );
 
 const fileFormat = combine(
   timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
   errors({ stack: true }),
-  json()
+  json(),
 );
 
 // Transports
@@ -35,7 +34,7 @@ const fileTransport = (
   maxSize = "10m",
   maxFiles = "15d",
   datePattern = "YYYY-MM-DD",
-  format = fileFormat
+  format = fileFormat,
 ) =>
   new transports.DailyRotateFile({
     filename: fileName,
@@ -48,17 +47,17 @@ const fileTransport = (
 
 const errorFileTransport = fileTransport(
   "logs/errors/error-%DATE%.log",
-  "error"
+  "error",
 );
 const criticalTransport = fileTransport(
   "logs/critical/critical-%DATE%.log",
-  "critical"
+  "critical",
 );
 const exceptionFileTransport = fileTransport(
-  "logs/exceptions/exceptions-%DATE%.log"
+  "logs/exceptions/exceptions-%DATE%.log",
 );
 const rejectionFileTransport = fileTransport(
-  "logs/rejections/rejections-%DATE%.log"
+  "logs/rejections/rejections-%DATE%.log",
 );
 
 const logLevels = {
@@ -70,11 +69,11 @@ const logLevels = {
 };
 
 const logColors = {
-  critical: 'red',
-  error: 'red', 
+  critical: "red",
+  error: "red",
   warn: "yellow",
-  info: 'green',
-  debug: 'blue'
+  info: "green",
+  debug: "blue",
 };
 
 // Add colors to winston

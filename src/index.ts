@@ -1,4 +1,4 @@
-import dotenv from "dotenv/config.js";
+import "dotenv/config.js";
 import type http from "http";
 import express from "express";
 import cookieParser from "cookie-parser";
@@ -7,10 +7,13 @@ import authRoutes from "./routes/auth.routes.js";
 import config from "./config/config.js";
 import cors from "cors";
 import adminRoutes from "./routes/admin.routes.js";
-import superAdminRoutes from "./routes/super-admin.routes.js"
+import superAdminRoutes from "./routes/super-admin.routes.js";
 import logger from "./lib/logger.js";
-import {authMiddleware, errorHandler, notFoundHandler} from "./middlewares/index.js";
-
+import {
+  authMiddleware,
+  errorHandler,
+  notFoundHandler,
+} from "./middlewares/index.js";
 
 const app = express();
 

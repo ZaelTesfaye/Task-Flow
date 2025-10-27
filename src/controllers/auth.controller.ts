@@ -4,7 +4,7 @@ import type { CookieOptions, Request, Response } from "express";
 import config from "../config/config.js";
 import { type RegisterBody, type LoginBody } from "../dtos/auth.dto.js";
 
-export const defaultCookieConfig : CookieOptions = {
+export const defaultCookieConfig: CookieOptions = {
   httpOnly: true,
   secure: config.env === "production" ? true : false,
   sameSite: "lax",
@@ -20,9 +20,9 @@ export const register = asyncWrapper(
     res.cookie("auth", userData.token, defaultCookieConfig).status(201).json({
       message: "User registered successfully",
       status: true,
-      data: userData
+      data: userData,
     });
-  }
+  },
 );
 
 export const login = asyncWrapper(
@@ -35,7 +35,7 @@ export const login = asyncWrapper(
       status: true,
       data: data,
     });
-  }
+  },
 );
 
 export const logout = asyncWrapper(async (req: Request, res: Response) => {

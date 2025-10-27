@@ -1,18 +1,17 @@
 import { APIError } from "../utils/error.js";
 import httpStatus from "http-status";
-import type { NextFunction, Request, Response } from "express";
 import { Prisma } from "@prisma/client";
 import logger from "../lib/logger.js";
+import type { Request, Response, NextFunction } from "express";
 
 const errorHandler = (
   error: Error | APIError | Prisma.PrismaClientKnownRequestError,
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
-
   logger.debug(error.message, error);
- 
+
   if (error instanceof APIError) {
     if (error.statusCode === httpStatus.INTERNAL_SERVER_ERROR)
       logger.error(error.message, error);

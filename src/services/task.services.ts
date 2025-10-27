@@ -12,7 +12,7 @@ export const updateTask = (
   userId: string,
   taskId: string,
   status: string,
-  description: string
+  description: string,
 ) => {
   return taskModel.updateTask(userId, taskId, status, description);
 };

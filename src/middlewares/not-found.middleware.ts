@@ -5,6 +5,6 @@ const notFoundHandler = (req: Request, res: Response) => {
     status: false,
     message: "Not Found!",
   });
-}
+};
 
 export default notFoundHandler;

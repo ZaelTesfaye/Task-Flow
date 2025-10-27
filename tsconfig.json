@@ -1,27 +1,15 @@
 {
-  // Visit https://aka.ms/tsconfig to read more about this file
-  "ts-node": {
-    "esm": true,
-  },
   "compilerOptions": {
     // File Layout
     "rootDir": "./src",
     "outDir": "./dist",
     // Environment Settings
-    // See also https://aka.ms/tsconfig/module
     "module": "nodenext",
     "target": "es2022",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "isolatedModules": true,
     "moduleResolution": "nodenext",
-    "types": [
-      "node"
-    ],
-    // For nodejs:
-    // "lib": ["esnext"],
-    // "types": ["node"],
-    // and npm install -D @types/node
     // Other Outputs
     "sourceMap": true,
     "declaration": true,
@@ -43,13 +31,8 @@
     "verbatimModuleSyntax": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
-    "skipLibCheck": true,
+    "skipLibCheck": true
   },
-  "include": [
-    "**/*.ts",
-     "**/*.d.ts",
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["**/*.ts", "**/*.d.ts"],
+  "exclude": ["node_modules"]
 }
