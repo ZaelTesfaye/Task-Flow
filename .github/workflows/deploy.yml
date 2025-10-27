@@ -11,33 +11,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout Code
       - name: Checkout Repository
         uses: actions/checkout@v4
+        
+      - name: Build and Cache Docker Image
+        uses: docker/setup-buildx-action@v3
 
-      # 2. Build Docker Image 
-      - name: Build
-        run: |
-          IMAGE_ID=${{ secrets.DOCKER_USERNAME }}/${{ secrets.IMAGE_NAME }}
-          VERSION_TAG=$(echo $GITHUB_SHA | cut -c1-7)
-          docker build -t $IMAGE_ID:latest -t $IMAGE_ID:$VERSION_TAG .
-
-      # 3. Log in to Docker Hub (No change)
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # 4. Push Docker Image (No change)
-      - name: Push Image
-        run: |
-          IMAGE_ID=${{ secrets.DOCKER_USERNAME }}/${{ secrets.IMAGE_NAME }}
-          VERSION_TAG=$(echo $GITHUB_SHA | cut -c1-7)
-          docker push $IMAGE_ID:latest
-          docker push $IMAGE_ID:$VERSION_TAG
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/${{ secrets.IMAGE_NAME }}:latest
+            ${{ secrets.DOCKER_USERNAME }}/${{ secrets.IMAGE_NAME }}:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
-      # 5. Copy config files to EC2
+
       - name: Copy config files to EC2
         uses: appleboy/scp-action@v0.1.4
         with:
@@ -47,7 +44,6 @@ jobs:
           source: "docker-compose.yml, nginx.conf"
           target: "~/todo"
 
-       # 5. Copy config files to EC2
       - name: Copy config files to EC2
         uses: appleboy/scp-action@v0.1.4
         with:
@@ -57,7 +53,6 @@ jobs:
           source: "nginx.conf"
           target: "~/todo"
 
-      # 6. Inject SSL Certificates
       - name: Securely Inject SSL Certificates
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -66,17 +61,12 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           request_pty: true
           script: |
-            # Create the secure directory
             sudo mkdir -p /etc/nginx/ssl
-            
-            # Inject NGINX certificates (as before)
             echo "${{ secrets.NGINX_KEY }}" | sudo tee /etc/nginx/ssl/nginx-selfsigned.key > /dev/null
             echo "${{ secrets.NGINX_CERTIFICATE }}" | sudo tee /etc/nginx/ssl/nginx-selfsigned.crt > /dev/null
-            
-            # Set secure permissions
             sudo chmod 600 /etc/nginx/ssl/nginx-selfsigned.key
             sudo chmod 644 /etc/nginx/ssl/nginx-selfsigned.crt
-
+        
       - name: Inject Production .env File
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -85,13 +75,12 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd ~/todo
-            # write secret contents into .env on remote (expanded at workflow-evaluation time)
+            # write secret into .env
             cat > .env <<'EOF'
             ${{ secrets.PROD_VARIABLES }}
             EOF
-                  chmod 600 .env
+            chmod 600 .env
 
-      # 8. Deploy via SSH to EC2
       - name: Deploy to EC2 via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -100,21 +89,12 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd ~/todo
-
-            # Pull latest image
-            docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.IMAGE_NAME }}:latest
-
-            # set required variables for docker compose 
             export DOCKER_USERNAME="${{ secrets.DOCKER_USERNAME }}"
             export IMAGE_NAME="${{ secrets.IMAGE_NAME }}" 
-
-            # Recreate containers with update image (Docker compose doesn't detect image changes unless the yml file changes)
-            docker compose up -d --force-recreate
-
-            # Clean up old, unused images
+            docker compose pull
+            docker compose up -d --remove-orphans
             docker image prune -f
 
-      # 9. Setup and Start Nginx
       - name: Setup & Start Nginx
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -123,21 +103,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           request_pty: true
           script: |
-            # Check if Nginx is installed, if not, install it.
-            if ! command -v nginx >/dev/null 2>&1; then
-                echo "Nginx not found. Installing..."
-                sudo apt update -y
-                sudo apt install -y nginx
-            else
-                echo "Nginx is already installed."
-            fi
-
-            # Copy custom nginx.conf to /etc/nginx and back up existing one
-            sudo cp /etc/nginx/nginx.conf /etc/nginx/nginx.conf.backup || true
-            
-            # Echo nginx.conf contents to EC2 server.
-              sudo cp ~/todo/nginx.conf /etc/nginx/nginx.conf
-
-            # Ensure Nginx starts on boot and is running
+            sudo cp ~/todo/nginx.conf /etc/nginx/nginx.conf 
             sudo systemctl enable nginx
-            sudo systemctl restart nginx
+            sudo systemctl reload nginx

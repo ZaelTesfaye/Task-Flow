@@ -33,5 +33,6 @@ COPY --from=build /app/views ./views
 # docker-compose.yml is not included in the image, instead, it is copied directly to the server inside the ci/cd pipeline as a best practice
 
 RUN npx prisma generate
+EXPOSE 5000
 
 CMD ["node", "npm start"]

@@ -2,34 +2,35 @@ services:
   process1:
     image: ${DOCKER_USERNAME}/${IMAGE_NAME}:latest
     ports:
-      - 5000:5000
+      - "5000:5000"
     env_file:
       - ./.env
     environment:
       CONTAINER_NAME: process1
+    restart: on-failure
 
   process2:
     image: ${DOCKER_USERNAME}/${IMAGE_NAME}:latest
     ports:
-      - 5001:5000
+      - "5001:5000"
     env_file:
       - ./.env
     environment:
       CONTAINER_NAME: process2
+    restart: on-failure
 
   process3:
     image: ${DOCKER_USERNAME}/${IMAGE_NAME}:latest
     ports:
-      - 5002:5000
+      - "5002:5000"
     env_file:
       - ./.env
     environment:
       CONTAINER_NAME: process3
+    restart: on-failure
 
-  # NEW SERVICE: Used only for the one-off seeding command
   seeder:
     image: ${DOCKER_USERNAME}/${IMAGE_NAME}:latest
     env_file:
       - ./.env
-    # Override image's comand
     command: npm run seed
