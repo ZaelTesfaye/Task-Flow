@@ -24,8 +24,7 @@
     "dev": "npx nodemon --exec tsx src/index.ts",
     "seed": "node dist/scripts/seed.js",
     "format": "npx prettier . --write",
-    "lint": "npx eslint . --fix",
-    "prepare": "husky"
+    "lint": "npx eslint . --fix"
   },
   "author": "",
   "license": "ISC",
