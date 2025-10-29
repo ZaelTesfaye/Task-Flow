@@ -7,7 +7,7 @@ services:
       CONTAINER_NAME: process1
     restart: on-failure
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000/api/health"]
+      test: ["CMD", "wget", "-qO-", "http://localhost:5000/api/health"]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -21,7 +21,7 @@ services:
       CONTAINER_NAME: process2
     restart: on-failure
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000/api/health"]
+      test: ["CMD", "wget", "-qO-", "http://localhost:5000/api/health"]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -35,7 +35,7 @@ services:
       CONTAINER_NAME: process3
     restart: on-failure
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000/api/health"]
+      test: ["CMD", "wget", "-qO-", "http://localhost:5000/api/health"]
       interval: 10s
       timeout: 5s
       retries: 3
