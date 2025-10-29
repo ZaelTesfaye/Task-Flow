@@ -23,7 +23,7 @@ USER app
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm ci --only=production
+RUN npm ci --only=production --ignore-scripts
 
 # Copy compiled code & dependencies
 COPY --from=build /app/dist ./dist
