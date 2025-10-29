@@ -35,4 +35,4 @@ COPY --from=build /app/views ./views
 RUN npx prisma generate
 EXPOSE 5000
 
-CMD ["node", "npm start"]
+CMD ["npm", "start"]
