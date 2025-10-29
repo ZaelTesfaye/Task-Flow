@@ -88,8 +88,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd ~/todo
-            export DOCKER_USERNAME="${{ secrets.DOCKER_USERNAME }}"
-            export IMAGE_NAME="${{ secrets.IMAGE_NAME }}" 
             docker compose pull
             docker compose up -d --remove-orphans
             docker image prune -f
