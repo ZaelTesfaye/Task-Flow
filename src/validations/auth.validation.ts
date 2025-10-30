@@ -26,7 +26,7 @@ const loginSchema = {
 const adminLoginSchema = {
   body: joi
     .object<AdminLogin>({
-      email: joi.string().alphanum().min(3).max(30).required(),
+      email: joi.string().min(3).max(30).required(),
       password: joi.string().min(4).required(),
     })
     .required()
