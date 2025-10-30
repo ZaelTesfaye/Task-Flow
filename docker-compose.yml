@@ -9,6 +9,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      migrator:
+        condition: service_completed_successfully
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:5000/api/health"]
       interval: 10s
@@ -26,6 +28,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      migrator:
+        condition: service_completed_successfully
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:5000/api/health"]
       interval: 10s
@@ -43,6 +47,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      migrator:
+        condition: service_completed_successfully
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:5000/api/health"]
       interval: 10s
@@ -81,7 +87,18 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 20s
+      start_period: 10s
+
+  migrator:
+    image: ${DOCKER_USERNAME}/${IMAGE_NAME}:latest
+    env_file:
+      - ./.env
+    command: npx prisma migrate deploy
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./prisma:/app/prisma:ro
   
   seeder:
     image: ${DOCKER_USERNAME}/${IMAGE_NAME}:latest

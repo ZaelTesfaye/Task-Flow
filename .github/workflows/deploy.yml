@@ -40,17 +40,8 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "docker-compose.yml, nginx.conf"
+          source: "docker-compose.yml, nginx.conf, prisma/"
           target: "~/todo"
-
-      # - name: Copy config files to EC2
-      #   uses: appleboy/scp-action@v0.1.4
-      #   with:
-      #     host: ${{ secrets.SSH_HOST }}
-      #     username: ${{ secrets.SSH_USER }}
-      #     key: ${{ secrets.SSH_PRIVATE_KEY }}
-      #     source: "nginx.conf"
-      #     target: "~/todo"
 
       - name: Securely Inject SSL Certificates
         uses: appleboy/ssh-action@v1.0.3
