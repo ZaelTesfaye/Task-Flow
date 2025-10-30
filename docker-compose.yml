@@ -57,8 +57,22 @@ services:
       process3:
         condition: service_healthy
 
+  db:
+    image: postgres:15.14
+    environment:
+      POSTGRES_DB: tasks
+      POSTGRES_USER: task-manager-db
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+  
   seeder:
     image: ${DOCKER_USERNAME}/${IMAGE_NAME}:latest
     env_file:
       - ./.env
     command: npm run seed
+
+volumes:
+  postgres_data:
