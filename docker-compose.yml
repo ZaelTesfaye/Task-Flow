@@ -11,6 +11,8 @@ services:
         condition: service_healthy
       migrator:
         condition: service_completed_successfully
+    volumes:
+      - ./logs:/app/logs
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:5000/api/health"]
       interval: 10s
@@ -30,6 +32,8 @@ services:
         condition: service_healthy
       migrator:
         condition: service_completed_successfully
+    volumes:
+      - ./logs:/app/logs
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:5000/api/health"]
       interval: 10s
@@ -49,6 +53,8 @@ services:
         condition: service_healthy
       migrator:
         condition: service_completed_successfully
+    volumes:
+      - ./logs:/app/logs
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:5000/api/health"]
       interval: 10s
