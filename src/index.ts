@@ -49,7 +49,6 @@ app.get("/home", (req, res) => {
 
 // health check
 app.get("/api/health", (req, res) => {
-  console.log(`Requested container: ${process.env.CONTAINER_NAME}`);
   res.send("Ok!");
 });
 
