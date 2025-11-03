@@ -18,7 +18,6 @@ import {
 const app = express();
 
 app.set("view engine", "ejs");
-app.set("trust proxy", true);
 
 const CorsOptions = {
   origin: [
