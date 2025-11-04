@@ -4,6 +4,8 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import taskRoutes from "./routes/task.routes.js";
 import authRoutes from "./routes/auth.routes.js";
+import categoryRoutes from "./routes/category.routes.js";
+import projectRoutes from "./routes/project.routes.js";
 import config from "./config/config.js";
 import cors from "cors";
 import adminRoutes from "./routes/admin.routes.js";
@@ -39,7 +41,9 @@ app.use("/super-admin", authMiddleware, superAdminRoutes);
 app.use("/admin", authMiddleware, adminRoutes);
 
 app.use("/api/auth", authRoutes);
-app.use("/api/tasks", authMiddleware, taskRoutes);
+app.use("/api/task", authMiddleware, taskRoutes);
+app.use("/api/project", authMiddleware, projectRoutes);
+app.use("/api/category", authMiddleware, categoryRoutes);
 
 // ejs
 app.get("/home", (req, res) => {

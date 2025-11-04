@@ -35,7 +35,9 @@
   },
   "include": [
     "src/**/*.ts",
-    "src/**/*.d.ts"
+    "src/**/*.d.ts",
+    "src/routes/proj-admin.routes.ts",
+    "views/project.valdiation.ts"
   ],
   "exclude": [
     "node_modules"

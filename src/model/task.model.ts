@@ -1,54 +1,84 @@
+import type { RequestTaskUpdateDTO, UpdateTaskDTO } from "../dtos/task.dto.js";
 import prisma from "../lib/prisma.js";
 
-export const addTask = async (userId: string, description: string) => {
+export const createTask = async (
+  title: string,
+  description: string,
+  assignedBy: string,
+  categoryId: string,
+  assignedTo: string,
+) => {
   return prisma.task.create({
     data: {
+      title,
+      categoryId,
       description,
-      userId: userId,
+      assignedBy,
+      assignedTo,
     },
   });
 };
 
-export const removeTask = async (userId: string, taskId: string) => {
-  return prisma.task.delete({
+export const getTasks = (projectId: string) => {
+  return prisma.category.findMany({
     where: {
-      userId: userId,
-      id: taskId,
+      projectId,
+    },
+    include: {
+      tasks: {
+        include: {
+          pendingUpdates: true,
+        },
+      },
     },
   });
 };
 
-export const updateTask = async (
-  userId: string,
-  taskId: string,
-  status: string,
-  description: string,
-) => {
+export const updateTask = async (taskId: string, updates: UpdateTaskDTO) => {
   return prisma.task.update({
     where: {
-      userId,
       id: taskId,
     },
-    data: {
-      status,
-      description,
-    },
+    data: updates,
   });
 };
 
-export const getTasks = async (userId: string) => {
-  return prisma.task.findMany({
+export const removeTask = async (taskId: string) => {
+  return prisma.task.delete({
     where: {
-      userId: userId,
+      id: taskId,
     },
   });
 };
 
-export const taskModel = {
-  addTask,
-  removeTask,
-  updateTask,
-  getTasks,
+export const createPendingUpdate = async (
+  taskId: string,
+  userId: string,
+  updateData: RequestTaskUpdateDTO,
+) => {
+  return prisma.pendingUpdates.create({
+    data: {
+      taskId,
+      updateDescription: updateData.updateDescription,
+      newStatus: updateData.newStatus,
+      updateBy: userId,
+    },
+  });
 };
 
-export default taskModel;
+export const acceptPendingUpdate = async (
+  pendingUpdateId: string,
+  taskId: string,
+  newStatus: string,
+) => {
+  await prisma.task.update({
+    where: { id: taskId },
+    data: {
+      status: newStatus,
+    },
+  });
+
+  return prisma.pendingUpdates.delete({
+    where: { id: pendingUpdateId },
+  });
+};

@@ -1,0 +1,23 @@
+import * as categoryModel from "../model/category.model.js";
+
+export const createCategory = (name: string, projectId: string) => {
+  return categoryModel.createCategory(name, projectId);
+};
+
+export const updateCategory = (
+  categoryId: string,
+  updates: { name?: string },
+) => {
+  return categoryModel.updateCategory(categoryId, updates);
+};
+
+export const removeCategory = (categoryId: string, projectId: string) => {
+  return categoryModel.removeCategory(categoryId, projectId);
+};
+
+export const validateCategoryBelongsToProject = (
+  categoryId: string,
+  projectId: string,
+) => {
+  return categoryModel.validateCategoryBelongsToProject(categoryId, projectId);
+};

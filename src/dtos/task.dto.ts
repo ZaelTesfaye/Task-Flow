@@ -1,17 +1,21 @@
-export interface AddTaskBody {
+export interface CreateTaskDTO {
+  title: string;
   description: string;
+  assignedTo: string;
 }
 
-export interface UpdateTaskSchema {
-  taskId: string;
-  status: "complete" | "Complete" | "canceled";
-  description: string;
+export interface UpdateTaskDTO {
+  title?: string;
+  description?: string;
+  status?: "active" | "complete" | "canceled";
+  categoryId?: string;
 }
 
-export interface RemoveTaskBody {
-  taskId: string;
+export interface RequestTaskUpdateDTO {
+  updateDescription: string;
+  newStatus: "active" | "complete" | "canceled";
 }
 
-export interface GetTasksParams {
-  userId: string;
+export interface AcceptPendingUpdateDTO {
+  newStatus: "active" | "complete" | "canceled";
 }
