@@ -1,5 +1,6 @@
-import * as adminModel from "../model/admin.model.js";
 import bcrypt from "bcrypt";
+import { adminModel } from "../model/index.js";
+
 export const getAllUsers = (page: number, limit: number) => {
   return adminModel.getAllUsers(page, limit);
 };

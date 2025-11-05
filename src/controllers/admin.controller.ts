@@ -1,18 +1,19 @@
 import type { NextFunction, Request, Response } from "express";
+import httpStatus from "http-status";
+
 import type {
   AddAdmin,
   GetAllUsers,
   RemoveUser,
   UpdateUserPassword,
-} from "../dtos/admin.dto.js";
-import * as adminService from "../services/admin.service.js";
-import httpStatus from "http-status";
-import asyncWrapper from "../lib/asyncWrapper.js";
+} from "../dtos/index.js";
+import { adminServices } from "../services/index.js";
+import { asyncWrapper } from "../lib/index.js";
 
 export const viewAllUsers = asyncWrapper(
   async (req: Request<{}, {}, GetAllUsers>, res: Response) => {
     const { page, limit } = req.body;
-    const result = await adminService.getAllUsers(page, limit);
+    const result = await adminServices.getAllUsers(page, limit);
     if (result) {
       res.status(httpStatus.OK).json(result);
     }
@@ -22,7 +23,7 @@ export const removeUser = asyncWrapper(
   async (req: Request<{}, {}, RemoveUser>, res: Response) => {
     const userId = req.body.userId;
 
-    const result = await adminService.removeUser(userId);
+    const result = await adminServices.removeUser(userId);
 
     if (result) {
       res.status(httpStatus.OK).json({
@@ -43,7 +44,7 @@ export const updateUserPassword = asyncWrapper(
     console.log("Update User Password called with body:", req.body);
     const { userId, password } = req.body;
 
-    await adminService.updateUserPassword(userId, password);
+    await adminServices.updateUserPassword(userId, password);
 
     res.status(httpStatus.OK).json({
       status: true,
@@ -55,7 +56,7 @@ export const updateUserPassword = asyncWrapper(
 export const addAdmin = asyncWrapper(
   async (req: Request<{}, {}, AddAdmin>, res: Response, next: NextFunction) => {
     const { username, name, password } = req.body;
-    await adminService.addAdmin(username, name, password);
+    await adminServices.addAdmin(username, name, password);
     res.status(httpStatus.OK).json({
       status: true,
       message: "Admin added successfully",

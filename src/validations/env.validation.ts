@@ -10,7 +10,7 @@ export interface EnvSchemaType {
   ADMIN_PASSWORD: string;
 }
 
-const envSchema = joi
+export const envSchema = joi
   .object<EnvSchemaType>({
     PORT: joi.number().default(5000),
     NODE_ENV: joi.string().default("development").required(),

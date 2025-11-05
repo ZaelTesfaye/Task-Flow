@@ -1,7 +1,8 @@
-import { APIError } from "../utils/error.js";
 import { status } from "http-status";
 import type { Request, Response, NextFunction } from "express";
 import type { ObjectSchema } from "joi";
+
+import { APIError } from "../utils/index.js";
 
 interface ValidationSchema {
   body?: ObjectSchema<any>;

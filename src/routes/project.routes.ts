@@ -1,21 +1,29 @@
 import express from "express";
-import * as projectController from "../controllers/project.controller.js";
-import * as projectSchema from "../validations/project.valdiation.js";
+import { projectController } from "../controllers/index.js";
 import { validatorMiddleware } from "../middlewares/index.js";
+import {
+  createProjectSchema,
+  updateProjectSchema,
+  removeProjectSchema,
+  addMemberSchema,
+  updateMemberSchema,
+  removeMemberSchema,
+  getProjectMembersSchema,
+} from "../validations/index.js";
 
 const router = express.Router();
 
 // create project
 router.post(
   "/",
-  validatorMiddleware(projectSchema.createProjectSchema),
+  validatorMiddleware(createProjectSchema),
   projectController.createProject,
 );
 
 // update project
 router.patch(
   "/:projectId",
-  validatorMiddleware(projectSchema.updateProjectSchema),
+  validatorMiddleware(updateProjectSchema),
   projectController.updateProject,
 );
 
@@ -29,35 +37,35 @@ router.get(
 // remove project
 router.delete(
   "/:projectId",
-  validatorMiddleware(projectSchema.removeProjectSchema),
+  validatorMiddleware(removeProjectSchema),
   projectController.removeProject,
 );
 
 // create project member
 router.post(
   "/member/:projectId",
-  validatorMiddleware(projectSchema.addMemberSchema),
+  validatorMiddleware(addMemberSchema),
   projectController.addMember,
 );
 
 // update project member
 router.patch(
   "/member/:projectId/:userId",
-  validatorMiddleware(projectSchema.promoteMemberSchema),
+  validatorMiddleware(updateMemberSchema),
   projectController.promoteProjectMember,
 );
 
 // Get all project members
 router.get(
   "/member/:projectId",
-  validatorMiddleware(projectSchema.getProjectMembersSchema),
+  validatorMiddleware(getProjectMembersSchema),
   projectController.getProjectMembers,
 );
 
 // remove project members
 router.delete(
   "/member/:projectId/:userId",
-  validatorMiddleware(projectSchema.removeMemberSchema),
+  validatorMiddleware(removeMemberSchema),
   projectController.removeProjectMember,
 );
 

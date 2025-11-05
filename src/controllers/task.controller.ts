@@ -1,14 +1,17 @@
-import asyncWrapper from "../lib/asyncWrapper.js";
 import type { Request, Response } from "express";
-import * as taskServices from "../services/task.services.js";
-import * as categoryService from "../services/category.service.js";
-import * as projectService from "../services/project.service.js";
+
+import { asyncWrapper } from "../lib/index.js";
+import {
+  taskServices,
+  categoryServices,
+  projectServices,
+} from "../services/index.js";
 import type {
   CreateTaskDTO,
   UpdateTaskDTO,
   RequestTaskUpdateDTO as TaskUpdateRequestDTO,
   AcceptPendingUpdateDTO,
-} from "../dtos/task.dto.js";
+} from "../dtos/index.js";
 
 export const createTask = asyncWrapper(
   async (
@@ -19,7 +22,7 @@ export const createTask = asyncWrapper(
     const { id: userId } = req.user!;
     const { title, description, assignedTo } = req.body;
 
-    const hasAccess = await projectService.checkUserAccess(projectId, userId, [
+    const hasAccess = await projectServices.checkUserAccess(projectId, userId, [
       "owner",
       "admin",
     ]);
@@ -29,7 +32,7 @@ export const createTask = asyncWrapper(
       });
     }
 
-    const category = await categoryService.validateCategoryBelongsToProject(
+    const category = await categoryServices.validateCategoryBelongsToProject(
       categoryId,
       projectId,
     );
@@ -59,7 +62,7 @@ export const getTasks = asyncWrapper(
     const { projectId } = req.params;
     const { id: userId } = req.user!;
 
-    const hasAccess = await projectService.checkUserAccess(projectId, userId, [
+    const hasAccess = await projectServices.checkUserAccess(projectId, userId, [
       "owner",
       "admin",
       "member",
@@ -87,7 +90,7 @@ export const updateTask = asyncWrapper(
     const { id: userId } = req.user!;
     const updates = req.body;
 
-    const hasAccess = await projectService.checkUserAccess(projectId, userId, [
+    const hasAccess = await projectServices.checkUserAccess(projectId, userId, [
       "owner",
       "admin",
     ]);
@@ -118,7 +121,7 @@ export const removeTask = asyncWrapper(
     const { projectId, taskId } = req.params;
     const { id: userId } = req.user!;
 
-    const hasAccess = await projectService.checkUserAccess(projectId, userId, [
+    const hasAccess = await projectServices.checkUserAccess(projectId, userId, [
       "owner",
       "admin",
     ]);
@@ -149,7 +152,7 @@ export const requestTaskUpdate = asyncWrapper(
     const { id: userId } = req.user!;
     const updateData = req.body;
 
-    const hasAccess = await projectService.checkUserAccess(projectId, userId, [
+    const hasAccess = await projectServices.checkUserAccess(projectId, userId, [
       "member",
     ]);
     if (!hasAccess) {
@@ -184,7 +187,7 @@ export const acceptPendingUpdate = asyncWrapper(
     const { projectId, pendingUpdateId } = req.params;
     const { id: userId } = req.user!;
 
-    const hasAccess = await projectService.checkUserAccess(projectId, userId, [
+    const hasAccess = await projectServices.checkUserAccess(projectId, userId, [
       "owner",
       "admin",
     ]);

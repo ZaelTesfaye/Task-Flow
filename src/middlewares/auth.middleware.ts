@@ -1,4 +1,4 @@
-import { APIError } from "../utils/error.js";
+import { APIError } from "../utils/index.js";
 import httpStatus from "http-status";
 import type { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";

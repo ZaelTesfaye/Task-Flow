@@ -3,7 +3,7 @@ import type {
   CreateProjectDTO,
   UpdateProjectDTO,
   AddMemberDTO,
-} from "../dtos/project.dto.js";
+} from "../dtos/index.js";
 
 export const createProjectSchema = {
   body: joi
@@ -67,7 +67,7 @@ export const removeMemberSchema = {
     .unknown(true),
 };
 
-export const promoteMemberSchema = {
+export const updateMemberSchema = {
   params: joi
     .object({
       projectId: joi.string().uuid().required(),

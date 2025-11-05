@@ -1,6 +1,6 @@
-import * as taskModel from "../model/task.model.js";
 import prisma from "../lib/prisma.js";
-import type { RequestTaskUpdateDTO, UpdateTaskDTO } from "../dtos/task.dto.js";
+import { taskModel } from "../model/index.js";
+import type { RequestTaskUpdateDTO, UpdateTaskDTO } from "../dtos/index.js";
 
 export const createTask = async (
   title: string,

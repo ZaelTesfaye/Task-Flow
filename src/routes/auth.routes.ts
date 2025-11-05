@@ -1,6 +1,10 @@
 import express from "express";
-import authSchema from "../validations/auth.validation.js";
-import * as authController from "../controllers/auth.controller.js";
+import {
+  registerSchema,
+  adminLoginSchema,
+  loginSchema,
+} from "../validations/index.js";
+import { authController } from "../controllers/index.js";
 import { validatorMiddleware } from "../middlewares/index.js";
 
 const router = express.Router();
@@ -8,23 +12,19 @@ const router = express.Router();
 // register
 router.post(
   "/register",
-  validatorMiddleware(authSchema.registerSchema),
+  validatorMiddleware(registerSchema),
   authController.register,
 );
 
 // admin login
 router.post(
   "/admin-login",
-  validatorMiddleware(authSchema.adminLoginSchema),
+  validatorMiddleware(adminLoginSchema),
   authController.login,
 );
 
 // login
-router.post(
-  "/login",
-  validatorMiddleware(authSchema.loginSchema),
-  authController.login,
-);
+router.post("/login", validatorMiddleware(loginSchema), authController.login);
 
 // logout
 router.get("/logout", authController.logout);

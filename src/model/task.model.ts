@@ -1,4 +1,4 @@
-import type { RequestTaskUpdateDTO, UpdateTaskDTO } from "../dtos/task.dto.js";
+import type { RequestTaskUpdateDTO, UpdateTaskDTO } from "../dtos/index.js";
 import prisma from "../lib/prisma.js";
 
 export const createTask = async (

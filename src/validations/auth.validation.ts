@@ -1,8 +1,7 @@
 import joi from "joi";
-import type { LoginBody, RegisterBody } from "../dtos/auth.dto.js";
-import type { AdminLogin } from "../dtos/admin.dto.js";
+import type { LoginBody, RegisterBody, AdminLogin } from "../dtos/index.js";
 
-const registerSchema = {
+export const registerSchema = {
   body: joi
     .object<RegisterBody>({
       name: joi.string().min(3).max(30).required(),
@@ -13,7 +12,7 @@ const registerSchema = {
     .unknown(true),
 };
 
-const loginSchema = {
+export const loginSchema = {
   body: joi
     .object<LoginBody>({
       email: joi.string().email().required(),
@@ -23,7 +22,7 @@ const loginSchema = {
     .unknown(true),
 };
 
-const adminLoginSchema = {
+export const adminLoginSchema = {
   body: joi
     .object<AdminLogin>({
       email: joi.string().min(3).max(30).required(),
@@ -32,11 +31,3 @@ const adminLoginSchema = {
     .required()
     .unknown(true),
 };
-
-const authSchemas = {
-  registerSchema,
-  loginSchema,
-  adminLoginSchema,
-};
-
-export default authSchemas;

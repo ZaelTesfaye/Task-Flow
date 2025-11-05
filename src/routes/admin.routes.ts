@@ -1,11 +1,11 @@
 import express from "express";
-import * as adminController from "../controllers/admin.controller.js";
+import { adminController } from "../controllers/index.js";
 import { validatorMiddleware } from "../middlewares/index.js";
 import {
   getAllUsersSchema,
   removeUserSchema,
   updateUserPasswordSchema,
-} from "../validations/admin.validation.js";
+} from "../validations/index.js";
 
 const router = express.Router();
 

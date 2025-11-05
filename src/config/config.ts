@@ -1,7 +1,5 @@
-import { APIError } from "../utils/error.js";
-import envSchema, {
-  type EnvSchemaType,
-} from "../validations/env.validation.js";
+import { APIError } from "../utils/index.js";
+import { envSchema, type EnvSchemaType } from "../validations/index.js";
 
 const { value, error } = envSchema.validate(process.env);
 

@@ -1,4 +1,4 @@
-import * as projectModel from "../model/project.model.js";
+import { projectModel } from "../model/index.js";
 
 export const createProject = (
   title: string,

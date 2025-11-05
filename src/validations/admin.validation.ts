@@ -4,7 +4,7 @@ import type {
   GetAllUsers,
   RemoveUser,
   UpdateUserPassword,
-} from "../dtos/admin.dto.js";
+} from "../dtos/index.js";
 
 export const getAllUsersSchema = {
   params: Joi.object<GetAllUsers>({

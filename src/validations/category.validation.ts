@@ -1,8 +1,5 @@
 import joi from "joi";
-import type {
-  CreateCategoryDTO,
-  UpdateCategoryDTO,
-} from "../dtos/category.dto.js";
+import type { CreateCategoryDTO, UpdateCategoryDTO } from "../dtos/index.js";
 
 export const createCategorySchema = {
   body: joi

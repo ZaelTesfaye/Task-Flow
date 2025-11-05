@@ -1,8 +1,9 @@
-import { APIError } from "../utils/error.js";
 import httpStatus from "http-status";
 import { Prisma } from "@prisma/client";
-import logger from "../lib/logger.js";
 import type { Request, Response, NextFunction } from "express";
+
+import { logger } from "../lib/index.js";
+import { APIError } from "../utils/index.js";
 
 const errorHandler = (
   error: Error | APIError | Prisma.PrismaClientKnownRequestError,

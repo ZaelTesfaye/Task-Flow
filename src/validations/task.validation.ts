@@ -3,7 +3,7 @@ import type {
   CreateTaskDTO,
   UpdateTaskDTO as UpdateTaskDTO,
   RequestTaskUpdateDTO,
-} from "../dtos/task.dto.js";
+} from "../dtos/index.js";
 
 export const createTaskSchema = {
   body: joi

@@ -1,6 +1,6 @@
-import * as userModel from "../model/user.model.js";
 import bcrypt from "bcrypt";
-import { APIError } from "../utils/error.js";
+import { userModel } from "../model/index.js";
+import { APIError } from "../utils/index.js";
 import jwt from "jsonwebtoken";
 import config from "../config/config.js";
 

@@ -1,44 +1,51 @@
 import express from "express";
 import { validatorMiddleware } from "../middlewares/index.js";
-import * as taskSchema from "../validations/task.validation.js";
-import * as taskController from "../controllers/task.controllers.js";
+import {
+  createTaskSchema,
+  getTasksSchema,
+  updateTaskSchema,
+  removeTaskSchema,
+  requestTaskUpdateSchema,
+  acceptPendingUpdateSchema,
+} from "../validations/index.js";
+import { taskController } from "../controllers/index.js";
 
 const router = express.Router();
 
 router.post(
   "/:projectId/:categoryId",
-  validatorMiddleware(taskSchema.createTaskSchema),
+  validatorMiddleware(createTaskSchema),
   taskController.createTask,
 );
 
 // Get tasks for a project
 router.get(
   "/:projectId",
-  validatorMiddleware(taskSchema.getTasksSchema),
+  validatorMiddleware(getTasksSchema),
   taskController.getTasks,
 );
 
 router.patch(
   "/:projectId/:taskId",
-  validatorMiddleware(taskSchema.updateTaskSchema),
+  validatorMiddleware(updateTaskSchema),
   taskController.updateTask,
 );
 
 router.delete(
   "/:projectId/:taskId",
-  validatorMiddleware(taskSchema.removeTaskSchema),
+  validatorMiddleware(removeTaskSchema),
   taskController.removeTask,
 );
 
 router.post(
   "/request-update/:projectId/:taskId",
-  validatorMiddleware(taskSchema.requestTaskUpdateSchema),
+  validatorMiddleware(requestTaskUpdateSchema),
   taskController.requestTaskUpdate,
 );
 
 router.patch(
   "/accept-update/:projectId/:pendingUpdateId",
-  validatorMiddleware(taskSchema.acceptPendingUpdateSchema),
+  validatorMiddleware(acceptPendingUpdateSchema),
   taskController.acceptPendingUpdate,
 );
 

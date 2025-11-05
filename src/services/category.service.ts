@@ -1,4 +1,4 @@
-import * as categoryModel from "../model/category.model.js";
+import { categoryModel } from "../model/index.js";
 
 export const createCategory = (name: string, projectId: string) => {
   return categoryModel.createCategory(name, projectId);

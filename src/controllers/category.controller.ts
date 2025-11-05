@@ -1,11 +1,7 @@
-import asyncWrapper from "../lib/asyncWrapper.js";
 import type { Request, Response } from "express";
-import * as categoryService from "../services/category.service.js";
-import * as projectService from "../services/project.service.js";
-import type {
-  CreateCategoryDTO,
-  UpdateCategoryDTO,
-} from "../dtos/category.dto.js";
+import { asyncWrapper } from "../lib/index.js";
+import { categoryServices, projectServices } from "../services/index.js";
+import type { CreateCategoryDTO, UpdateCategoryDTO } from "../dtos/index.js";
 
 export const createCategory = asyncWrapper(
   async (
@@ -16,7 +12,7 @@ export const createCategory = asyncWrapper(
     const { id: userId } = req.user!;
     const { name } = req.body;
 
-    const hasAccess = await projectService.checkUserAccess(projectId, userId, [
+    const hasAccess = await projectServices.checkUserAccess(projectId, userId, [
       "owner",
       "admin",
     ]);
@@ -26,7 +22,7 @@ export const createCategory = asyncWrapper(
       });
     }
 
-    const result = await categoryService.createCategory(name, projectId);
+    const result = await categoryServices.createCategory(name, projectId);
 
     res.json({
       message: "Category created successfully",
@@ -48,7 +44,7 @@ export const updateCategory = asyncWrapper(
     const { id: userId } = req.user!;
     const updates = req.body;
 
-    const hasAccess = await projectService.checkUserAccess(projectId, userId, [
+    const hasAccess = await projectServices.checkUserAccess(projectId, userId, [
       "owner",
       "admin",
     ]);
@@ -58,7 +54,7 @@ export const updateCategory = asyncWrapper(
       });
     }
 
-    const result = await categoryService.updateCategory(categoryId, updates);
+    const result = await categoryServices.updateCategory(categoryId, updates);
 
     res.json({
       message: "Category updated successfully",
@@ -75,7 +71,7 @@ export const removeCategory = asyncWrapper(
     const { projectId, categoryId } = req.params;
     const { id: userId } = req.user!;
 
-    const hasAccess = await projectService.checkUserAccess(projectId, userId, [
+    const hasAccess = await projectServices.checkUserAccess(projectId, userId, [
       "owner",
       "admin",
     ]);
@@ -85,7 +81,7 @@ export const removeCategory = asyncWrapper(
       });
     }
 
-    await categoryService.removeCategory(categoryId, projectId);
+    await categoryServices.removeCategory(categoryId, projectId);
 
     res.json({
       message: "Category removed successfully",

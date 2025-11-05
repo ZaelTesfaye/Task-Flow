@@ -1,6 +1,6 @@
-import asyncWrapper from "../lib/asyncWrapper.js";
 import type { Request, Response } from "express";
-import * as projectService from "../services/project.service.js";
+import { asyncWrapper } from "../lib/index.js";
+import { projectServices } from "../services/index.js";
 import type {
   CreateProjectDTO,
   UpdateProjectDTO,
@@ -12,7 +12,7 @@ export const createProject = asyncWrapper(
     const { id } = req.user!;
     const { title, description } = req.body;
 
-    const result = await projectService.createProject(title, description, id);
+    const result = await projectServices.createProject(title, description, id);
 
     res.json({
       message: "Project created successfully",
@@ -30,7 +30,7 @@ export const updateProject = asyncWrapper(
     const { id: userId } = req.user!;
     const updates = req.body;
 
-    const hasAccess = await projectService.checkUserAccess(projectId, userId, [
+    const hasAccess = await projectServices.checkUserAccess(projectId, userId, [
       "owner",
     ]);
     if (!hasAccess) {
@@ -39,7 +39,7 @@ export const updateProject = asyncWrapper(
       });
     }
 
-    const result = await projectService.updateProject(projectId, updates);
+    const result = await projectServices.updateProject(projectId, updates);
 
     res.json({
       message: "Project updated successfully",
@@ -53,7 +53,7 @@ export const removeProject = asyncWrapper(
     const { projectId } = req.params;
     const { id: userId } = req.user!;
 
-    const hasAccess = await projectService.checkUserAccess(projectId, userId, [
+    const hasAccess = await projectServices.checkUserAccess(projectId, userId, [
       "owner",
     ]);
 
@@ -63,7 +63,7 @@ export const removeProject = asyncWrapper(
       });
     }
 
-    await projectService.removeProject(projectId);
+    await projectServices.removeProject(projectId);
 
     res.json({
       message: "Project removed successfully",
@@ -80,7 +80,7 @@ export const addMember = asyncWrapper(
     const { userId, access = "member" } = req.body;
     const { id: requesterId } = req.user!;
 
-    const hasAccess = await projectService.checkUserAccess(
+    const hasAccess = await projectServices.checkUserAccess(
       projectId,
       requesterId,
       ["owner"],
@@ -92,7 +92,7 @@ export const addMember = asyncWrapper(
       });
     }
 
-    const result = await projectService.addMember(projectId, userId, access);
+    const result = await projectServices.addMember(projectId, userId, access);
 
     res.json({
       message: "Member added successfully",
@@ -109,7 +109,7 @@ export const removeProjectMember = asyncWrapper(
     const { projectId, userId } = req.params;
     const { id: requesterId } = req.user!;
 
-    const hasAccess = await projectService.checkUserAccess(
+    const hasAccess = await projectServices.checkUserAccess(
       projectId,
       requesterId,
       ["owner"],
@@ -121,7 +121,7 @@ export const removeProjectMember = asyncWrapper(
       });
     }
 
-    await projectService.removeMember(projectId, userId);
+    await projectServices.removeMember(projectId, userId);
 
     res.json({
       message: "Member removed successfully",
@@ -138,7 +138,7 @@ export const promoteProjectMember = asyncWrapper(
     const { access } = req.body;
     const { id: promoterId } = req.user!;
 
-    const hasAccess = await projectService.checkUserAccess(
+    const hasAccess = await projectServices.checkUserAccess(
       projectId,
       promoterId,
       ["owner"],
@@ -150,7 +150,7 @@ export const promoteProjectMember = asyncWrapper(
       });
     }
 
-    await projectService.promoteProjectMember(projectId, userId, access);
+    await projectServices.promoteProjectMember(projectId, userId, access);
 
     res.json({
       status: true,
@@ -163,7 +163,7 @@ export const getUserProjects = asyncWrapper(
   async (req: Request, res: Response) => {
     const { id: userId } = req.user!;
 
-    const result = await projectService.getUserProjects(userId);
+    const result = await projectServices.getUserProjects(userId);
 
     res.json({
       data: result,
@@ -177,7 +177,7 @@ export const getProjectMembers = asyncWrapper(
     const { id: userId } = req.user!;
 
     // Check if user is a member of the project
-    const hasAccess = await projectService.checkUserAccess(projectId, userId, [
+    const hasAccess = await projectServices.checkUserAccess(projectId, userId, [
       "owner",
       "admin",
       "member",
@@ -189,7 +189,7 @@ export const getProjectMembers = asyncWrapper(
       });
     }
 
-    const result = await projectService.getProjectMembers(projectId);
+    const result = await projectServices.getProjectMembers(projectId);
 
     res.json({
       data: result,

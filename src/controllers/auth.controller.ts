@@ -1,8 +1,9 @@
-import asyncWrapper from "../lib/asyncWrapper.js";
-import * as authService from "../services/auth.service.js";
 import type { CookieOptions, Request, Response } from "express";
+
+import { asyncWrapper } from "../lib/index.js";
+import { authServices } from "../services/index.js";
+import { type RegisterBody, type LoginBody } from "../dtos/index.js";
 import config from "../config/config.js";
-import { type RegisterBody, type LoginBody } from "../dtos/auth.dto.js";
 
 export const defaultCookieConfig: CookieOptions = {
   httpOnly: true,
@@ -15,7 +16,7 @@ export const defaultCookieConfig: CookieOptions = {
 export const register = asyncWrapper(
   async (req: Request<{}, {}, RegisterBody>, res: Response) => {
     const { name, email, password } = req.body;
-    const userData = await authService.register(name, email, password);
+    const userData = await authServices.register(name, email, password);
 
     res.cookie("auth", userData.token, defaultCookieConfig).status(201).json({
       message: "User registered successfully",
@@ -29,7 +30,7 @@ export const login = asyncWrapper(
   async (req: Request<{}, {}, LoginBody>, res: Response) => {
     const { email, password } = req.body;
     // check if the user exists
-    const data = await authService.login(email, password);
+    const data = await authServices.login(email, password);
     res.cookie("auth", data.token, defaultCookieConfig).status(200).json({
       message: "User logged in successfully",
       status: true,
