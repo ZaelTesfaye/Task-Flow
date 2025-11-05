@@ -9,13 +9,6 @@ export const getAllUsers = (page: number, limit: number) => {
       id: true,
       name: true,
       email: true,
-      tasks: {
-        select: {
-          id: true,
-          status: true,
-          description: true,
-        },
-      },
     },
   });
 };

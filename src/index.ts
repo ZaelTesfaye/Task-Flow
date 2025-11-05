@@ -6,6 +6,7 @@ import taskRoutes from "./routes/task.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 import categoryRoutes from "./routes/category.routes.js";
 import projectRoutes from "./routes/project.routes.js";
+import userRoutes from "./routes/user.routes.js";
 import config from "./config/config.js";
 import cors from "cors";
 import adminRoutes from "./routes/admin.routes.js";
@@ -44,6 +45,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/task", authMiddleware, taskRoutes);
 app.use("/api/project", authMiddleware, projectRoutes);
 app.use("/api/category", authMiddleware, categoryRoutes);
+app.use("/api/user", authMiddleware, userRoutes);
 
 // ejs
 app.get("/home", (req, res) => {

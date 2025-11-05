@@ -100,3 +100,41 @@ export const promoteMember = (
     },
   });
 };
+
+export const getUserProjects = (userId: string) => {
+  return prisma.projectMembers.findMany({
+    where: {
+      userId,
+    },
+    include: {
+      project: {
+        include: {
+          owner: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+        },
+      },
+    },
+  });
+};
+
+export const getProjectMembers = (projectId: string) => {
+  return prisma.projectMembers.findMany({
+    where: {
+      projectId,
+    },
+    include: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      },
+    },
+  });
+};

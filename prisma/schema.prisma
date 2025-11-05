@@ -31,6 +31,8 @@ model Project {
 
   categories Category[]
   members    ProjectMembers[]
+
+  @@unique([ownerId, title])
 }
 
 model ProjectMembers {
@@ -55,6 +57,8 @@ model Category {
   project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
   tasks Task[]
+
+  @@unique([name, projectId])
 }
 
 model Task {
@@ -70,7 +74,7 @@ model Task {
   assignedByUser User   @relation("assignedBy", fields: [assignedBy], references: [id])
 
   categoryId String
-  Category   Category? @relation(fields: [categoryId], references: [id])
+  Category   Category? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   pendingUpdates PendingUpdates[]
 }

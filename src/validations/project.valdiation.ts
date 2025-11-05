@@ -80,3 +80,12 @@ export const promoteMemberSchema = {
     access: joi.string().valid("admin", "member").required(),
   }),
 };
+
+export const getProjectMembersSchema = {
+  params: joi
+    .object({
+      projectId: joi.string().uuid().required(),
+    })
+    .required()
+    .unknown(true),
+};

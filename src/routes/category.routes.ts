@@ -5,20 +5,23 @@ import * as categorySchema from "../validations/category.validation.js";
 
 const router = express.Router();
 
+// create category
 router.post(
-  "/create-category/:projectId",
+  "/:projectId",
   validatorMiddleware(categorySchema.createCategorySchema),
   categoryController.createCategory,
 );
 
+// update category
 router.patch(
-  "/update-category/:projectId/:categoryId",
+  "/:projectId/:categoryId",
   validatorMiddleware(categorySchema.updateCategorySchema),
   categoryController.updateCategory,
 );
 
+// remove category
 router.delete(
-  "/remove-category/:projectId/:categoryId",
+  "/:projectId/:categoryId",
   validatorMiddleware(categorySchema.removeCategorySchema),
   categoryController.removeCategory,
 );

@@ -5,6 +5,7 @@ import { addAdminSchema } from "../validations/admin.validation.js";
 
 const router = express.Router();
 
-router.post("/add-admin", validatorMiddleware(addAdminSchema), addAdmin);
+// create admin
+router.post("/create-admin", validatorMiddleware(addAdminSchema), addAdmin);
 
 export default router;

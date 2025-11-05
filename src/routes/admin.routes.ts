@@ -10,22 +10,22 @@ import {
 const router = express.Router();
 
 // View All Users & Tasks
-router.post(
-  "/users",
+router.get(
+  "/user/:page/:limit",
   validatorMiddleware(getAllUsersSchema),
   adminController.viewAllUsers,
 );
 
 // Remove user
 router.delete(
-  "/remove-user",
+  "/user/:userId",
   validatorMiddleware(removeUserSchema),
   adminController.removeUser,
 );
 
-// Change  user password
+// Change user password
 router.patch(
-  "/update-password",
+  "/user",
   validatorMiddleware(updateUserPasswordSchema),
   adminController.updateUserPassword,
 );

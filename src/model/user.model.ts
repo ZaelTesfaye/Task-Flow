@@ -30,10 +30,32 @@ export const getUser = async (userId: string) => {
   });
 };
 
+export const updateUser = async (
+  userId: string,
+  updates: { name?: string; email?: string },
+) => {
+  return prisma.user.update({
+    where: {
+      id: userId,
+    },
+    data: updates,
+  });
+};
+
+export const deleteUser = async (userId: string) => {
+  return prisma.user.delete({
+    where: {
+      id: userId,
+    },
+  });
+};
+
 export const userModel = {
   createUser,
   findByEmail,
   getUser,
+  updateUser,
+  deleteUser,
 };
 
 export default userModel;

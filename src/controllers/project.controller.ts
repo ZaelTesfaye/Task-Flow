@@ -153,7 +153,46 @@ export const promoteProjectMember = asyncWrapper(
     await projectService.promoteProjectMember(projectId, userId, access);
 
     res.json({
-      message: "Member promoted successfully",
+      status: true,
+      message: "Member updated successfully",
+    });
+  },
+);
+
+export const getUserProjects = asyncWrapper(
+  async (req: Request, res: Response) => {
+    const { id: userId } = req.user!;
+
+    const result = await projectService.getUserProjects(userId);
+
+    res.json({
+      data: result,
+    });
+  },
+);
+
+export const getProjectMembers = asyncWrapper(
+  async (req: Request<{ projectId: string }>, res: Response) => {
+    const { projectId } = req.params;
+    const { id: userId } = req.user!;
+
+    // Check if user is a member of the project
+    const hasAccess = await projectService.checkUserAccess(projectId, userId, [
+      "owner",
+      "admin",
+      "member",
+    ]);
+
+    if (!hasAccess) {
+      return res.status(403).json({
+        message: "Only project members can view project members",
+      });
+    }
+
+    const result = await projectService.getProjectMembers(projectId);
+
+    res.json({
+      data: result,
     });
   },
 );
