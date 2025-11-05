@@ -1,4 +1,5 @@
 import type { CookieOptions, Request, Response } from "express";
+import httpStatus from "http-status";
 
 import { asyncWrapper } from "../lib/index.js";
 import { authServices } from "../services/index.js";
@@ -18,11 +19,13 @@ export const register = asyncWrapper(
     const { name, email, password } = req.body;
     const userData = await authServices.register(name, email, password);
 
-    res.cookie("auth", userData.token, defaultCookieConfig).status(201).json({
-      message: "User registered successfully",
-      status: true,
-      data: userData,
-    });
+    res
+      .cookie("auth", userData.token, defaultCookieConfig)
+      .status(httpStatus.CREATED)
+      .json({
+        message: "User registered successfully",
+        data: userData,
+      });
   },
 );
 
@@ -31,9 +34,8 @@ export const login = asyncWrapper(
     const { email, password } = req.body;
     // check if the user exists
     const data = await authServices.login(email, password);
-    res.cookie("auth", data.token, defaultCookieConfig).status(200).json({
+    res.cookie("auth", data.token, defaultCookieConfig).json({
       message: "User logged in successfully",
-      status: true,
       data: data,
     });
   },

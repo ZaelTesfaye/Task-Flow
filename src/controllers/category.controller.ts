@@ -1,4 +1,6 @@
 import type { Request, Response } from "express";
+import httpStatus from "http-status";
+
 import { asyncWrapper } from "../lib/index.js";
 import { categoryServices, projectServices } from "../services/index.js";
 import type { CreateCategoryDTO, UpdateCategoryDTO } from "../dtos/index.js";
@@ -17,7 +19,7 @@ export const createCategory = asyncWrapper(
       "admin",
     ]);
     if (!hasAccess) {
-      return res.status(403).json({
+      return res.status(httpStatus.FORBIDDEN).json({
         message: "Only project owner or admin can create categories",
       });
     }
@@ -49,7 +51,7 @@ export const updateCategory = asyncWrapper(
       "admin",
     ]);
     if (!hasAccess) {
-      return res.status(403).json({
+      return res.status(httpStatus.FORBIDDEN).json({
         message: "Only project owner or admin can update categories",
       });
     }
@@ -76,7 +78,7 @@ export const removeCategory = asyncWrapper(
       "admin",
     ]);
     if (!hasAccess) {
-      return res.status(403).json({
+      return res.status(httpStatus.FORBIDDEN).json({
         message: "Only project owner or admin can remove categories",
       });
     }

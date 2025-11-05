@@ -1,8 +1,8 @@
 import type { Request, Response } from "express";
+import httpStatus from "http-status";
 
 const notFoundHandler = (req: Request, res: Response) => {
-  res.status(404).json({
-    status: false,
+  res.status(httpStatus.NOT_FOUND).json({
     message: "Not Found!",
   });
 };

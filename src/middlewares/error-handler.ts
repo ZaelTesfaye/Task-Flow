@@ -18,7 +18,6 @@ const errorHandler = (
       logger.error(error.message, error);
 
     return res.status(error.statusCode).json({
-      status: false,
       message: error.message,
     });
   }
@@ -28,32 +27,27 @@ const errorHandler = (
       case "P2000": // Value too long
         logger.error(error.message, error);
         return res.status(httpStatus.BAD_REQUEST).json({
-          status: false,
           message: "Value too long",
         });
 
       case "P2002": // Unique constraint failed
         return res.status(httpStatus.CONFLICT).json({
-          status: false,
           message: "Resource already exists",
         });
 
       case "P2033": // Number out of range
         return res.status(httpStatus.BAD_REQUEST).json({
-          status: false,
           message: "Number out of range",
         });
 
       case "P2025": // Record not found
         return res.status(httpStatus.NOT_FOUND).json({
-          status: false,
           message: "Resource not found",
         });
 
       default:
         logger.error(error.message, error);
         return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
-          status: false,
           message: "An error occurred",
         });
     }
@@ -62,7 +56,6 @@ const errorHandler = (
   logger.error(error.message, error);
 
   res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
-    status: false,
     message: "An error occurred",
   });
 };

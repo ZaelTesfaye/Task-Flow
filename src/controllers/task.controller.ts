@@ -1,4 +1,5 @@
 import type { Request, Response } from "express";
+import httpStatus from "http-status";
 
 import { asyncWrapper } from "../lib/index.js";
 import {
@@ -27,7 +28,7 @@ export const createTask = asyncWrapper(
       "admin",
     ]);
     if (!hasAccess) {
-      return res.status(403).json({
+      return res.status(httpStatus.FORBIDDEN).json({
         message: "Only project owner or admin can create tasks",
       });
     }
@@ -37,7 +38,7 @@ export const createTask = asyncWrapper(
       projectId,
     );
     if (!category) {
-      return res.status(403).json({
+      return res.status(httpStatus.FORBIDDEN).json({
         message: "Category does not belong to the specified project",
       });
     }
@@ -48,6 +49,7 @@ export const createTask = asyncWrapper(
       userId,
       categoryId,
       assignedTo,
+      projectId,
     );
 
     res.json({
@@ -68,7 +70,7 @@ export const getTasks = asyncWrapper(
       "member",
     ]);
     if (!hasAccess) {
-      return res.status(403).json({
+      return res.status(httpStatus.FORBIDDEN).json({
         message: "Only project members can view tasks",
       });
     }
@@ -95,7 +97,7 @@ export const updateTask = asyncWrapper(
       "admin",
     ]);
     if (!hasAccess) {
-      return res.status(403).json({
+      return res.status(httpStatus.FORBIDDEN).json({
         message: "Only project owner or admin can update tasks",
       });
     }
@@ -126,7 +128,7 @@ export const removeTask = asyncWrapper(
       "admin",
     ]);
     if (!hasAccess) {
-      return res.status(403).json({
+      return res.status(httpStatus.FORBIDDEN).json({
         message: "Only project owner or admin can remove tasks",
       });
     }
@@ -156,7 +158,7 @@ export const requestTaskUpdate = asyncWrapper(
       "member",
     ]);
     if (!hasAccess) {
-      return res.status(403).json({
+      return res.status(httpStatus.FORBIDDEN).json({
         message: "Only project members can request task updates",
       });
     }
@@ -192,7 +194,7 @@ export const acceptPendingUpdate = asyncWrapper(
       "admin",
     ]);
     if (!hasAccess) {
-      return res.status(403).json({
+      return res.status(httpStatus.FORBIDDEN).json({
         message: "Only project owner or admin can accept pending updates",
       });
     }

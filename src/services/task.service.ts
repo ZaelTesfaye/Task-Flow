@@ -8,7 +8,20 @@ export const createTask = async (
   userId: string,
   categoryId: string,
   assignedTo: string,
+  projectId: string,
 ) => {
+  // Validate that the assignedTo user is a member of the project
+  const isMember = await prisma.projectMembers.findFirst({
+    where: {
+      projectId,
+      userId: assignedTo,
+    },
+  });
+
+  if (!isMember) {
+    throw new Error("Assigned user must be a member of the project");
+  }
+
   return taskModel.createTask(
     title,
     description,
@@ -78,6 +91,11 @@ export const requestTaskUpdate = async (
 
   if (task.Category?.projectId !== projectId) {
     throw new Error("Task does not belong to the specified project");
+  }
+
+  // Check if the requesting user is the one assigned to the task
+  if (task.assignedTo !== userId) {
+    throw new Error("Only the user assigned to the task can request updates");
   }
 
   return taskModel.createPendingUpdate(taskId, userId, updateData);

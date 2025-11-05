@@ -1,4 +1,6 @@
 import type { Request, Response } from "express";
+import httpStatus from "http-status";
+
 import { asyncWrapper } from "../lib/index.js";
 import { projectServices } from "../services/index.js";
 import type {
@@ -34,7 +36,7 @@ export const updateProject = asyncWrapper(
       "owner",
     ]);
     if (!hasAccess) {
-      return res.status(403).json({
+      return res.status(httpStatus.FORBIDDEN).json({
         message: "Only project owner can update the project",
       });
     }
@@ -58,7 +60,7 @@ export const removeProject = asyncWrapper(
     ]);
 
     if (!hasAccess) {
-      return res.status(403).json({
+      return res.status(httpStatus.FORBIDDEN).json({
         message: "Only project owner can delete the project",
       });
     }
@@ -87,7 +89,7 @@ export const addMember = asyncWrapper(
     );
 
     if (!hasAccess) {
-      return res.status(403).json({
+      return res.status(httpStatus.FORBIDDEN).json({
         message: "Only project owner can add members",
       });
     }
@@ -116,7 +118,7 @@ export const removeProjectMember = asyncWrapper(
     );
 
     if (!hasAccess) {
-      return res.status(403).json({
+      return res.status(httpStatus.FORBIDDEN).json({
         message: "Only project owner can remove members",
       });
     }
@@ -145,7 +147,7 @@ export const promoteProjectMember = asyncWrapper(
     );
 
     if (!hasAccess) {
-      return res.status(403).json({
+      return res.status(httpStatus.FORBIDDEN).json({
         message: "Only project owner can promote members",
       });
     }
@@ -153,7 +155,6 @@ export const promoteProjectMember = asyncWrapper(
     await projectServices.promoteProjectMember(projectId, userId, access);
 
     res.json({
-      status: true,
       message: "Member updated successfully",
     });
   },
@@ -184,7 +185,7 @@ export const getProjectMembers = asyncWrapper(
     ]);
 
     if (!hasAccess) {
-      return res.status(403).json({
+      return res.status(httpStatus.FORBIDDEN).json({
         message: "Only project members can view project members",
       });
     }

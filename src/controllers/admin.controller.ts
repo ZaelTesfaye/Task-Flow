@@ -26,13 +26,11 @@ export const removeUser = asyncWrapper(
     const result = await adminServices.removeUser(userId);
 
     if (result) {
-      res.status(httpStatus.OK).json({
-        status: true,
+      res.json({
         message: "User deleted successfully",
       });
     } else {
       res.status(httpStatus.NOT_FOUND).json({
-        status: false,
         message: "User Not Found",
       });
     }
@@ -46,8 +44,7 @@ export const updateUserPassword = asyncWrapper(
 
     await adminServices.updateUserPassword(userId, password);
 
-    res.status(httpStatus.OK).json({
-      status: true,
+    res.json({
       message: "Password updated successfully",
     });
   },
@@ -57,8 +54,7 @@ export const addAdmin = asyncWrapper(
   async (req: Request<{}, {}, AddAdmin>, res: Response, next: NextFunction) => {
     const { username, name, password } = req.body;
     await adminServices.addAdmin(username, name, password);
-    res.status(httpStatus.OK).json({
-      status: true,
+    res.json({
       message: "Admin added successfully",
     });
   },
