@@ -1,0 +1,91 @@
+import React from 'react';
+import { X, Trash2 } from 'lucide-react';
+import type { ProjectSettingsPaneProps } from '@/types/project';
+
+const ProjectSettingsPane: React.FC<ProjectSettingsPaneProps> = ({
+  isOpen,
+  onClose,
+  title,
+  description,
+  onTitleChange,
+  onDescriptionChange,
+  onSave,
+  onDelete,
+  isSaving = false,
+}) => {
+  return (
+    <div
+      className={`fixed left-0 top-18 h-full w-80 bg-[hsl(var(--card))] text-[hsl(var(--card-foreground))] border-r border-[hsl(var(--border))] shadow-xl transform transition-transform duration-300 ease-in-out z-40 ${
+        isOpen ? 'translate-x-0' : '-translate-x-full'
+      }`}
+    >
+      <div className="flex items-center justify-between p-6 border-b border-[hsl(var(--border))]">
+        <h3 className="font-semibold text-lg text-gray-900 dark:text-white">Project Settings</h3>
+        <button
+          onClick={onClose}
+          className="p-2 hover:bg-[hsl(var(--accent))] rounded-lg transition"
+          title="Close Settings"
+        >
+          <X className="w-4 h-4" />
+        </button>
+      </div>
+
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          void onSave();
+        }}
+        className="flex flex-col gap-4 p-6"
+      >
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-[hsl(var(--foreground))]" htmlFor="project-title">
+            Title
+          </label>
+          <input
+            id="project-title"
+            type="text"
+            value={title}
+            onChange={(event) => onTitleChange(event.target.value)}
+            className="w-full px-3 py-2 border border-[hsl(var(--input))] rounded-lg focus:ring-2 focus:ring-[hsl(var(--ring))] focus:border-transparent outline-none bg-[hsl(var(--card))] text-[hsl(var(--foreground))]"
+            placeholder="Project title"
+            required
+          />
+        </div>
+
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-[hsl(var(--foreground))]" htmlFor="project-description">
+            Description
+          </label>
+          <textarea
+            id="project-description"
+            value={description}
+            onChange={(event) => onDescriptionChange(event.target.value)}
+            rows={5}
+            className="w-full px-3 py-2 border border-[hsl(var(--input))] rounded-lg focus:ring-2 focus:ring-[hsl(var(--ring))] focus:border-transparent outline-none resize-none bg-[hsl(var(--card))] text-[hsl(var(--foreground))]"
+            placeholder="Describe your project"
+          />
+        </div>
+
+        <div className="flex flex-col gap-3 pt-2">
+          <button
+            type="submit"
+            disabled={isSaving}
+            className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-70 disabled:cursor-not-allowed transition"
+          >
+            {isSaving ? 'Saving...' : 'Save Changes'}
+          </button>
+          <button
+            type="button"
+            onClick={onDelete}
+            className="w-full px-4 py-2 border border-red-200 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition"
+          >
+            <Trash2 className="inline w-4 h-4 mr-2" />
+            Delete Project
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+export default ProjectSettingsPane;

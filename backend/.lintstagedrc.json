@@ -1,3 +1,0 @@
-{
-  "*.+(js|ts)": ["npx eslint --fix", "npx prettier --write"]
-}
