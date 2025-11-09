@@ -1,0 +1,118 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String @id @default(uuid())
+  name     String
+  email    String @unique
+  password String
+  role     String @default("user")
+
+  projects            Project[]
+  projectMembers      ProjectMembers[]
+  assignedTo          Task[]              @relation("assignedTo")
+  assignedBy          Task[]              @relation("assignedBy")
+  sentInvitations     ProjectInvitation[] @relation("InvitationInviter")
+  receivedInvitations ProjectInvitation[] @relation("InvitationInvitee")
+  PendingUpdates      PendingUpdates[]
+}
+
+model Project {
+  id          String @id @default(uuid())
+  title       String
+  description String
+
+  ownerId String
+  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  categories  Category[]
+  members     ProjectMembers[]
+  invitations ProjectInvitation[]
+
+  @@unique([ownerId, title])
+}
+
+model ProjectMembers {
+  id       String   @id @default(uuid())
+  joinedAt DateTime @default(now())
+  access   String   @default("member") // owner, admin, member
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, projectId])
+}
+
+model ProjectInvitation {
+  id          String    @id @default(uuid())
+  email       String
+  status      String    @default("pending") // pending, accepted, declined, expired
+  access      String    @default("member")
+  createdAt   DateTime  @default(now())
+  respondedAt DateTime?
+
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  inviterId String
+  inviter   User   @relation("InvitationInviter", fields: [inviterId], references: [id], onDelete: Cascade)
+
+  inviteeId String?
+  invitee   User?   @relation("InvitationInvitee", fields: [inviteeId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, email, status])
+  @@index([projectId, status])
+  @@index([inviteeId, status])
+}
+
+model Category {
+  id   String @id @default(uuid())
+  name String
+
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  tasks Task[]
+
+  @@unique([name, projectId])
+}
+
+model Task {
+  id          String @id @default(uuid())
+  title       String
+  description String
+  status      String @default("active") //complete, active, pending(pending approval)
+
+  assignedTo   String
+  assignedUser User   @relation("assignedTo", fields: [assignedTo], references: [id], onDelete: Cascade)
+
+  assignedBy     String
+  assignedByUser User   @relation("assignedBy", fields: [assignedBy], references: [id], onDelete: Cascade)
+
+  categoryId String
+  Category   Category? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  pendingUpdates PendingUpdates[]
+}
+
+model PendingUpdates {
+  id                String   @id @default(uuid())
+  createdAt         DateTime @default(now())
+  updateDescription String
+  newStatus         String //complete, active, pending(pending approval)
+
+  taskId String
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  updateBy String
+  user     User   @relation(fields: [updateBy], references: [id], onDelete: Cascade)
+}
