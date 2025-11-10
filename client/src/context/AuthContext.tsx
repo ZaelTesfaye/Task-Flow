@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { authAPI } from '@/lib/api';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { LoginFormData, RegisterFormData } from '@/validation/schemas';
 import toast from 'react-hot-toast';
 import { User, LoginRequest, RegisterRequest } from '@/types/api';

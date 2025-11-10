@@ -1,5 +1,7 @@
+'use client';
+
 import { useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/router';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import Layout from '@/components/Layout';
 import Modal from '@/components/Modal';
@@ -18,8 +20,10 @@ import toast from 'react-hot-toast';
 import { INVITATION_STATUS_COLORS } from '@/constants/project';
 
 export default function ProjectBoard() {
+  const params = useParams();
   const router = useRouter();
-  const { id: projectId } = router.query;
+  const searchParams = useSearchParams();
+  const projectId = params.id as string;
   const { user } = useAuth();
 
   const {
@@ -62,7 +66,7 @@ export default function ProjectBoard() {
     removeMember,
     updateMemberAccess,
     refetch: fetchProjectData,
-  } = useProject(projectId as string);
+  } = useProject(projectId);
 
   const isOwnerOrAdmin = userRole === 'owner' || userRole === 'admin';
   const [isSavingSettings, setIsSavingSettings] = useState(false);
@@ -124,23 +128,19 @@ export default function ProjectBoard() {
   }, [userRole, isSettingsPaneOpen, setIsSettingsPaneOpen, project, updateForm]);
 
   useEffect(() => {
-    if (!router.isReady || loading || hasAutoOpenedCategory.current) {
+    if (loading || hasAutoOpenedCategory.current) {
       return;
     }
 
-    const createCategoryQuery = router.query.createCategory;
-    const shouldOpenCategory = Array.isArray(createCategoryQuery)
-      ? createCategoryQuery.includes('1')
-      : createCategoryQuery === '1';
+    const createCategoryQuery = searchParams.get('createCategory');
+    const shouldOpenCategory = createCategoryQuery === '1';
 
     if (shouldOpenCategory && isOwnerOrAdmin) {
       hasAutoOpenedCategory.current = true;
       openModal('showCategoryModal');
-      if (typeof projectId === 'string') {
-        void router.replace(`/project/${projectId}`, undefined, { shallow: true });
-      }
+      router.replace(`/project/${projectId}`);
     }
-  }, [router, projectId, openModal, loading, isOwnerOrAdmin]);
+  }, [searchParams, projectId, openModal, loading, isOwnerOrAdmin, router]);
 
   const handleSubmitTaskUpdate = async (e: React.FormEvent) => {
     e.preventDefault();

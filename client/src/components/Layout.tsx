@@ -1,6 +1,6 @@
 import { useAuth } from '@/context/AuthContext';
 import { useThemeStore } from '@/stores';
-import { useRouter } from 'next/router';
+import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, useState, useRef } from 'react';
 import { LogOut, Settings, Trash2, Moon, Sun, Inbox } from 'lucide-react';
 import { userAPI } from '@/lib/api';
@@ -18,6 +18,7 @@ export default function Layout({ children }: LayoutProps) {
   const { user, logout, updateUserData, loading } = useAuth();
   const { theme, toggleTheme, setTheme } = useThemeStore();
   const router = useRouter();
+  const pathname = usePathname();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -43,10 +44,10 @@ export default function Layout({ children }: LayoutProps) {
   }, [theme]);
 
   useEffect(() => {
-    if (!user && !loading && router.pathname !== '/login' && router.pathname !== '/register') {
+    if (!user && !loading && pathname !== '/login' && pathname !== '/register') {
       router.push('/login');
     }
-  }, [user, loading, router]);
+  }, [user, loading, router, pathname]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

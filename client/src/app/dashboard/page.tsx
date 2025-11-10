@@ -1,8 +1,10 @@
+'use client';
+
 import { useState, useEffect } from 'react';
 import Layout from '@/components/Layout';
 import { projectAPI } from '@/lib/api';
 import { Plus, FolderOpen, Crown, Shield, Users, Sparkles } from 'lucide-react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -70,10 +72,7 @@ export default function Dashboard() {
       setTitle('');
       setDescription('');
       if (createdProject?.id) {
-        await router.push({
-          pathname: `/project/${createdProject.id}`,
-          query: { createCategory: '1' },
-        });
+        router.push(`/project/${createdProject.id}?createCategory=1`);
         return;
       }
       fetchProjects();

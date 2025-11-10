@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useState } from 'react';
 import { useThemeStore } from '@/stores';
 
@@ -104,8 +106,8 @@ export default function ThemeDebug() {
             Instructions
           </h3>
           <ul className="list-disc list-inside space-y-1 text-blue-800 dark:text-blue-200">
-            <li>Click "Force Light Mode" to switch to light theme</li>
-            <li>Click "Force Dark Mode" to switch to dark theme</li>
+            <li>Click &quot;Force Light Mode&quot; to switch to light theme</li>
+            <li>Click &quot;Force Dark Mode&quot; to switch to dark theme</li>
             <li>Page will reload automatically after switching</li>
             <li>Check the debug info above to see current state</li>
           </ul>
