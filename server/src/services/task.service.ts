@@ -126,3 +126,29 @@ export const acceptPendingUpdate = async (
     pendingUpdate.newStatus,
   );
 };
+
+export const rejectPendingUpdate = async (
+  pendingUpdateId: string,
+  projectId: string,
+) => {
+  const pendingUpdate = await prisma.pendingUpdates.findUnique({
+    where: { id: pendingUpdateId },
+    include: {
+      task: {
+        include: { Category: true },
+      },
+    },
+  });
+
+  //check pending update exists
+  if (!pendingUpdate) {
+    throw new Error("Pending update not found");
+  }
+
+  // verify that the task in pending updates belongs to the specified project (the project which we already veriied that the user has access to)
+  if (pendingUpdate.task.Category?.projectId !== projectId) {
+    throw new Error("Pending update does not belong to the specified project");
+  }
+
+  return taskModel.rejectPendingUpdate(pendingUpdateId);
+};

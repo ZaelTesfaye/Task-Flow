@@ -41,4 +41,10 @@ router.patch(
   taskController.acceptPendingUpdate,
 );
 
+router.patch(
+  "/reject-update/:projectId/:pendingUpdateId",
+  validatorMiddleware(acceptPendingUpdateSchema),
+  taskController.rejectPendingUpdate,
+);
+
 export default router;

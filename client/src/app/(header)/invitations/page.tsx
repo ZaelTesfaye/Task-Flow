@@ -1,0 +1,107 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { projectAPI } from "@/lib/api";
+import type { ProjectInvitation } from "@/types/index";
+import toast from "react-hot-toast";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { RefreshCw, Clock } from "lucide-react";
+import InvitationsList from "@/components/profile/InvitationsList";
+
+export default function InvitationsPage() {
+  const [invitations, setInvitations] = useState<ProjectInvitation[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [invitationLoading, setInvitationLoading] = useState<boolean>(false);
+
+  const loadInvitations = async () => {
+    try {
+      setLoading(true);
+      const response = await projectAPI.getMyInvitations();
+      setInvitations(response.data || []);
+    } catch (error) {
+      console.error("Failed to load invitations", error);
+      toast.error("Failed to load invitations");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadInvitations();
+  }, []);
+
+  const handleRespond = async (
+    invitationId: string,
+    action: "accept" | "decline"
+  ) => {
+    try {
+      setInvitationLoading(true);
+      await projectAPI.respondToInvitation(invitationId, { action });
+      toast.success(
+        action === "accept" ? "Invitation accepted!" : "Invitation declined."
+      );
+      loadInvitations();
+    } catch (error: any) {
+      toast.error(
+        error?.response?.data?.message || "Invitation response failed"
+      );
+    } finally {
+      setInvitationLoading(false);
+    }
+  };
+
+  return (
+    <div className="max-w-4xl px-6 py-10 mx-auto">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-3xl font-bold text-[hsl(var(--foreground))]">
+            Project Invitations
+          </h1>
+          <p className="text-[hsl(var(--muted-foreground))]">
+            Join and collaborate in projects
+          </p>
+        </div>
+
+        <Button
+          variant="outline"
+          onClick={() => loadInvitations()}
+          disabled={loading}
+          className="hover:cursor-pointer hover:bg-gray-700"
+        >
+          <RefreshCw className="w-4 h-4 mr-2 hover:cursor-pointer" />
+          Refresh
+        </Button>
+      </div>
+
+      {/* Loader View */}
+      {loading ? (
+        <div className="flex items-center justify-center py-20">
+          <div className="flex items-center gap-3 text-[hsl(var(--muted-foreground))]">
+            <div className="w-6 h-6 border-2 border-blue-600 rounded-full border-t-transparent animate-spin" />
+            <span>Loading invitations...</span>
+          </div>
+        </div>
+      ) : invitations.length === 0 ? (
+        // No invitations view
+        <Card className="border-dashed shadow-none">
+          <CardHeader className="text-center">
+            <Clock className="w-10 h-10 mx-auto text-[hsl(var(--muted-foreground))] mb-3" />
+            <CardTitle className="text-xl">No pending invitations</CardTitle>
+          </CardHeader>
+          <CardContent className="text-center text-[hsl(var(--muted-foreground))]">
+            Invites you receive will appear here.
+          </CardContent>
+        </Card>
+      ) : (
+        // Invitations
+        <InvitationsList
+          invitations={invitations}
+          invitationLoading={invitationLoading}
+          onRespond={handleRespond}
+        />
+      )}
+    </div>
+  );
+}

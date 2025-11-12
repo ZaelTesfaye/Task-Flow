@@ -5,7 +5,8 @@ on:
     branches:
       - main
     paths:
-      - 'backend/**'
+      - 'server/**'
+      - '.github/workflows/deploy.yml'
   workflow_dispatch: # manual trigger
 
 jobs:

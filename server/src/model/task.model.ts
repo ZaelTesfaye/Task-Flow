@@ -67,3 +67,9 @@ export const acceptPendingUpdate = async (
     where: { id: pendingUpdateId },
   });
 };
+
+export const rejectPendingUpdate = async (pendingUpdateId: string) => {
+  return prisma.pendingUpdates.delete({
+    where: { id: pendingUpdateId },
+  });
+};

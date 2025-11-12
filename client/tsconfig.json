@@ -36,7 +36,8 @@
     ".next/types/**/*.ts",
     "eslint.config.ts",
     "next.config.js",
-    ".next/dev/types/**/*.ts"
+    ".next/dev/types/**/*.ts",
+    "src/types/api.type.ts"
   ],
   "exclude": [
     "node_modules"

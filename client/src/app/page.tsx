@@ -1,0 +1,131 @@
+"use client";
+
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CheckCircle, Users, BarChart3, Zap } from "lucide-react";
+
+const features = [
+  {
+    title: "Task Management",
+    description:
+      "Create, assign, and track tasks with ease. Keep your projects organized and on schedule.",
+    icon: CheckCircle,
+    bgColor: "bg-blue-50 dark:bg-blue-900",
+    iconColor: "text-blue-600 dark:text-blue-400",
+  },
+  {
+    title: "Team Collaboration",
+    description:
+      "Work together seamlessly with real-time updates and communication tools.",
+    icon: Users,
+    bgColor: "bg-emerald-50 dark:bg-green-900",
+    iconColor: "text-emerald-600 dark:text-green-400",
+  },
+  {
+    title: "Progress Tracking",
+    description:
+      "Monitor project progress with detailed analytics and visual reports.",
+    icon: BarChart3,
+    bgColor: "bg-purple-50 dark:bg-purple-900",
+    iconColor: "text-purple-600 dark:text-purple-400",
+  },
+];
+
+export default function HomePage() {
+  const { user, loading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && user) {
+      router.push("/dashboard");
+    }
+  }, [user, loading]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="w-32 h-32 border-b-2 rounded-full animate-spin border-primary"></div>
+      </div>
+    );
+  }
+
+  if (user) return null;
+
+  return (
+    <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      {/* Hero Section */}
+      <div className="container px-6 py-16 mx-auto">
+        <div className="mb-16 text-center">
+          <h1 className="mb-6 text-5xl font-bold text-transparent md:text-6xl bg-linear-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text">
+            TaskFlow
+          </h1>
+          <p className="max-w-2xl mx-auto mb-8 text-xl text-gray-600 dark:text-gray-300">
+            Streamline your project management with powerful tools designed for
+            teams and individuals. Organize, collaborate, and achieve more
+            together.
+          </p>
+
+          <div className="flex justify-center gap-4">
+            <Button
+              size="lg"
+              onClick={() => router.push("/auth?mode=register")}
+              className="px-8 py-3 text-lg hover:cursor-pointer hover:bg-gray-700"
+            >
+              Get Started Free
+            </Button>
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={() => router.push("/auth")}
+              className="px-8 py-3 text-lg hover:cursor-pointer hover:bg-gray-700"
+            >
+              Sign In
+            </Button>
+          </div>
+        </div>
+
+        {/* Features Grid */}
+        <div className="grid gap-8 mb-16 md:grid-cols-2 lg:grid-cols-3">
+          {features.map((feature) => {
+            const Icon = feature.icon;
+            return (
+              <Card
+                key={feature.title}
+                className="transition-shadow border-0 shadow-lg hover:shadow-xl"
+              >
+                <CardHeader>
+                  <div
+                    className={`flex items-center justify-center w-12 h-12 mb-4 rounded-lg ${feature.bgColor}`}
+                  >
+                    <Icon className={`w-6 h-6 ${feature.iconColor}`} />
+                  </div>
+                  <CardTitle className="text-xl">{feature.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-600 dark:text-gray-300">
+                    {feature.description}
+                  </p>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+
+        {/* Moto */}
+        <div className="p-8 text-center bg-white shadow-lg dark:bg-gray-800 rounded-2xl">
+          <Zap className="w-16 h-16 mx-auto mb-4 text-yellow-500" />
+          <h2 className="mb-4 text-3xl font-bold">
+            Ready to boost your productivity?
+          </h2>
+          <p className="max-w-md mx-auto mb-6 text-gray-600 dark:text-gray-300">
+            Join teams already using TaskFlow to manage their projects
+            efficiently.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}

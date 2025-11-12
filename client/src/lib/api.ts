@@ -19,24 +19,12 @@ import {
   TasksResponse,
   RequestUpdateRequest,
   AcceptUpdateRequest,
-  AdminUser,
-  UpdateUserRoleRequest,
-  SystemStats,
   ProjectInvitation,
   RespondInvitationRequest,
-} from "@/types/api";
+} from "@/types/index";
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api",
-  withCredentials: true,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-export const adminApi = axios.create({
-  baseURL:
-    process.env.NEXT_PUBLIC_ADMIN_API_URL || "http://localhost:5000/admin",
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
@@ -231,36 +219,14 @@ export const taskAPI = {
         data
       )
       .then((r) => r.data),
-};
 
-// Admin endpoints
-export const adminAPI = {
-  viewAllUsers: (
-    page: number,
-    limit: number
-  ): Promise<ApiResponse<AdminUser[]>> =>
-    adminApi.get(`/user/${page}/${limit}`),
-
-  removeUser: (userId: string): Promise<ApiResponse<void>> =>
-    adminApi.delete(`/user/${userId}`),
-
-  updateUserRole: (
-    userId: string,
-    data: UpdateUserRoleRequest
+  rejectPendingUpdate: (
+    projectId: string,
+    pendingUpdateId: string
   ): Promise<ApiResponse<void>> =>
-    adminApi.patch(`/users/${userId}/role`, data),
+    api
+      .patch<ApiResponse<void>>(
+        `/task/reject-update/${projectId}/${pendingUpdateId}`
+      )
+      .then((r) => r.data),
 };
-
-// Super Admin endpoints
-export const superAdminAPI = {
-  getStats: (): Promise<ApiResponse<SystemStats>> =>
-    api.get("/super-admin/stats"),
-
-  createAdmin: (data: {
-    username: string;
-    name: string;
-    password: string;
-  }): Promise<ApiResponse<void>> => api.post("/super-admin/create-admin", data),
-};
-
-export default api;

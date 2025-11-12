@@ -186,3 +186,33 @@ export const acceptPendingUpdate = asyncWrapper(
     });
   },
 );
+
+export const rejectPendingUpdate = asyncWrapper(
+  async (
+    req: Request<{ projectId: string; pendingUpdateId: string }>,
+    res: Response,
+  ) => {
+    const { projectId, pendingUpdateId } = req.params;
+    const { id: userId } = req.user!;
+
+    const hasAccess = await projectServices.checkUserAccess(projectId, userId, [
+      "owner",
+      "admin",
+    ]);
+    if (!hasAccess) {
+      return res.status(httpStatus.FORBIDDEN).json({
+        message: "Only project owner or admin can reject pending updates",
+      });
+    }
+
+    const result = await taskServices.rejectPendingUpdate(
+      pendingUpdateId,
+      projectId,
+    );
+
+    res.json({
+      message: "Pending update rejected successfully",
+      data: result,
+    });
+  },
+);
