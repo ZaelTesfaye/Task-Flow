@@ -16,12 +16,13 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({
   updateForm,
   addMember,
 }) => {
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    addMember({
+    await addMember({
       email: forms.newMemberEmail,
       access: forms.newMemberAccess,
     });
+    onClose();
   };
 
   return (

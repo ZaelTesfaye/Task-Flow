@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
-import { LogIn, UserPlus } from "lucide-react";
+import { LogIn, UserPlus, Sun, Moon } from "lucide-react";
+import { useThemeStore } from "@/stores";
 import {
   LoginRequestSchema,
   RegisterRequestSchema,
@@ -21,6 +22,7 @@ type AuthFormData = {
 export default function LoginPage() {
   const { login, register, user } = useAuth();
   const router = useRouter();
+  const { theme, setTheme } = useThemeStore();
 
   const [mode, setMode] = useState<"login" | "register">("login");
   const [formData, setFormData] = useState<AuthFormData>({
@@ -92,8 +94,21 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-4 bg-linear-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
-      <div className="w-full max-w-md p-8 bg-white shadow-xl dark:bg-gray-800 rounded-2xl">
+    <div className="flex items-center justify-center min-h-screen p-4 bg-[hsl(var(--background))] dark:bg-[hsl(var(--background))]">
+      {/* Theme Switcher Button - Top Right */}
+      <button
+        onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+        className="hover:cursor-pointer absolute top-4 right-4 p-2 rounded-full bg-[hsl(var(--muted))] hover:bg-[hsl(var(--accent))] transition-colors z-10"
+        title="Toggle theme"
+      >
+        {theme === "dark" ? (
+          <Moon className="w-5 h-5 text-[hsl(var(--foreground))]" />
+        ) : (
+          <Sun className="w-5 h-5 text-[hsl(var(--foreground))]" />
+        )}
+      </button>
+
+      <div className="w-full max-w-md p-8 bg-[hsl(var(--card))] shadow-xl border border-[hsl(var(--border))] rounded-2xl">
         <div className="mb-8 text-center">
           <div className="inline-flex items-center justify-center w-16 h-16 mb-4 bg-blue-600 rounded-full">
             {mode === "login" ? (
@@ -102,10 +117,10 @@ export default function LoginPage() {
               <UserPlus className="w-8 h-8 text-white" />
             )}
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+          <h1 className="text-3xl font-bold text-[hsl(var(--foreground))]">
             {mode === "login" ? "Welcome Back" : "Create Account"}
           </h1>
-          <p className="mt-2 text-gray-600 dark:text-gray-400">
+          <p className="mt-2 text-[hsl(var(--muted-foreground))]">
             {mode === "login"
               ? "Sign in to your account"
               : "Join us to manage your tasks"}
@@ -117,7 +132,7 @@ export default function LoginPage() {
             <div>
               <label
                 htmlFor="name"
-                className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300"
+                className="block mb-2 text-sm font-medium text-[hsl(var(--foreground))]"
               >
                 Full Name
               </label>
@@ -126,10 +141,8 @@ export default function LoginPage() {
                 type="text"
                 value={formData.name || ""}
                 onChange={(e) => handleInputChange("name", e.target.value)}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
-                  errors.name
-                    ? "border-red-500"
-                    : "border-gray-300 dark:border-gray-600"
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition bg-[hsl(var(--background))] text-[hsl(var(--foreground))] border-[hsl(var(--border))] ${
+                  errors.name ? "border-red-500" : ""
                 }`}
                 placeholder="John Doe"
               />
@@ -144,7 +157,7 @@ export default function LoginPage() {
           <div>
             <label
               htmlFor="email"
-              className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300"
+              className="block mb-2 text-sm font-medium text-[hsl(var(--foreground))]"
             >
               Email Address
             </label>
@@ -153,14 +166,10 @@ export default function LoginPage() {
               type="email"
               value={formData.email}
               onChange={(e) => handleInputChange("email", e.target.value)}
-              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
-                errors.email
-                  ? "border-red-500"
-                  : "border-gray-300 dark:border-gray-600"
+              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition bg-[hsl(var(--background))] text-[hsl(var(--foreground))] border-[hsl(var(--border))] ${
+                errors.email ? "border-red-500" : ""
               }`}
-              placeholder={
-                mode === "login" ? "name@example.com" : "you@example.com"
-              }
+              placeholder="john@example.com"
             />
             {errors.email && (
               <p className="mt-1 text-sm text-red-600 dark:text-red-400">
@@ -172,7 +181,7 @@ export default function LoginPage() {
           <div>
             <label
               htmlFor="password"
-              className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300"
+              className="block mb-2 text-sm font-medium text-[hsl(var(--foreground))]"
             >
               Password
             </label>
@@ -181,12 +190,10 @@ export default function LoginPage() {
               type="password"
               value={formData.password}
               onChange={(e) => handleInputChange("password", e.target.value)}
-              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
-                errors.password
-                  ? "border-red-500"
-                  : "border-gray-300 dark:border-gray-600"
+              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition bg-[hsl(var(--background))] text-[hsl(var(--foreground))] border-[hsl(var(--border))] ${
+                errors.password ? "border-red-500" : ""
               }`}
-              placeholder="Password"
+              placeholder="••••••••"
             />
             {errors.password && (
               <p className="mt-1 text-sm text-red-600 dark:text-red-400">

@@ -16,6 +16,7 @@ interface ProfileMenuProps {
   onLogout: () => void;
   isOpen: boolean;
   onClose: () => void;
+  invitationsCount?: number;
 }
 
 export default function ProfileMenu({
@@ -25,6 +26,7 @@ export default function ProfileMenu({
   onLogout,
   isOpen,
   onClose,
+  invitationsCount = 0,
 }: ProfileMenuProps) {
   const { theme, setTheme } = useThemeStore();
   const profileMenuRef = useRef<HTMLDivElement>(null);
@@ -74,10 +76,13 @@ export default function ProfileMenu({
               router.push("/invitations");
               onClose();
             }}
-            className="w-full px-4 py-2 text-left hover:bg-[hsl(var(--accent))] flex items-center gap-3 hover:cursor-pointer"
+            className="w-full px-4 py-2 text-left hover:bg-[hsl(var(--accent))] flex items-center gap-3 hover:cursor-pointer relative"
           >
             <Inbox className="w-4 h-4" />
             Invitations
+            {invitationsCount > 0 && (
+              <div className="absolute right-4 top-1/2 transform -translate-y-1/2 w-2 h-2 bg-red-500 rounded-full"></div>
+            )}
           </button>
           <hr className="my-2 border-gray-200 dark:border-gray-700" />
           <div className="flex items-center justify-between px-4 py-2">

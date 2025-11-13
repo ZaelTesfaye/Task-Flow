@@ -2,7 +2,8 @@ import React from "react";
 import { Shield, Users } from "lucide-react";
 import type { Project } from "@/types/index";
 import ProjectCard from "@/components/project/ProjectCard";
-import AddProjectCard from "@/components/project/AddProjectCard";
+import AddProjectCard from "@/components/project/CreateProjectCard";
+import { ROLE_BADGE_COLORS } from "@/constants/project";
 
 interface ProjectGroups {
   owner: Project[];
@@ -61,7 +62,7 @@ const ProjectsGridSection: React.FC<ProjectsGridSectionProps> = ({
             <h2 className="text-2xl font-bold text-[hsl(var(--foreground))]">
               All Projects
             </h2>
-            <span className="px-3 py-1 text-sm font-semibold text-blue-800 bg-blue-50 rounded-full dark:bg-blue-900/30 dark:text-blue-400">
+            <span className="px-3 py-1 text-sm font-semibold text-blue-900 bg-blue-200 border border-blue-300 rounded-full dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800/60">
               {allProjects.length}
             </span>
           </div>
@@ -102,11 +103,7 @@ const ProjectsGridSection: React.FC<ProjectsGridSectionProps> = ({
             </h2>
             <span
               className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                activeView === "owner"
-                  ? "bg-yellow-50 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-400"
-                  : activeView === "admin"
-                  ? "bg-purple-50 dark:bg-purple-900/30 text-purple-800 dark:text-purple-400"
-                  : "bg-emerald-50 dark:bg-green-900/30 text-emerald-800 dark:text-green-400"
+                ROLE_BADGE_COLORS[activeView as keyof typeof ROLE_BADGE_COLORS]
               }`}
             >
               {activeView === "owner"

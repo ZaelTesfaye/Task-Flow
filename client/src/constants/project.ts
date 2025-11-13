@@ -13,19 +13,21 @@ export {
 } from "@/types/index";
 
 export const TASK_STATUS_COLORS: Record<TaskStatus, string> = {
-  active: "bg-blue-50 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400",
+  active:
+    "bg-blue-500 text-white border border-blue-600 dark:bg-blue-900/30 dark:text-blue-600 dark:border-blue-800/60",
   complete:
-    "bg-emerald-50 text-emerald-800 dark:bg-green-900/30 dark:text-green-400",
-  canceled: "bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-400",
+    "bg-green-500 text-white border border-green-600 dark:bg-green-900/30 dark:text-green-600 dark:border-green-800/60",
+  canceled:
+    "bg-red-500 text-white border border-red-600 dark:bg-red-900/30 dark:text-red-600 dark:border-red-800/60",
 };
 
 export const ROLE_BADGE_COLORS: Record<UserRole, string> = {
   owner:
-    "bg-yellow-50 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800",
+    "bg-yellow-500 text-white border border-yellow-600 dark:bg-yellow-900/30  dark:text-yellow-600 dark:border-yellow-800",
   admin:
-    "bg-purple-50 dark:bg-purple-900/30 text-purple-800 dark:text-purple-400 border-purple-200 dark:border-purple-800",
+    "bg-blue-500 text-white border border-blue-600 dark:bg-blue-900/30 dark:text-blue-600 dark:border-blue-800",
   member:
-    "bg-emerald-50 dark:bg-green-900/30 text-emerald-800 dark:text-green-400 border-emerald-200 dark:border-green-800",
+    "bg-green-500 text-white border border-green-600 dark:bg-green-900/30 dark:text-green-600 dark:border-green-800",
 };
 
 export const TASK_STATUS_OPTIONS: { value: TaskStatus; label: string }[] = [
@@ -41,11 +43,13 @@ export const ACCESS_LEVEL_OPTIONS = [
 
 export const INVITATION_STATUS_COLORS: Record<InvitationStatus, string> = {
   pending:
-    "bg-yellow-50 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300",
+    "bg-yellow-200  border border-yellow-300 dark:bg-yellow-900/10 dark:text-yellow-900 dark:border-yellow-800/60",
   accepted:
-    "bg-emerald-50 text-emerald-800 dark:bg-green-900/40 dark:text-green-300",
-  declined: "bg-red-50 text-red-800 dark:bg-red-900/40 dark:text-red-300",
-  expired: "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300",
+    "bg-green-200 text-green-900 border border-green-300 dark:bg-green-900/40 dark:text-green-500 dark:border-green-800/60",
+  declined:
+    "bg-red-200 text-red-900 border border-red-300 dark:bg-red-900/40 dark:text-red-500 dark:border-red-800/60",
+  expired:
+    "bg-gray-200 text-gray-900 border border-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600",
 };
 
 export const DEFAULT_MODAL_STATE = {

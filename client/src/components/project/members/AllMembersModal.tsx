@@ -40,15 +40,6 @@ const MembersModal: React.FC<MembersModalProps> = ({
         <h2 className="text-2xl font-bold text-[hsl(var(--foreground))]">
           Project Members
         </h2>
-        {userRole === "owner" && (
-          <button
-            onClick={onAddMember}
-            className="flex items-center gap-2 px-2 py-1 text-[hsl(var(--primary-foreground))] transition bg-blue-600 rounded-lg hover:cursor-pointer hover:bg-blue-700"
-          >
-            <UserPlus className="w-4 h-4" />
-            Add Member
-          </button>
-        )}
       </div>
 
       {/* Members list */}
@@ -72,7 +63,7 @@ const MembersModal: React.FC<MembersModalProps> = ({
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-5">
               {userRole === "owner" && member.userId !== project?.ownerId ? (
                 <select
                   value={member.access}

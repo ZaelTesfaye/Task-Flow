@@ -68,7 +68,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
               {task.status}
             </span>
             {task.pendingUpdates && task.pendingUpdates.length > 0 && (
-              <span className="px-2 py-1 text-xs font-medium text-yellow-800 bg-yellow-100 rounded-full dark:bg-yellow-900/30 dark:text-yellow-400">
+              <span className="px-2 py-1 text-xs font-semibold text-yellow-900 bg-yellow-200 border border-yellow-300 rounded-full dark:bg-yellow-900/30 dark:text-yellow-600 dark:border-yellow-800/60">
                 {task.pendingUpdates.length} pending
               </span>
             )}
@@ -98,7 +98,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
               task.pendingUpdates.length > 0 && (
                 <button
                   onClick={() => onReviewUpdate(task)}
-                  className="p-2 text-blue-600 transition-colors rounded hover:bg-gray-500"
+                  className="p-2 text-blue-600 transition-colors rounded hover:cursor-pointer hover:bg-gray-500"
                   title="Review Update"
                 >
                   <GitPullRequest className="w-4 h-4 hover:cursor-pointer" />

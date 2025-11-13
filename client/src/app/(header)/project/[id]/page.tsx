@@ -94,11 +94,11 @@ export default function ProjectBoard() {
   };
 
   const handleToggleSettings = () => {
-    setIsSettingsPaneOpen(true);
+    setIsSettingsPaneOpen(!isSettingsPaneOpen);
   };
 
   const handleToggleMembers = () => {
-    setIsMembersPaneOpen(true);
+    setIsMembersPaneOpen(!isMembersPaneOpen);
   };
 
   const handleSaveProject = async () => {

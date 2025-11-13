@@ -92,7 +92,7 @@ const MembersPane: React.FC<MembersPaneProps> = ({
 
               <div className="flex items-center gap-2">
                 <span
-                  className={`px-2 py-1 rounded-full text-xs capitalize flex items-center gap-1 text-gray-700 dark:text-gray-300 ${
+                  className={`px-2 py-1 rounded-full text-xs capitalize flex items-center gap-1 ${
                     ROLE_BADGE_COLORS[member.access]
                   }`}
                 >

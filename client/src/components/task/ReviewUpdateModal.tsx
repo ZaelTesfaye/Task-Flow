@@ -138,13 +138,13 @@ const ReviewUpdateModal: React.FC<ReviewUpdateModalProps> = ({
         <div className="flex justify-center gap-12 ">
           <button
             onClick={handleReject}
-            className="px-4 py-2 text-[hsl(var(--primary-foreground))] transition bg-red-600 rounded-lg hover:cursor-pointer hover:bg-red-700"
+            className="px-4 py-2 text-[hsl(var(--primary-foreground))] dark:text-white transition bg-red-600 rounded-lg hover:cursor-pointer hover:bg-red-700"
           >
             Reject Update
           </button>
           <button
             onClick={handleApprove}
-            className="px-4 py-2 text-[hsl(var(--primary-foreground))] transition bg-green-600 rounded-lg hover:cursor-pointer hover:bg-green-700"
+            className="px-4 py-2 text-[hsl(var(--primary-foreground))] dark:text-white transition bg-green-600 rounded-lg hover:cursor-pointer hover:bg-green-700"
           >
             Approve Update
           </button>

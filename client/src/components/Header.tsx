@@ -5,8 +5,13 @@ import { useThemeStore } from "@/stores";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { userAPI } from "@/lib/api";
+import { projectAPI } from "@/lib/api";
 import toast from "react-hot-toast";
-import { User as UserType, UpdateUserRequest } from "@/types";
+import {
+  User as UserType,
+  UpdateUserRequest,
+  ProjectInvitation,
+} from "@/types";
 import ConfirmationModal from "./modals/ConfirmationModal";
 import ProfileMenu from "./profile/ProfileMenu";
 import EditProfileModal from "./profile/EditProfileModal";
@@ -22,6 +27,7 @@ export default function Header() {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [name, setName] = useState(user?.name || "");
   const [email, setEmail] = useState(user?.email || "");
+  const [invitationsCount, setInvitationsCount] = useState(0);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -41,6 +47,41 @@ export default function Header() {
       router.push("/login");
     }
   }, [user, loading, router, pathname]);
+
+  // Fetch invitations count
+  useEffect(() => {
+    const fetchInvitations = async () => {
+      if (!user) return;
+      try {
+        const response = await projectAPI.getMyInvitations();
+        const pendingInvitations = response.data.filter(
+          (inv: ProjectInvitation) => inv.status === "pending"
+        );
+        setInvitationsCount(pendingInvitations.length);
+      } catch (error) {
+        console.error("Failed to fetch invitations:", error);
+      }
+    };
+    fetchInvitations();
+  }, [user]);
+
+  // Added useEffect to fetch pending invitations count
+  useEffect(() => {
+    const fetchInvitations = async () => {
+      if (!user) return;
+      try {
+        const response = await projectAPI.getMyInvitations();
+        const pendingInvitations = response.data.filter(
+          (inv: ProjectInvitation) => inv.status === "pending"
+        );
+        setInvitationsCount(pendingInvitations.length);
+      } catch (error) {
+        console.error("Failed to fetch invitations:", error);
+        // Optionally show a toast or handle error, but keep dot hidden on failure
+      }
+    };
+    fetchInvitations();
+  }, [user]);
 
   if (loading) {
     return (
@@ -93,16 +134,23 @@ export default function Header() {
           <div className="relative">
             <button
               onClick={() => setShowProfileMenu(!showProfileMenu)}
-              className="flex items-center gap-3 hover:bg-[hsl(var(--accent))] rounded-lg px-3 py-2 transition hover:cursor-pointer"
+              className="flex items-center gap-3 hover:bg-[hsl(var(--accent))] rounded-lg px-3 py-2 transition hover:cursor-pointer relative"
             >
               <div className="text-right">
                 <p className="text-sm font-semibold text-[hsl(var(--foreground))]">
                   {user.name}
                 </p>
+                <p className="text-xs text-[hsl(var(--muted-foreground))]">
+                  {user.email}
+                </p>
               </div>
               <div className="flex items-center justify-center w-10 h-10 font-semibold text-white bg-blue-600 rounded-full">
                 {user.name?.charAt(0).toUpperCase()}
               </div>
+              {/* Red dot notification for invitations */}
+              {invitationsCount > 0 && (
+                <div className="absolute w-2 h-2 bg-red-500 border border-white rounded-full -top-1 -right-1"></div>
+              )}
             </button>
 
             <ProfileMenu
@@ -123,6 +171,7 @@ export default function Header() {
               }}
               isOpen={showProfileMenu}
               onClose={() => setShowProfileMenu(false)}
+              invitationsCount={invitationsCount}
             />
           </div>
         </div>
