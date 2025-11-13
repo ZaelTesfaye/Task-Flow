@@ -1,6 +1,6 @@
 import React from "react";
 import { Folder, Shield, Users } from "lucide-react";
-import type { Project } from "@/types/api";
+import type { Project } from "@/types/index";
 
 interface ProjectGroups {
   owner: Project[];

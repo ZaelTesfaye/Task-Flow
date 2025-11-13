@@ -1,15 +1,16 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { projectAPI, taskAPI } from "@/lib/api";
-import { useAuth } from "@/context/AuthContext";
 import toast from "react-hot-toast";
+
+import { projectAPI, taskAPI } from "@/lib";
+import { useAuth } from "@/context";
 import {
   Project,
   CategoryWithTasks,
   ProjectMember,
   TasksResponse,
   ProjectInvitation,
-} from "@/types/index";
+} from "@/types";
 
 export const useProjectData = (projectId: string | string[] | undefined) => {
   const { user } = useAuth();

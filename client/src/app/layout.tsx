@@ -1,10 +1,10 @@
 "use client";
 
-import { Inter } from "next/font/google";
 import "@/globals.css";
-import { AuthProvider } from "@/context/AuthContext";
+import { Inter } from "next/font/google";
+import { AuthProvider } from "@/context";
 import { Toaster } from "react-hot-toast";
-import { useThemeStore } from "@/stores/themeStore";
+import { useThemeStore } from "@/stores";
 
 const inter = Inter({ subsets: ["latin"] });
 

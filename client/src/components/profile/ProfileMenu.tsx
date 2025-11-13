@@ -4,7 +4,7 @@ import { useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { LogOut, Settings, Trash2, Moon, Sun, Inbox } from "lucide-react";
 import { useThemeStore } from "@/stores";
-import { Switch } from "@/components/ui/switch";
+import { Switch } from "@/components/ui";
 
 interface ProfileMenuProps {
   user: {
@@ -81,7 +81,7 @@ export default function ProfileMenu({
             <Inbox className="w-4 h-4" />
             Invitations
             {invitationsCount > 0 && (
-              <div className="absolute right-4 top-1/2 transform -translate-y-1/2 w-2 h-2 bg-red-500 rounded-full"></div>
+              <div className="absolute w-2 h-2 transform -translate-y-1/2 bg-red-500 rounded-full right-4 top-1/2"></div>
             )}
           </button>
           <hr className="my-2 border-gray-200 dark:border-gray-700" />

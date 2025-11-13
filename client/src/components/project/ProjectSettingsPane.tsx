@@ -1,6 +1,17 @@
 import React from "react";
 import { X, Trash2 } from "lucide-react";
-import type { ProjectSettingsPaneProps } from "@/types/component.type";
+
+export interface ProjectSettingsPaneProps {
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  description: string;
+  onTitleChange: (value: string) => void;
+  onDescriptionChange: (value: string) => void;
+  onSave: () => void | Promise<void>;
+  onDelete: () => void;
+  isSaving?: boolean;
+}
 
 const ProjectSettingsPane: React.FC<ProjectSettingsPaneProps> = ({
   isOpen,

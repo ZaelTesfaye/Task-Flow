@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { DEFAULT_MODAL_STATE, DEFAULT_FORM_STATE } from "@/constants/project";
+import { DEFAULT_MODAL_STATE, DEFAULT_FORM_STATE } from "@/constants";
 
 export const useProjectModals = () => {
   const [activePane, setActivePane] = useState<"members" | "settings" | null>(

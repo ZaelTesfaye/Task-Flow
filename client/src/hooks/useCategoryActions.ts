@@ -1,6 +1,6 @@
 import { useCallback } from "react";
-import { categoryAPI } from "@/lib/api";
 import toast from "react-hot-toast";
+import { categoryAPI } from "@/lib";
 
 export const useCategoryActions = (
   projectId: string | string[] | undefined,

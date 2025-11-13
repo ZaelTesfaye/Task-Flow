@@ -1,7 +1,7 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check, XCircle } from "lucide-react";
-import { INVITATION_STATUS_COLORS } from "@/constants/project";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui";
+import { INVITATION_STATUS_COLORS } from "@/constants";
 import type { ProjectInvitation } from "@/types";
 
 interface InvitationsListProps {

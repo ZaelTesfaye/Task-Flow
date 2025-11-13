@@ -1,14 +1,16 @@
 "use client";
 import { useState, useEffect } from "react";
-import Header from "@/components/Header";
-import { projectAPI } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+
+import { projectAPI } from "@/lib";
 import type { Project } from "@/types";
-import { useAuth } from "@/context/AuthContext";
-import ProjectNavigation from "@/components/dashboard/ProjectNavigator";
-import CreateProjectModal from "@/components/project/CreateProjectModal";
-import ProjectsGridSection from "@/components/dashboard/ProjectsGrid";
+import { useAuth } from "@/context";
+import {
+  ProjectNavigation,
+  CreateProjectModal,
+  ProjectsGridSection,
+} from "@/components";
 
 interface ProjectGroups {
   owner: Project[];

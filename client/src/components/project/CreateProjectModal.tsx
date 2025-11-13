@@ -1,16 +1,16 @@
 import React from "react";
-import { Button } from "@/components/ui/button";
 import {
+  Button,
+  Textarea,
+  Label,
+  Input,
   Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
+} from "@/components/ui";
 
 interface CreateProjectModalProps {
   isOpen: boolean;

@@ -1,3 +1,4 @@
+import { Folder, FolderOpen, Shield, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
   Card,
@@ -5,10 +6,14 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../ui/card";
-import { Folder, FolderOpen, Shield, Users } from "lucide-react";
-import type { ProjectProps } from "@/types/component.type";
-import { ROLE_BADGE_COLORS } from "@/constants/project";
+} from "../ui";
+import { ROLE_BADGE_COLORS } from "@/constants";
+
+export interface ProjectProps {
+  id: string;
+  title: string;
+  description: string;
+}
 
 const getRoleIcon = (role: string) => {
   switch (role) {

@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 import { X } from "lucide-react";
-import Modal from "@/components/modals/Modal";
-import { CreateCategoryModalProps } from "@/types/component.type";
+import { Modal } from "@/components/modals";
+
+export interface CreateCategoryModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSubmit: (name: string) => void;
+  loading?: boolean;
+}
 
 const CreateCategoryModal: React.FC<CreateCategoryModalProps> = ({
   isOpen,

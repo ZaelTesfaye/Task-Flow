@@ -7,11 +7,17 @@ import {
   useEffect,
   ReactNode,
 } from "react";
-import { authAPI } from "@/lib/api";
 import { useRouter } from "next/navigation";
-import { LoginFormData, RegisterFormData } from "@/validation/auth.validation";
+
+import { authAPI } from "@/lib/api";
+import {
+  LoginFormData,
+  RegisterFormData,
+  User,
+  LoginRequest,
+  RegisterRequest,
+} from "@/types";
 import toast from "react-hot-toast";
-import { User, LoginRequest, RegisterRequest } from "@/types/api";
 
 interface AuthContextType {
   user: User | null;

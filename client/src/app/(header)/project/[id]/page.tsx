@@ -2,15 +2,19 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { useAuth } from "@/context/AuthContext";
-import Header from "@/components/Header";
-import ConfirmationModal from "@/components/modals/ConfirmationModal";
-import { useProjectData } from "@/hooks/useProjectData";
-import { useProjectModals } from "@/hooks/useModals";
-import { useProjectActions } from "@/hooks/useProjectActions";
-import { useCategoryActions } from "@/hooks/useCategoryActions";
-import { useTaskActions } from "@/hooks/useTaskActions";
-import { useMemberActions } from "@/hooks/useMemberActions";
+import toast from "react-hot-toast";
+import { Plus } from "lucide-react";
+
+import { useAuth } from "@/context";
+import {
+  useProjectData,
+  useProjectModals,
+  useProjectActions,
+  useCategoryActions,
+  useTaskActions,
+  useMemberActions,
+} from "@/hooks";
+
 import {
   ProjectHeader,
   CategoryCard,
@@ -18,14 +22,13 @@ import {
   ProjectSettingsPane,
   CreateCategoryModal,
   CreateTaskModal,
-} from "@/components/project";
-import RequestUpdateModal from "@/components/task/RequestUpdateModal";
-import MembersModal from "@/components/project/members/AllMembersModal";
-import EditTaskModal from "@/components/task/EditTaskModal";
-import ReviewUpdateModal from "@/components/task/ReviewUpdateModal";
-import AddMemberModal from "@/components/project/members/AddMemberModal";
-import toast from "react-hot-toast";
-import { Plus } from "lucide-react";
+  ConfirmationModal,
+  RequestUpdateModal,
+  AllMembersModal,
+  EditTaskModal,
+  ReviewUpdateModal,
+  AddMemberModal,
+} from "@/components";
 
 export default function ProjectBoard() {
   const params = useParams();
@@ -340,7 +343,7 @@ export default function ProjectBoard() {
           confirmButtonColor="red"
         />
         {/* Members Modal */}
-        <MembersModal
+        <AllMembersModal
           isOpen={modalStates.showMembersModal}
           onClose={() => closeModal("showMembersModal")}
           members={members}

@@ -1,17 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useAuth } from "@/context/AuthContext";
-import { useRouter } from "next/navigation";
 import { LogIn, UserPlus, Sun, Moon } from "lucide-react";
-import { useThemeStore } from "@/stores";
-import {
-  LoginRequestSchema,
-  RegisterRequestSchema,
-  type LoginFormData,
-  type RegisterFormData,
-} from "@/validation/auth.validation";
+import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+
+import { useAuth } from "@/context";
+import { useThemeStore } from "@/stores";
+import { LoginRequestSchema, RegisterRequestSchema } from "@/validation";
+import type { LoginFormData, RegisterFormData } from "@/types";
 
 type AuthFormData = {
   name?: string;
@@ -95,7 +92,7 @@ export default function LoginPage() {
 
   return (
     <div className="flex items-center justify-center min-h-screen p-4 bg-[hsl(var(--background))] dark:bg-[hsl(var(--background))]">
-      {/* Theme Switcher Button - Top Right */}
+      {/* Theme Switcher Button*/}
       <button
         onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
         className="hover:cursor-pointer absolute top-4 right-4 p-2 rounded-full bg-[hsl(var(--muted))] hover:bg-[hsl(var(--accent))] transition-colors z-10"

@@ -1,6 +1,6 @@
 import { useCallback } from "react";
-import { projectAPI } from "@/lib/api";
 import toast from "react-hot-toast";
+import { projectAPI } from "@/lib";
 
 export const useMemberActions = (
   projectId: string | string[] | undefined,

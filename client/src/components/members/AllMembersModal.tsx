@@ -1,9 +1,10 @@
 import React from "react";
 import { useRouter } from "next/navigation";
-import Modal from "@/components/modals/Modal";
-import { Trash2, UserPlus } from "lucide-react";
-import { ProjectMember, ProjectInvitation, Project } from "@/types/index";
-import { UserRole } from "@/types/index";
+import { Trash2 } from "lucide-react";
+
+import { Modal } from "@/components/modals";
+import { ProjectMember, ProjectInvitation, Project } from "@/types";
+import { UserRole } from "@/types";
 
 interface MembersModalProps {
   isOpen: boolean;

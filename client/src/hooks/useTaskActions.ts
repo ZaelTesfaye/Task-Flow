@@ -1,7 +1,8 @@
 import { useCallback } from "react";
-import { taskAPI } from "@/lib/api";
 import toast from "react-hot-toast";
-import { TaskStatus } from "@/types/index";
+
+import { taskAPI } from "@/lib";
+import { TaskStatus } from "@/types";
 
 export const useTaskActions = (
   projectId: string | string[] | undefined,

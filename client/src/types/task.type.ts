@@ -1,5 +1,4 @@
-import { User } from "./user.type";
-import { Project } from "./project.type";
+import { User, Project } from "./";
 
 export type TaskStatus = "active" | "complete" | "canceled";
 

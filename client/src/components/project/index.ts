@@ -1,6 +1,5 @@
 export { default as ProjectHeader } from "./ProjectHeader";
-export { default as CategoryCard } from "../category/CategoryCard";
-export { default as MembersPane } from "./members/MembersPane";
+export { default as ProjectCard } from "./ProjectCard";
 export { default as ProjectSettingsPane } from "./ProjectSettingsPane";
-export { default as CreateCategoryModal } from "../category/CreateCategoryModal";
-export { default as CreateTaskModal } from "../task/CreateTaskModal";
+export { default as CreateProjectCard } from "./CreateProjectCard";
+export { default as CreateProjectModal } from "./CreateProjectModal";

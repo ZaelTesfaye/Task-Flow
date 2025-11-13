@@ -1,5 +1,7 @@
 import { create } from "zustand";
 
+const THEME_STORAGE_KEY = "theme";
+
 type Theme = "light" | "dark";
 
 interface ThemeState {
@@ -8,23 +10,11 @@ interface ThemeState {
   setTheme: (theme: Theme) => void;
 }
 
-const THEME_STORAGE_KEY = "theme";
-
 const resolveInitialTheme = (): Theme => {
-  if (typeof window === "undefined") {
-    return "light";
-  }
-
-  // Clean up old Zustand persist key if it exists
-  const oldKey = "theme-storage";
-  if (window.localStorage.getItem(oldKey)) {
-    window.localStorage.removeItem(oldKey);
-  }
+  if (typeof window === "undefined") return "light";
 
   const stored = window.localStorage.getItem(THEME_STORAGE_KEY);
-  if (stored === "light" || stored === "dark") {
-    return stored;
-  }
+  if (stored === "light" || stored === "dark") return stored;
 
   try {
     return window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -36,9 +26,7 @@ const resolveInitialTheme = (): Theme => {
 };
 
 const applyTheme = (value: Theme) => {
-  if (typeof document === "undefined") {
-    return;
-  }
+  if (typeof document === "undefined") return;
 
   const root = document.documentElement;
 
@@ -65,7 +53,7 @@ const applyTheme = (value: Theme) => {
 };
 
 export const useThemeStore = create<ThemeState>()((set, get) => {
-  // Get initial theme and apply it immediately
+  // apply initial theme
   const initialTheme = resolveInitialTheme();
 
   // Apply theme immediately when store is created
@@ -84,10 +72,9 @@ export const useThemeStore = create<ThemeState>()((set, get) => {
 
     setTheme: (theme: Theme) => {
       const current = get().theme;
-      if (current === theme) return; // avoid redundant work
+      if (current === theme) return;
       set({ theme });
       applyTheme(theme);
-      // Removed forced reload to prevent flicker; Tailwind + CSS variables update instantly.
     },
   };
 });

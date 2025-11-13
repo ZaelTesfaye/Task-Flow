@@ -1,7 +1,27 @@
 import React from "react";
 import { X, UserPlus } from "lucide-react";
-import { MembersPaneProps } from "@/types/component.type";
-import { MemberFilter } from "@/types/index";
+import {
+  MemberFilter,
+  Project,
+  ProjectInvitation,
+  ProjectMember,
+  UserRole,
+} from "@/types";
+
+export interface MembersPaneProps {
+  members: ProjectMember[];
+  project: Project;
+  userRole: UserRole;
+  memberFilter: MemberFilter;
+  invitations: ProjectInvitation[];
+  onFilterChange: (filter: MemberFilter) => void;
+  onAddMember: () => void;
+  onViewAllMembers: () => void;
+  onManageInvitations: () => void;
+  isOpen: boolean;
+  onClose: () => void;
+}
+
 import {
   ROLE_BADGE_COLORS,
   INVITATION_STATUS_COLORS,

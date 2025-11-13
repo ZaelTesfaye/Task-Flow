@@ -1,4 +1,6 @@
 import { User } from "./user.type";
+import z from "zod";
+import { LoginRequestSchema, RegisterRequestSchema } from "@/validation";
 
 export interface AuthResponse {
   user: User;
@@ -20,3 +22,7 @@ export interface UpdateUserRequest {
   name?: string;
   email?: string;
 }
+
+export type LoginFormData = z.infer<typeof LoginRequestSchema>;
+
+export type RegisterFormData = z.infer<typeof RegisterRequestSchema>;

@@ -1,23 +1,19 @@
 import React from "react";
-import Modal from "@/components/modals/Modal";
-
+import { Modal } from "@/components/modals";
+import { DEFAULT_FORM_STATE } from "@/constants";
+import { TaskStatus } from "@/types";
 interface EditTaskModalProps {
   isOpen: boolean;
   onClose: () => void;
   task: any;
   forms: any;
   updateForm: (key: any, value: any) => void;
-  resetForm: (
-    key: keyof typeof import("@/constants/project").DEFAULT_FORM_STATE
-  ) => void;
+  resetForm: (key: keyof typeof DEFAULT_FORM_STATE) => void;
   updateTask: (
     taskId: string,
     data: { title: string; description: string }
   ) => void;
-  updateTaskStatus: (
-    taskId: string,
-    status: import("@/constants/project").TaskStatus
-  ) => void;
+  updateTaskStatus: (taskId: string, status: TaskStatus) => void;
   isOwnerOrAdmin: boolean;
 }
 

@@ -1,7 +1,16 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Settings, Users } from "lucide-react";
-import { ProjectHeaderProps } from "@/types/component.type";
+import { Project, UserRole } from "@/types";
+
+export interface ProjectHeaderProps {
+  project: Project;
+  userRole: UserRole;
+  onToggleSettings: () => void;
+  isSettingsPaneOpen: boolean;
+  onToggleMembers: () => void;
+  isMembersPaneOpen: boolean;
+}
 
 const ProjectHeader: React.FC<ProjectHeaderProps> = ({
   project,

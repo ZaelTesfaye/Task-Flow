@@ -1,9 +1,8 @@
 import React from "react";
 import { Shield, Users } from "lucide-react";
 import type { Project } from "@/types/index";
-import ProjectCard from "@/components/project/ProjectCard";
-import AddProjectCard from "@/components/project/CreateProjectCard";
-import { ROLE_BADGE_COLORS } from "@/constants/project";
+import { ProjectCard, CreateProjectCard } from "@/components/project";
+import { ROLE_BADGE_COLORS } from "@/constants";
 
 interface ProjectGroups {
   owner: Project[];
@@ -78,12 +77,12 @@ const ProjectsGridSection: React.FC<ProjectsGridSectionProps> = ({
                   <ProjectCard key={project.id} project={project} role={role} />
                 );
               })}
-              <AddProjectCard setShowCreateModal={onCreateProject} />
+              <CreateProjectCard setShowCreateModal={onCreateProject} />
             </div>
           ) : (
             // Show create project card only if no project found
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-              <AddProjectCard
+              <CreateProjectCard
                 isFirst={true}
                 setShowCreateModal={onCreateProject}
               />
@@ -134,7 +133,7 @@ const ProjectsGridSection: React.FC<ProjectsGridSectionProps> = ({
               ))}
               {/* Show create project card only inside own projects section. */}
               {activeView === "owner" && (
-                <AddProjectCard setShowCreateModal={onCreateProject} />
+                <CreateProjectCard setShowCreateModal={onCreateProject} />
               )}
             </div>
           ) : (
@@ -170,7 +169,7 @@ const ProjectsGridSection: React.FC<ProjectsGridSectionProps> = ({
                     )}
                     {content.showCreateCard && (
                       <div className="grid grid-cols-1 gap-6 mx-auto md:grid-cols-2 lg:grid-cols-3">
-                        <AddProjectCard
+                        <CreateProjectCard
                           isFirst={true}
                           setShowCreateModal={onCreateProject}
                         />

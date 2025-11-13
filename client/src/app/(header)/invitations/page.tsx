@@ -1,13 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { projectAPI } from "@/lib/api";
-import type { ProjectInvitation } from "@/types/index";
 import toast from "react-hot-toast";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RefreshCw, Clock } from "lucide-react";
-import InvitationsList from "@/components/profile/InvitationsList";
+
+import { projectAPI } from "@/lib";
+import type { ProjectInvitation } from "@/types";
+import {
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui";
+import { InvitationsList } from "@/components/profile";
 
 export default function InvitationsPage() {
   const [invitations, setInvitations] = useState<ProjectInvitation[]>([]);

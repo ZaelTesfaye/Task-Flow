@@ -1,7 +1,8 @@
 import { useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { projectAPI } from "@/lib/api";
 import toast from "react-hot-toast";
+
+import { projectAPI } from "@/lib/api";
 
 export const useProjectActions = (
   projectId: string | string[] | undefined,

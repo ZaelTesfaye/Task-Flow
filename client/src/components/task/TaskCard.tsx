@@ -7,8 +7,23 @@ import {
   GitPullRequest,
   ArrowUpFromLine,
 } from "lucide-react";
-import { TaskCardProps } from "@/types/component.type";
-import { TASK_STATUS_COLORS } from "@/constants/project";
+import { TASK_STATUS_COLORS } from "@/constants";
+import { TaskStatus, UserRole } from "@/types";
+
+export interface TaskCardProps {
+  task: any;
+  userRole: UserRole;
+  currentUserId: string;
+  onUpdateStatus: (taskId: string, status: TaskStatus) => void;
+  onRequestUpdate: (
+    taskId: string,
+    description: string,
+    status: TaskStatus
+  ) => void;
+  onEdit: (task: any) => void;
+  onDelete: (task: any) => void;
+  onReviewUpdate: (task: any) => void;
+}
 
 const TaskCard: React.FC<TaskCardProps> = ({
   task,

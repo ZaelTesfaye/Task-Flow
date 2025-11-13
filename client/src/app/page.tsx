@@ -1,11 +1,17 @@
 "use client";
 
-import { useAuth } from "@/context/AuthContext";
+import { CheckCircle, Users, BarChart3 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle, Users, BarChart3, Zap } from "lucide-react";
+
+import { useAuth } from "@/context";
+import {
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui";
 
 const features = [
   {
@@ -29,8 +35,8 @@ const features = [
     description:
       "Monitor project progress with detailed analytics and visual reports.",
     icon: BarChart3,
-    bgColor: "bg-purple-50 dark:bg-purple-900",
-    iconColor: "text-purple-600 dark:text-purple-400",
+    bgColor: "bg-blue-50 dark:bg-blue-900",
+    iconColor: "text-blue-600 dark:text-blue-400",
   },
 ];
 
@@ -59,7 +65,7 @@ export default function HomePage() {
       {/* Hero Section */}
       <div className="container px-6 py-16 mx-auto">
         <div className="mb-16 text-center">
-          <h1 className="mb-6 text-5xl font-bold text-transparent md:text-6xl bg-linear-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text">
+          <h1 className="mb-6 text-5xl font-bold text-transparent md:text-6xl bg-linear-to-r from-blue-600 via-blue-600 to-indigo-600 bg-clip-text">
             TaskFlow
           </h1>
           <p className="max-w-2xl mx-auto mb-8 text-xl text-gray-600 dark:text-gray-300">
@@ -116,7 +122,6 @@ export default function HomePage() {
 
         {/* Moto */}
         <div className="p-8 text-center bg-white shadow-lg dark:bg-gray-800 rounded-2xl">
-          <Zap className="w-16 h-16 mx-auto mb-4 text-yellow-500" />
           <h2 className="mb-4 text-3xl font-bold">
             Ready to boost your productivity?
           </h2>

@@ -1,7 +1,21 @@
 import React, { useState } from "react";
 import { X } from "lucide-react";
-import Modal from "@/components/modals/Modal";
-import { CreateTaskModalProps } from "@/types/component.type";
+
+import { Modal } from "@/components/modals";
+import { CategoryWithTasks, ProjectMember } from "@/types";
+
+export interface CreateTaskModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSubmit: (data: {
+    title: string;
+    description: string;
+    assignee: string;
+  }) => void;
+  selectedCategory: CategoryWithTasks | null;
+  members: ProjectMember[];
+  loading?: boolean;
+}
 
 const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
   isOpen,

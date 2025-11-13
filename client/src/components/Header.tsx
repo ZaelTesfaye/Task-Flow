@@ -1,20 +1,17 @@
 "use client";
-
-import { useAuth } from "@/context/AuthContext";
-import { useThemeStore } from "@/stores";
-import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { userAPI } from "@/lib/api";
-import { projectAPI } from "@/lib/api";
+import { useRouter, usePathname } from "next/navigation";
 import toast from "react-hot-toast";
+
+import { useThemeStore } from "@/stores";
+import { useAuth } from "@/context";
+import { userAPI, projectAPI } from "@/lib";
 import {
   User as UserType,
   UpdateUserRequest,
   ProjectInvitation,
 } from "@/types";
-import ConfirmationModal from "./modals/ConfirmationModal";
-import ProfileMenu from "./profile/ProfileMenu";
-import EditProfileModal from "./profile/EditProfileModal";
+import { ConfirmationModal, ProfileMenu, EditProfileModal } from "./";
 
 export default function Header() {
   const { user, logout, updateUserData, loading } = useAuth();

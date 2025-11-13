@@ -3,14 +3,7 @@ import type {
   UserRole,
   MemberFilter,
   InvitationStatus,
-} from "@/types/index";
-
-export {
-  type TaskStatus,
-  type UserRole,
-  type MemberFilter,
-  type InvitationStatus,
-} from "@/types/index";
+} from "@/types";
 
 export const TASK_STATUS_COLORS: Record<TaskStatus, string> = {
   active:
@@ -29,17 +22,6 @@ export const ROLE_BADGE_COLORS: Record<UserRole, string> = {
   member:
     "bg-green-500 text-white border border-green-600 dark:bg-green-900/30 dark:text-green-600 dark:border-green-800",
 };
-
-export const TASK_STATUS_OPTIONS: { value: TaskStatus; label: string }[] = [
-  { value: "active", label: "Active" },
-  { value: "complete", label: "Complete" },
-  { value: "canceled", label: "Canceled" },
-];
-
-export const ACCESS_LEVEL_OPTIONS = [
-  { value: "member" as const, label: "Member" },
-  { value: "admin" as const, label: "Admin" },
-];
 
 export const INVITATION_STATUS_COLORS: Record<InvitationStatus, string> = {
   pending:

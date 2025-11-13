@@ -1,7 +1,24 @@
 import React from "react";
 import { Plus, Trash2, FolderOpen } from "lucide-react";
-import { CategoryCardProps } from "@/types/component.type";
-import TaskCard from "../task/TaskCard";
+import { TaskCard } from "@/components/task";
+import { CategoryWithTasks, TaskStatus, UserRole } from "@/types";
+
+export interface CategoryCardProps {
+  category: CategoryWithTasks;
+  userRole: UserRole;
+  onCreateTask: (category: CategoryWithTasks) => void;
+  onDeleteCategory: (categoryId: string, categoryName: string) => void;
+  onUpdateTaskStatus: (taskId: string, status: TaskStatus) => void;
+  onRequestUpdate: (
+    taskId: string,
+    description: string,
+    status: TaskStatus
+  ) => void;
+  onEditTask: (task: any) => void;
+  onDeleteTask: (taskId: string) => void;
+  onReviewUpdate: (task: any) => void;
+  currentUserId: string;
+}
 
 const CategoryCard: React.FC<CategoryCardProps> = ({
   category,
