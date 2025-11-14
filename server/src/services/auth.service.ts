@@ -9,6 +9,7 @@ export const register = async (
   email: string,
   password: string,
 ) => {
+  email = email.toLowerCase();
   //check if email already exists
   const hashedPassword = await bcrypt.hash(password, 10);
   const userData = await userModel.createUser(name, email, hashedPassword);
@@ -36,6 +37,7 @@ export const register = async (
 
 export const login = async (email: string, password: string) => {
   // check if the user exists and password matches
+  email = email.toLowerCase();
   const user = await userModel.findByEmail(email);
 
   if (!user) {

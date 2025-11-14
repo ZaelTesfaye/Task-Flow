@@ -38,8 +38,8 @@ app.use(express.static("public"));
 app.use(express.json());
 app.use(cookieParser());
 
-app.use("/super-admin", authMiddleware, superAdminRoutes);
-app.use("/admin", authMiddleware, adminRoutes);
+app.use("/api/super-admin", authMiddleware, superAdminRoutes);
+app.use("/api/admin", authMiddleware, adminRoutes);
 
 app.use("/api/auth", authRoutes);
 app.use("/api/task", authMiddleware, taskRoutes);
