@@ -15,7 +15,6 @@ import { ConfirmationModal, ProfileMenu, EditProfileModal } from "./";
 
 export default function Header() {
   const { user, logout, updateUserData, loading } = useAuth();
-  const { theme } = useThemeStore();
   const router = useRouter();
   const pathname = usePathname();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -25,19 +24,6 @@ export default function Header() {
   const [name, setName] = useState(user?.name || "");
   const [email, setEmail] = useState(user?.email || "");
   const [invitationsCount, setInvitationsCount] = useState(0);
-
-  useEffect(() => {
-    const root = document.documentElement;
-    root.classList.add("disable-transitions");
-    root.classList.remove("dark", "light");
-    root.classList.add(theme);
-    root.setAttribute("data-theme", theme);
-    root.style.colorScheme = theme;
-    // Re-enable transitions on next frame
-    requestAnimationFrame(() => {
-      root.classList.remove("disable-transitions");
-    });
-  }, [theme]);
 
   useEffect(() => {
     if (!user && !loading && pathname !== "/auth") {
@@ -74,7 +60,6 @@ export default function Header() {
         setInvitationsCount(pendingInvitations.length);
       } catch (error) {
         console.error("Failed to fetch invitations:", error);
-        // Optionally show a toast or handle error, but keep dot hidden on failure
       }
     };
     fetchInvitations();
@@ -131,7 +116,7 @@ export default function Header() {
           <div className="relative">
             <button
               onClick={() => setShowProfileMenu(!showProfileMenu)}
-              className="flex items-center gap-3 hover:bg-[hsl(var(--accent))] rounded-lg px-3 py-2 transition hover:cursor-pointer relative"
+              className="relative flex items-center gap-3 px-3 py-2 transition rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 hover:cursor-pointer"
             >
               <div className="text-right">
                 <p className="text-sm font-semibold text-[hsl(var(--foreground))]">
@@ -146,12 +131,11 @@ export default function Header() {
               </div>
               {/* Red dot notification for invitations */}
               {invitationsCount > 0 && (
-                <div className="absolute w-2 h-2 bg-red-500 border border-white rounded-full -top-1 -right-1"></div>
+                <div className="absolute w-2 h-2 bg-red-500 rounded-full -top-1 -right-1"></div>
               )}
             </button>
 
             <ProfileMenu
-              user={user}
               onEditProfile={() => {
                 setName(user.name || "");
                 setEmail(user.email || "");
@@ -207,7 +191,7 @@ export default function Header() {
           logout();
         }}
         onCancel={() => setShowLogoutModal(false)}
-        confirmButtonColor="blue"
+        confirmButtonColor="red"
       />
     </div>
   );

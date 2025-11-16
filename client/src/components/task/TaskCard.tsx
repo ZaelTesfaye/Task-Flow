@@ -37,7 +37,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
   const isOwnerOrAdmin = userRole === "owner" || userRole === "admin";
 
   return (
-    <div className="p-2 bg-[hsl(var(--muted))] dark:bg-[hsl(var(--secondary))] rounded-lg border border-[hsl(var(--border))]">
+    <div className="p-2 bg-gray-100 dark:bg-gray-900/50 rounded-lg border border-[hsl(var(--border))]">
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
           {/* Title */}

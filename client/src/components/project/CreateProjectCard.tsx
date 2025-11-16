@@ -34,7 +34,7 @@ const AddProjectCard = ({
       </CardDescription>
     </CardHeader>
     <CardContent>
-      <span className="px-3 py-1 text-xs font-semibold text-[hsl(var(--foreground))] bg-[hsl(var(--muted))] border border-[hsl(var(--border))] rounded-full">
+      <span className="px-3 py-1.5 text-xs font-semibold text-[hsl(var(--foreground))] bg-[hsl(var(--muted))] dark:bg-gray-900/50 border border-[hsl(var(--border))] rounded-full">
         New Project
       </span>
     </CardContent>

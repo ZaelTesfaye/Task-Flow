@@ -212,7 +212,7 @@ export default function ProjectBoard() {
                   {isOwnerOrAdmin && (
                     <button
                       onClick={() => openModal("showCategoryModal")}
-                      className="inline-flex items-center gap-2 px-4 py-2 text-[hsl(var(--primary-foreground))] transition bg-blue-600 rounded-lg hover:cursor-pointer hover:bg-blue-700"
+                      className="inline-flex items-center gap-2 px-4 py-2 dark:text-white text-[hsl(var(--primary-foreground))] transition bg-blue-600 rounded-lg hover:cursor-pointer hover:bg-blue-700"
                     >
                       <Plus className="w-4 h-4" />
                       Create Category
@@ -228,7 +228,7 @@ export default function ProjectBoard() {
                     {isOwnerOrAdmin && (
                       <button
                         onClick={() => openModal("showCategoryModal")}
-                        className="flex items-center gap-2 px-4 py-2 text-sm text-[hsl(var(--primary-foreground))] transition bg-blue-600 rounded-lg hover:cursor-pointer hover:bg-blue-700"
+                        className="dark:text-white flex items-center gap-2 px-4 py-2 text-sm text-[hsl(var(--primary-foreground))] transition bg-blue-600 rounded-lg hover:cursor-pointer hover:bg-blue-700"
                       >
                         <Plus className="w-4 h-4" />
                         Add Category

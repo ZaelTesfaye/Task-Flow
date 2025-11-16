@@ -44,7 +44,7 @@ const ProjectsGridSection: React.FC<ProjectsGridSectionProps> = ({
     {
       view: "member" as const,
       icon: Users,
-      iconClass: "text-green-300 dark:text-green-600",
+      iconClass: "text-green-600 dark:text-green-600",
       title: "No Projects Where You Are Member",
       description:
         "Projects appear here when others add you as a member to their projects.",

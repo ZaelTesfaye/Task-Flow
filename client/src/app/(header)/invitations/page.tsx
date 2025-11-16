@@ -74,7 +74,7 @@ export default function InvitationsPage() {
           variant="outline"
           onClick={() => loadInvitations()}
           disabled={loading}
-          className="hover:cursor-pointer hover:bg-gray-700"
+          className="hover:cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700"
         >
           <RefreshCw className="w-4 h-4 mr-2 hover:cursor-pointer" />
           Refresh

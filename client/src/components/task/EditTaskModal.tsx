@@ -65,7 +65,7 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({
             value={forms.editTaskTitle}
             onChange={(e) => updateForm("editTaskTitle", e.target.value)}
             required
-            className="w-full px-4 py-2 border border-[hsl(var(--input))] rounded-lg focus:ring-2 focus:ring-[hsl(var(--ring))] focus:border-transparent outline bg-[hsl(var(--card))] text-[hsl(var(--foreground))]"
+            className="w-full px-4 py-2  rounded-lg focus:ring-2 focus:ring-[hsl(var(--ring))] focus:outline-none focus:border-transparent outline outline-1 bg-[hsl(var(--card))] text-[hsl(var(--foreground))]"
           />
         </div>
         <div>
@@ -77,7 +77,7 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({
             onChange={(e) => updateForm("editTaskDescription", e.target.value)}
             required
             rows={3}
-            className="w-full px-4 py-2 border border-[hsl(var(--input))] rounded-lg focus:ring-2 focus:ring-[hsl(var(--ring))] focus:border-transparent outline resize-none bg-[hsl(var(--card))] text-[hsl(var(--foreground))]"
+            className="w-full px-4 py-2 border border-[hsl(var(--input))] rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))]  outline-1 focus:border-transparent outline resize-none bg-[hsl(var(--card))] text-[hsl(var(--foreground))]"
           />
         </div>
         {isOwnerOrAdmin && (

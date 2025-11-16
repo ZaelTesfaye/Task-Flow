@@ -16,16 +16,16 @@ export const TASK_STATUS_COLORS: Record<TaskStatus, string> = {
 
 export const ROLE_BADGE_COLORS: Record<UserRole, string> = {
   owner:
-    "bg-yellow-500 text-white border border-yellow-600 dark:bg-yellow-900/30  dark:text-yellow-600 dark:border-yellow-800",
+    "bg-yellow-500 text-white border border-yellow-600 dark:bg-yellow-900/10 dark:text-yellow-600 dark:border-yellow-500",
   admin:
     "bg-blue-500 text-white border border-blue-600 dark:bg-blue-900/30 dark:text-blue-600 dark:border-blue-800",
   member:
-    "bg-green-500 text-white border border-green-600 dark:bg-green-900/30 dark:text-green-600 dark:border-green-800",
+    "bg-green-500 text-white border border-green-600 dark:bg-green-800/30 dark:text-green-600 dark:border-green-700",
 };
 
 export const INVITATION_STATUS_COLORS: Record<InvitationStatus, string> = {
   pending:
-    "bg-yellow-200  border border-yellow-300 dark:bg-yellow-900/10 dark:text-yellow-900 dark:border-yellow-800/60",
+    "bg-yellow-500  border border-yellow-300 dark:bg-yellow-900/10 dark:text-yellow-500 dark:border-yellow-800/60",
   accepted:
     "bg-green-200 text-green-900 border border-green-300 dark:bg-green-900/40 dark:text-green-500 dark:border-green-800/60",
   declined:

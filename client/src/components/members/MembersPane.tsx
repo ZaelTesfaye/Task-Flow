@@ -56,7 +56,7 @@ const MembersPane: React.FC<MembersPaneProps> = ({
 
   return (
     <div
-      className={`fixed right-0 top-18 h-full w-80 bg-[hsl(var(--card))] text-[hsl(var(--card-foreground))] border-l border-[hsl(var(--border))] shadow-xl transform transition-transform duration-300 ease-in-out z-40 ${
+      className={`fixed right-0 top-[72px] h-full w-80 bg-[hsl(var(--card))] text-[hsl(var(--card-foreground))] border-l border-[hsl(var(--border))] shadow-xl transform transition-transform duration-300 ease-in-out z-40 ${
         isOpen ? "translate-x-0" : "translate-x-full"
       }`}
     >

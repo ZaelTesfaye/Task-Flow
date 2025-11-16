@@ -13,6 +13,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // intialize to theme last/default
   useThemeStore();
 
   return (

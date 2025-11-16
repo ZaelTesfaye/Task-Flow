@@ -30,13 +30,13 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 
     switch (confirmButtonColor) {
       case "red":
-        return `${baseClasses} bg-red-600 hover:bg-red-700`;
+        return `${baseClasses} bg-red-600 hover:bg-red-700  dark:text-white`;
       case "blue":
-        return `${baseClasses} bg-blue-600 hover:bg-blue-700`;
+        return `${baseClasses} bg-blue-600 hover:bg-blue-700  dark:text-white`;
       case "green":
-        return `${baseClasses} bg-green-600 hover:bg-green-700`;
+        return `${baseClasses} bg-green-600 hover:bg-green-700 dark:text-white`;
       default:
-        return `${baseClasses} bg-red-600 hover:bg-red-700`;
+        return `${baseClasses} bg-red-600 hover:bg-red-700 text-black dark:text-white`;
     }
   };
 
@@ -56,7 +56,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
         <button
           onClick={onCancel}
           disabled={isLoading}
-          className="flex-1 px-4 py-2 text-[hsl(var(--foreground))] transition border border-[hsl(var(--border))] rounded-lg hover:cursor-pointer hover:bg-[hsl(var(--muted))] disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex-1 px-4 py-2 text-[hsl(var(--foreground))] transition border border-[hsl(var(--border))] rounded-lg hover:cursor-pointer hover:bg-[hsl(var(--muted))] dark:hover:bg-gray-7S00 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {cancelText}
         </button>

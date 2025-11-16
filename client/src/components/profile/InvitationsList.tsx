@@ -52,7 +52,7 @@ export default function InvitationsList({
 
             <div className="flex gap-3">
               <Button
-                className="flex-1 hover:cursor-pointer hover:text-green-500"
+                className="flex-1 hover:cursor-pointer hover:bg-transparent hover:text-green-400"
                 onClick={() => onRespond(invitation.id, "accept")}
                 disabled={invitationLoading}
               >
@@ -61,7 +61,7 @@ export default function InvitationsList({
               </Button>
               <Button
                 variant="outline"
-                className="flex-1 hover:cursor-pointer hover:text-red-500"
+                className="flex-1 hover:cursor-pointer hover:text-red-500 hover:bg-transparent"
                 onClick={() => onRespond(invitation.id, "decline")}
                 disabled={invitationLoading}
               >

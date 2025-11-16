@@ -1,3 +1,5 @@
+"use client";
+
 import { create } from "zustand";
 
 const THEME_STORAGE_KEY = "theme";
@@ -11,8 +13,9 @@ interface ThemeState {
 }
 
 const resolveInitialTheme = (): Theme => {
-  if (typeof window === "undefined") return "light";
-
+  if (typeof window === "undefined") {
+    return "light";
+  }
   const stored = window.localStorage.getItem(THEME_STORAGE_KEY);
   if (stored === "light" || stored === "dark") return stored;
 
@@ -26,46 +29,46 @@ const resolveInitialTheme = (): Theme => {
 };
 
 const applyTheme = (value: Theme) => {
-  if (typeof document === "undefined") return;
-
+  if (typeof window === "undefined") {
+    return;
+  }
   const root = document.documentElement;
-
-  // Force remove all theme-related classes
+  root.classList.add("disable-transitions");
+  console.log("Applying theme:", value);
   root.classList.remove("dark", "light");
+  console.log("Removed existing theme classes");
 
-  // Add the appropriate class
   if (value === "dark") {
     root.classList.add("dark");
+    console.log("Added 'dark' class");
   } else {
-    // Explicitly add light class for clarity (optional but helps debugging)
     root.classList.add("light");
   }
-
-  // Set additional attributes for consistency
   root.setAttribute("data-theme", value);
   root.style.colorScheme = value;
 
-  // Store in localStorage directly (same as _document.tsx)
   window.localStorage.setItem(THEME_STORAGE_KEY, value);
 
-  // Force a repaint to ensure styles are applied
+  setTimeout(() => {
+    root.classList.remove("disable-transitions");
+  }, 500);
+
   void root.offsetHeight;
 };
 
 export const useThemeStore = create<ThemeState>()((set, get) => {
-  // apply initial theme
+  console.log("Initializing theme store");
   const initialTheme = resolveInitialTheme();
-
-  // Apply theme immediately when store is created
-  if (typeof window !== "undefined") {
-    applyTheme(initialTheme);
-  }
+  console.log("Initial theme:", initialTheme);
+  applyTheme(initialTheme);
+  console.log("Applied theme:", initialTheme);
 
   return {
     theme: initialTheme,
 
     toggleTheme: () => {
-      const newTheme = get().theme === "light" ? "dark" : "light";
+      const state = get();
+      const newTheme = state.theme === "light" ? "dark" : "light";
       set({ theme: newTheme });
       applyTheme(newTheme);
     },

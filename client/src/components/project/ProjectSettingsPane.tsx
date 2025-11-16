@@ -26,7 +26,9 @@ const ProjectSettingsPane: React.FC<ProjectSettingsPaneProps> = ({
 }) => {
   return (
     <div
-      className={`fixed right-0 top-18 h-full w-80 bg-[hsl(var(--card))] text-[hsl(var(--card-foreground))] border-l border-[hsl(var(--border))] shadow-xl transform transition-transform duration-300 ease-in-out z-40 ${
+      // Ensure this side pane aligns beneath the page header. `top-18` is not a
+      // default Tailwind spacing key; use explicit value to avoid layout issues.
+      className={`fixed right-0 top-[72px] h-full w-80 bg-[hsl(var(--card))] text-[hsl(var(--card-foreground))] border-l border-[hsl(var(--border))] shadow-xl transform transition-transform duration-300 ease-in-out z-40 ${
         isOpen ? "translate-x-0" : "translate-x-full"
       }`}
     >
@@ -62,7 +64,7 @@ const ProjectSettingsPane: React.FC<ProjectSettingsPaneProps> = ({
             type="text"
             value={title}
             onChange={(event) => onTitleChange(event.target.value)}
-            className="w-full px-3 py-2 border border-[hsl(var(--input))] rounded-lg focus:ring-2 focus:ring-[hsl(var(--ring))] focus:border-transparent outline bg-[hsl(var(--card))] text-[hsl(var(--foreground))]"
+            className="w-full px-3 py-2 outline-1 focus:outline-none border border-[hsl(var(--input))] rounded-lg focus:ring-2 focus:ring-[hsl(var(--ring))] focus:border-transparent outline bg-[hsl(var(--card))] text-[hsl(var(--foreground))]"
             placeholder="Project title"
             required
           />
@@ -80,7 +82,7 @@ const ProjectSettingsPane: React.FC<ProjectSettingsPaneProps> = ({
             value={description}
             onChange={(event) => onDescriptionChange(event.target.value)}
             rows={5}
-            className="w-full px-3 py-2 border border-[hsl(var(--input))] outline rounded-lg focus:ring-2 focus:ring-[hsl(var(--ring))] focus:border-transparent resize-none bg-[hsl(var(--card))] text-[hsl(var(--foreground))]"
+            className="w-full px-3 py-2 outline-1 focus:outline-none  border border-[hsl(var(--input))] outline rounded-lg focus:ring-2 focus:ring-[hsl(var(--ring))] focus:border-transparent resize-none bg-[hsl(var(--card))] text-[hsl(var(--foreground))]"
             placeholder="Describe your project"
           />
         </div>

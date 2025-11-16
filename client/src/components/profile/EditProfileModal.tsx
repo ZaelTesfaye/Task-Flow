@@ -29,7 +29,7 @@ export default function EditProfileModal({
             type="text"
             value={name}
             onChange={(e) => onNameChange(e.target.value)}
-            className="w-full px-4 py-2 border border-[hsl(var(--border))] rounded-lg focus:ring-2 focus:ring-[hsl(var(--ring))] focus:border-transparent outline bg-[hsl(var(--input))] text-[hsl(var(--foreground))]"
+            className="w-full px-4 outline-1 focus:outline-none  py-2 border border-[hsl(var(--border))] rounded-lg focus:ring-2 focus:ring-[hsl(var(--ring))] focus:border-transparent outline bg-[hsl(var(--input))] text-[hsl(var(--foreground))]"
           />
         </div>
         <div>
@@ -38,7 +38,7 @@ export default function EditProfileModal({
             type="email"
             value={email}
             onChange={(e) => onEmailChange(e.target.value)}
-            className="w-full px-4 py-2 border border-[hsl(var(--border))] rounded-lg focus:ring-2 focus:ring-[hsl(var(--ring))] focus:border-transparent outline bg-[hsl(var(--input))] text-[hsl(var(--foreground))]"
+            className="w-full px-4 py-2 outline-1 focus:outline-none border border-[hsl(var(--border))] rounded-lg focus:ring-2 focus:ring-[hsl(var(--ring))] focus:border-transparent outline bg-[hsl(var(--input))] text-[hsl(var(--foreground))]"
           />
         </div>
         <div className="flex gap-3 pt-4">
