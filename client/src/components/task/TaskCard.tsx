@@ -7,8 +7,16 @@ import {
   GitPullRequest,
   ArrowUpFromLine,
 } from "lucide-react";
-import { TASK_STATUS_COLORS } from "@/constants";
 import { TaskStatus, UserRole } from "@/types";
+
+export const TASK_STATUS_COLORS: Record<TaskStatus, string> = {
+  active:
+    "bg-blue-500 text-white border border-blue-600 dark:bg-blue-900/30 dark:text-blue-600 dark:border-blue-800/60",
+  complete:
+    "bg-green-500 text-white border border-green-600 dark:bg-green-900/30 dark:text-green-600 dark:border-green-800/60",
+  canceled:
+    "bg-red-500 text-white border border-red-600 dark:bg-red-900/30 dark:text-red-600 dark:border-red-800/60",
+};
 
 export interface TaskCardProps {
   task: any;

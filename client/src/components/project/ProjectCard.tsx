@@ -18,7 +18,7 @@ export interface ProjectProps {
 const getRoleIcon = (role: string) => {
   switch (role) {
     case "owner":
-      return <Folder className="w-5 h-5 dark:text-yellow-500" />;
+      return <Folder className="w-5 h-5 text-yellow-500" />;
     case "admin":
       return <Shield className="w-5 h-5 text-blue-500" />;
     default:
@@ -58,7 +58,7 @@ const ProjectCard = ({
           </div>
           {getRoleIcon(role)}
         </div>
-        <CardDescription className="text-[hsl(var(--muted-foreground))] line-clamp-2 min-h-10">
+        <CardDescription className="text-[hsl(var(--muted-foreground))] pmin-h-10">
           {project.description}
         </CardDescription>
       </CardHeader>

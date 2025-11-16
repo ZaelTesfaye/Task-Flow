@@ -34,34 +34,24 @@ const applyTheme = (value: Theme) => {
   }
   const root = document.documentElement;
   root.classList.add("disable-transitions");
-  console.log("Applying theme:", value);
   root.classList.remove("dark", "light");
-  console.log("Removed existing theme classes");
 
   if (value === "dark") {
     root.classList.add("dark");
-    console.log("Added 'dark' class");
   } else {
     root.classList.add("light");
   }
-  root.setAttribute("data-theme", value);
-  root.style.colorScheme = value;
 
   window.localStorage.setItem(THEME_STORAGE_KEY, value);
 
   setTimeout(() => {
     root.classList.remove("disable-transitions");
   }, 500);
-
-  void root.offsetHeight;
 };
 
 export const useThemeStore = create<ThemeState>()((set, get) => {
-  console.log("Initializing theme store");
   const initialTheme = resolveInitialTheme();
-  console.log("Initial theme:", initialTheme);
   applyTheme(initialTheme);
-  console.log("Applied theme:", initialTheme);
 
   return {
     theme: initialTheme,

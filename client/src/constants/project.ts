@@ -5,22 +5,13 @@ import type {
   InvitationStatus,
 } from "@/types";
 
-export const TASK_STATUS_COLORS: Record<TaskStatus, string> = {
-  active:
-    "bg-blue-500 text-white border border-blue-600 dark:bg-blue-900/30 dark:text-blue-600 dark:border-blue-800/60",
-  complete:
-    "bg-green-500 text-white border border-green-600 dark:bg-green-900/30 dark:text-green-600 dark:border-green-800/60",
-  canceled:
-    "bg-red-500 text-white border border-red-600 dark:bg-red-900/30 dark:text-red-600 dark:border-red-800/60",
-};
-
 export const ROLE_BADGE_COLORS: Record<UserRole, string> = {
   owner:
-    "bg-yellow-500 text-white border border-yellow-600 dark:bg-yellow-900/10 dark:text-yellow-600 dark:border-yellow-500",
+    "bg-yellow-500/10 text-yellow-500 border border-yellow-600 dark:bg-yellow-900/10 dark:text-yellow-500 dark:border-yellow-500",
   admin:
-    "bg-blue-500 text-white border border-blue-600 dark:bg-blue-900/30 dark:text-blue-600 dark:border-blue-800",
+    "bg-blue-500/10 text-blue-500 border border-blue-600 dark:bg-blue-900/10 dark:text-blue-500 dark:border-blue-800",
   member:
-    "bg-green-500 text-white border border-green-600 dark:bg-green-800/30 dark:text-green-600 dark:border-green-700",
+    "bg-green-500/10 text-green-500 border border-green-600 dark:bg-green-900/10 dark:text-green-500 dark:border-green-700",
 };
 
 export const INVITATION_STATUS_COLORS: Record<InvitationStatus, string> = {
