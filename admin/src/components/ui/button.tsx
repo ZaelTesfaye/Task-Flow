@@ -7,16 +7,20 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 hover:scale-[1.02]",
-        destructive: "bg-[hsl(var(--destructive))] text-[hsl(var(--destructive-foreground))] shadow-lg shadow-red-500/30 hover:shadow-xl hover:shadow-red-500/40 hover:scale-[1.02]",
-        outline: "border-2 border-[hsl(var(--border))] bg-transparent hover:bg-[hsl(var(--accent))] text-[hsl(var(--foreground))]",
-        secondary: "bg-[hsl(var(--secondary))] text-[hsl(var(--secondary-foreground))] hover:bg-[hsl(var(--accent))]",
+        default:
+          "bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] hover:cursor-pointer",
+        destructive:
+          "bg-[hsl(var(--destructive))] text-[hsl(var(--destructive-foreground))] hover:cursor-pointer",
+        outline:
+          "border-2 border-[hsl(var(--border))] bg-transparent hover:bg-[hsl(var(--accent))] text-[hsl(var(--foreground))] hover:cursor-pointer",
+        secondary:
+          "bg-[hsl(var(--secondary))] text-[hsl(var(--secondary-foreground))] hover:bg-[hsl(var(--accent))]",
         ghost: "hover:bg-[hsl(var(--accent))] text-[hsl(var(--foreground))]",
-        link: "text-[hsl(var(--primary))] underline-offset-4 hover:underline",
+        link: "text-[hsl(var(--primary))] underline-offset-4 hover:underline hover:cursor-pointer",
       },
       size: {
         default: "h-10 px-4 py-2",
-        sm: "h-9 rounded-md px-3",
+        sm: "h-7 rounded-md px-3 py-1",
         lg: "h-11 rounded-lg px-8",
         icon: "h-10 w-10",
       },

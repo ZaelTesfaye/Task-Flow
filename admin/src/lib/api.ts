@@ -26,13 +26,15 @@ export const adminAPI = {
     page: number = 1,
     limit: number = 10
   ): Promise<AdminUser[]> => {
-    const response = await api.get<AdminUser[]>(`/admin/user/${page}/${limit}`);
+    const response = await api.get<AdminUser[]>(
+      `/api/admin/user/${page}/${limit}`
+    );
     return response.data;
   },
 
   // Remove user
   removeUser: async (userId: string): Promise<void> => {
-    await api.delete(`/admin/user/${userId}`);
+    await api.delete(`/api/admin/user/${userId}`);
   },
 
   // Update user password
@@ -40,7 +42,7 @@ export const adminAPI = {
     userId: string,
     newPassword: string
   ): Promise<void> => {
-    await api.patch("/admin/user", { userId, password: newPassword });
+    await api.patch("/api/admin/user", { userId, password: newPassword });
   },
 
   // Login (assuming there's a login endpoint for admin)
@@ -50,7 +52,7 @@ export const adminAPI = {
   ): Promise<{ token: string; user: AdminUser }> => {
     const response = await api.post<
       ApiResponse<{ token: string; user: AdminUser }>
-    >("/api/auth/login", { email, password });
+    >("/api/auth/admin-login", { email, password });
     return response.data.data;
   },
 
@@ -60,7 +62,11 @@ export const adminAPI = {
     name: string,
     password: string
   ): Promise<void> => {
-    await api.post("/super-admin/create-admin", { username, name, password });
+    await api.post("/api/super-admin/create-admin", {
+      username,
+      name,
+      password,
+    });
   },
 };
 

@@ -65,7 +65,7 @@ export default function HomePage() {
       {/* Hero Section */}
       <div className="container px-6 py-16 mx-auto">
         <div className="mb-16 text-center">
-          <h1 className="mb-6 text-5xl font-bold text-transparent md:text-6xl bg-linear-to-r from-blue-600 via-blue-600 to-indigo-600 bg-clip-text">
+          <h1 className="mb-6 text-5xl font-bold md:text-6xl bg-linear-to-r from-blue-600 via-blue-600 to-indigo-600 bg-clip-text">
             TaskFlow
           </h1>
           <p className="max-w-2xl mx-auto mb-8 text-xl text-gray-600 dark:text-gray-300">
@@ -77,15 +77,15 @@ export default function HomePage() {
           <div className="flex justify-center gap-4">
             <Button
               size="lg"
-              onClick={() => router.push("/auth?mode=register")}
-              className="px-8 py-3 text-lg hover:cursor-pointer hover:bg-gray-700"
+              onClick={() => router.push("/login")}
+              className="px-8 py-3 text-lg text-gray-300 hover:cursor-gray-300 hover:bg-gray-700"
             >
               Get Started Free
             </Button>
             <Button
               variant="outline"
               size="lg"
-              onClick={() => router.push("/auth")}
+              onClick={() => router.push("/login")}
               className="px-8 py-3 text-lg hover:cursor-pointer hover:bg-gray-700"
             >
               Sign In
