@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Router } from "express";
 import { categoryController } from "../controllers/index.js";
 import { validatorMiddleware } from "../middlewares/index.js";
 import {
@@ -7,7 +7,7 @@ import {
   removeCategorySchema,
 } from "../validations/index.js";
 
-const router = express.Router();
+const router: Router = express.Router();
 
 // create category
 router.post(

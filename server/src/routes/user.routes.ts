@@ -1,9 +1,9 @@
-import express from "express";
+import express, { Router } from "express";
 import { validatorMiddleware } from "../middlewares/index.js";
 import { updateUserSchema } from "../validations/index.js";
 import { userController } from "../controllers/index.js";
 
-const router = express.Router();
+const router: Router = express.Router();
 
 // Update user
 router.patch(

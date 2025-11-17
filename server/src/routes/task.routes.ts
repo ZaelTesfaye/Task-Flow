@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Router } from "express";
 import { validatorMiddleware } from "../middlewares/index.js";
 import {
   createTaskSchema,
@@ -9,7 +9,7 @@ import {
 } from "../validations/index.js";
 import { taskController } from "../controllers/index.js";
 
-const router = express.Router();
+const router: Router = express.Router();
 
 router.post(
   "/:projectId/:categoryId",

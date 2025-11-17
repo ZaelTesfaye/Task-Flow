@@ -1,4 +1,4 @@
-import type { Request, Response } from "express";
+import type { Request, Response, RequestHandler } from "express";
 import httpStatus from "http-status";
 
 import { asyncWrapper } from "../lib/index.js";
@@ -10,7 +10,7 @@ import type {
   RespondInvitationDTO,
 } from "../dtos/project.dto.js";
 
-export const createProject = asyncWrapper(
+export const createProject: RequestHandler = asyncWrapper(
   async (req: Request<{}, {}, CreateProjectDTO>, res: Response) => {
     const { id } = req.user!;
     const { title, description } = req.body;
@@ -24,7 +24,7 @@ export const createProject = asyncWrapper(
   },
 );
 
-export const updateProject = asyncWrapper(
+export const updateProject: RequestHandler = asyncWrapper(
   async (
     req: Request<{ projectId: string }, {}, UpdateProjectDTO>,
     res: Response,
@@ -51,7 +51,7 @@ export const updateProject = asyncWrapper(
   },
 );
 
-export const removeProject = asyncWrapper(
+export const removeProject: RequestHandler = asyncWrapper(
   async (req: Request<{ projectId: string }>, res: Response) => {
     const { projectId } = req.params;
     const { id: userId } = req.user!;
@@ -74,7 +74,7 @@ export const removeProject = asyncWrapper(
   },
 );
 
-export const addMember = asyncWrapper(
+export const addMember: RequestHandler = asyncWrapper(
   async (
     req: Request<{ projectId: string }, {}, AddMemberDTO>,
     res: Response,
@@ -112,7 +112,7 @@ export const addMember = asyncWrapper(
   },
 );
 
-export const getUserProjects = asyncWrapper(
+export const getUserProjects: RequestHandler = asyncWrapper(
   async (req: Request, res: Response) => {
     const { id: userId } = req.user!;
 
@@ -124,7 +124,7 @@ export const getUserProjects = asyncWrapper(
   },
 );
 
-export const removeProjectMember = asyncWrapper(
+export const removeProjectMember: RequestHandler = asyncWrapper(
   async (
     req: Request<{ projectId: string; userId: string }>,
     res: Response,
@@ -160,7 +160,7 @@ export const removeProjectMember = asyncWrapper(
   },
 );
 
-export const promoteProjectMember = asyncWrapper(
+export const promoteProjectMember: RequestHandler = asyncWrapper(
   async (
     req: Request<{ projectId: string; userId: string }, {}, { access: string }>,
     res: Response,
@@ -189,7 +189,7 @@ export const promoteProjectMember = asyncWrapper(
   },
 );
 
-export const getProjectMembers = asyncWrapper(
+export const getProjectMembers: RequestHandler = asyncWrapper(
   async (req: Request<{ projectId: string }>, res: Response) => {
     const { projectId } = req.params;
     const { id: userId } = req.user!;
@@ -215,7 +215,7 @@ export const getProjectMembers = asyncWrapper(
   },
 );
 
-export const getProjectInvitations = asyncWrapper(
+export const getProjectInvitations: RequestHandler = asyncWrapper(
   async (req: Request<{ projectId: string }>, res: Response) => {
     const { projectId } = req.params;
     const { id: requesterId } = req.user!;
@@ -240,7 +240,7 @@ export const getProjectInvitations = asyncWrapper(
   },
 );
 
-export const getUserInvitations = asyncWrapper(
+export const getUserInvitations: RequestHandler = asyncWrapper(
   async (req: Request, res: Response) => {
     const { id: userId } = req.user!;
 
@@ -252,7 +252,7 @@ export const getUserInvitations = asyncWrapper(
   },
 );
 
-export const respondToInvitation = asyncWrapper(
+export const respondToInvitation: RequestHandler = asyncWrapper(
   async (
     req: Request<{ invitationId: string }, {}, RespondInvitationDTO>,
     res: Response,
@@ -273,6 +273,19 @@ export const respondToInvitation = asyncWrapper(
           ? "Invitation accepted successfully"
           : "Invitation declined successfully",
       data: result,
+    });
+  },
+);
+
+export const leaveProject: RequestHandler = asyncWrapper(
+  async (req: Request<{ projectId: string }>, res: Response) => {
+    const { projectId } = req.params;
+    const { id: userId } = req.user!;
+
+    await projectServices.leaveProject(projectId, userId);
+
+    res.json({
+      message: "You have left the project successfully",
     });
   },
 );

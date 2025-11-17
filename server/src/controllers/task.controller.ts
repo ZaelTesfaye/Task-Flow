@@ -1,4 +1,4 @@
-import type { Request, Response } from "express";
+import type { Request, Response, RequestHandler } from "express";
 import httpStatus from "http-status";
 
 import { asyncWrapper } from "../lib/index.js";
@@ -14,7 +14,7 @@ import type {
   AcceptPendingUpdateDTO,
 } from "../dtos/index.js";
 
-export const createTask = asyncWrapper(
+export const createTask: RequestHandler = asyncWrapper(
   async (
     req: Request<{ projectId: string; categoryId: string }, {}, CreateTaskDTO>,
     res: Response,
@@ -59,7 +59,7 @@ export const createTask = asyncWrapper(
   },
 );
 
-export const updateTask = asyncWrapper(
+export const updateTask: RequestHandler = asyncWrapper(
   async (
     req: Request<{ projectId: string; taskId: string }, {}, UpdateTaskDTO>,
     res: Response,
@@ -91,7 +91,7 @@ export const updateTask = asyncWrapper(
   },
 );
 
-export const removeTask = asyncWrapper(
+export const removeTask: RequestHandler = asyncWrapper(
   async (
     req: Request<{ projectId: string; taskId: string }>,
     res: Response,
@@ -117,7 +117,7 @@ export const removeTask = asyncWrapper(
   },
 );
 
-export const requestTaskUpdate = asyncWrapper(
+export const requestTaskUpdate: RequestHandler = asyncWrapper(
   async (
     req: Request<
       { projectId: string; taskId: string },
@@ -153,7 +153,7 @@ export const requestTaskUpdate = asyncWrapper(
   },
 );
 
-export const acceptPendingUpdate = asyncWrapper(
+export const acceptPendingUpdate: RequestHandler = asyncWrapper(
   async (
     req: Request<
       { projectId: string; pendingUpdateId: string },
@@ -187,7 +187,7 @@ export const acceptPendingUpdate = asyncWrapper(
   },
 );
 
-export const rejectPendingUpdate = asyncWrapper(
+export const rejectPendingUpdate: RequestHandler = asyncWrapper(
   async (
     req: Request<{ projectId: string; pendingUpdateId: string }>,
     res: Response,

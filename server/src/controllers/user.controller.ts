@@ -1,9 +1,9 @@
-import type { Request, Response } from "express";
+import type { Request, Response, RequestHandler } from "express";
 import { asyncWrapper } from "../lib/index.js";
 import { userServices } from "../services/index.js";
 import type { UpdateUserDTO } from "../dtos/index.js";
 
-export const updateUser = asyncWrapper(
+export const updateUser: RequestHandler = asyncWrapper(
   async (req: Request<{}, {}, UpdateUserDTO>, res: Response) => {
     const { id: userId } = req.user!;
     const updates = req.body;
@@ -17,12 +17,14 @@ export const updateUser = asyncWrapper(
   },
 );
 
-export const deleteUser = asyncWrapper(async (req: Request, res: Response) => {
-  const { id: userId } = req.user!;
+export const deleteUser: RequestHandler = asyncWrapper(
+  async (req: Request, res: Response) => {
+    const { id: userId } = req.user!;
 
-  await userServices.deleteUser(userId);
+    await userServices.deleteUser(userId);
 
-  res.json({
-    message: "User deleted successfully",
-  });
-});
+    res.json({
+      message: "User deleted successfully",
+    });
+  },
+);

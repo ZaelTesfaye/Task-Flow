@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Router } from "express";
 import {
   registerSchema,
   adminLoginSchema,
@@ -7,7 +7,7 @@ import {
 import { authController } from "../controllers/index.js";
 import { validatorMiddleware } from "../middlewares/index.js";
 
-const router = express.Router();
+const router: Router = express.Router();
 
 // register
 router.post(

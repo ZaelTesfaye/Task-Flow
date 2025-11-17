@@ -1,9 +1,9 @@
-import express from "express";
+import express, { Router } from "express";
 import { adminController } from "../controllers/index.js";
 import { validatorMiddleware } from "../middlewares/index.js";
 import { addAdminSchema } from "../validations/index.js";
 
-const router = express.Router();
+const router: Router = express.Router();
 
 // create admin
 router.post(
