@@ -3,13 +3,13 @@ FROM node:20-slim AS build
 
 # user changed to a non-root user inside the container
 RUN addgroup --system app && adduser --system --ingroup app app
+RUN npm install -g pnpm
 
 USER app
 
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm install -g pnpm
 RUN pnpm install --frozen-lockfile --ignore-scripts
 
 COPY . .
@@ -20,13 +20,14 @@ RUN npm run build
 FROM node:20-slim AS runtime
 
 RUN addgroup --system app && adduser --system --ingroup app app
+RUN npm install -g pnpm
+
 USER app
 
 WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm install -g pnpm
 RUN pnpm install --frozen-lockfile --prod --ignore-scripts
 
 # Copy compiled code & dependencies
