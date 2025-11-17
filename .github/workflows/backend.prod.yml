@@ -7,7 +7,7 @@ on:
     paths:
       - 'server/**'
       - '.github/workflows/deploy.yml'
-  workflow_dispatch: # manual trigger
+  workflow_dispatch:
 
 jobs:
   deploy:
