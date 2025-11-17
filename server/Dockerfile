@@ -10,7 +10,7 @@ USER app
 WORKDIR /app
 
 COPY package*.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile --ignore-scripts
+RUN pnpm install --frozen-lockfile --ignore-scripts --shamefully-hoist 
 
 COPY . .
 RUN npx prisma generate
@@ -28,7 +28,7 @@ WORKDIR /app
 
 COPY package*.json pnpm-lock.yaml ./
 
-RUN pnpm install --frozen-lockfile --prod --ignore-scripts
+RUN pnpm install --frozen-lockfile --prod --ignore-scripts --shamefully-hoist 
 
 # Copy compiled code & dependencies
 COPY --from=build /app/dist ./dist
