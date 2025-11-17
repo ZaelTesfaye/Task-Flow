@@ -6,7 +6,7 @@ on:
       - main
     paths: 
       - 'server/**'
-      - '.github/workflows/deploy.yml'
+      - '.github/workflows/backend.prod.yml'
   workflow_dispatch:
 
 jobs:
@@ -29,7 +29,7 @@ jobs:
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v6
         with:
-          context: .
+          context: ./server
           push: true
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/${{ secrets.IMAGE_NAME }}:latest
@@ -43,10 +43,10 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "docker-compose.yml, nginx.conf, prisma/"
+          source: "server/docker-compose.yml, server/nginx.conf, server/prisma/"
           target: "~/todo"
 
-      - name: Securely Inject SSL Certificates
+      - name: Inject SSL Certificates
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SSH_HOST }}
