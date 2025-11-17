@@ -2,7 +2,8 @@
 FROM node:20-slim AS build
 
 # user changed to a non-root user inside the container
-RUN addgroup app && adduser -S -G app app
+RUN addgroup --system app && adduser --system --ingroup app app
+
 USER app
 
 WORKDIR /app
@@ -17,7 +18,7 @@ RUN npm run build
 # ---------------------- Runtime Stage ----------------------
 FROM node:20-slim AS runtime
 
-RUN addgroup app && adduser -S -G app app
+RUN addgroup --system app && adduser --system --ingroup app app
 USER app
 
 WORKDIR /app
