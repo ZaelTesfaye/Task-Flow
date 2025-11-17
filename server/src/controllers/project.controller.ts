@@ -276,16 +276,3 @@ export const respondToInvitation: RequestHandler = asyncWrapper(
     });
   },
 );
-
-export const leaveProject: RequestHandler = asyncWrapper(
-  async (req: Request<{ projectId: string }>, res: Response) => {
-    const { projectId } = req.params;
-    const { id: userId } = req.user!;
-
-    await projectServices.leaveProject(projectId, userId);
-
-    res.json({
-      message: "You have left the project successfully",
-    });
-  },
-);
