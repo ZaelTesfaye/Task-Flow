@@ -9,7 +9,7 @@ USER app
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY package*.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile --ignore-scripts
 
 COPY . .
@@ -26,7 +26,7 @@ USER app
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY package*.json pnpm-lock.yaml ./
 
 RUN pnpm install --frozen-lockfile --prod --ignore-scripts
 
