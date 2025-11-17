@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { LogIn, Shield } from "lucide-react";
 import { Button } from "../components/ui/button";
@@ -15,6 +15,16 @@ function Login() {
     {}
   );
   const navigate = useNavigate();
+
+  // Check if user isauthenticated
+  useEffect(() => {
+    const token = localStorage.getItem("adminToken");
+    const user = localStorage.getItem("adminUser");
+
+    if (token && user) {
+      navigate("/dashboard");
+    }
+  }, [navigate]);
 
   const validateForm = () => {
     const newErrors: { email?: string; password?: string } = {};

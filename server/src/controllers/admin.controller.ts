@@ -10,7 +10,7 @@ import type {
 import { adminServices } from "../services/index.js";
 import { asyncWrapper } from "../lib/index.js";
 
-export const viewAllUsers = asyncWrapper(
+export const getAllUsers = asyncWrapper(
   async (req: Request<GetAllUsersParams>, res: Response) => {
     const { page, limit } = req.params;
     const result = await adminServices.getAllUsers(page, limit);
@@ -23,7 +23,9 @@ export const removeUser = asyncWrapper(
   async (req: Request<RemoveUser>, res: Response) => {
     const { userId } = req.params;
 
-    const result = await adminServices.removeUser(userId);
+    const { role } = req.user!;
+
+    const result = await adminServices.removeUser(userId, role);
 
     if (result) {
       res.json({

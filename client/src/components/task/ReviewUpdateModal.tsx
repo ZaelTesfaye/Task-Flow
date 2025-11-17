@@ -1,5 +1,6 @@
 import React from "react";
 import { Modal } from "@/components/modals";
+import { TaskStatus } from "@/types";
 import toast from "react-hot-toast";
 
 interface ReviewUpdateModalProps {
@@ -10,10 +11,7 @@ interface ReviewUpdateModalProps {
   resetForm: (
     key: keyof typeof import("@/constants/project").DEFAULT_FORM_STATE
   ) => void;
-  acceptPendingUpdate: (
-    pendingUpdateId: string,
-    newStatus: import("@/constants/project").TaskStatus
-  ) => void;
+  acceptPendingUpdate: (pendingUpdateId: string, newStatus: TaskStatus) => void;
   rejectPendingUpdate: (pendingUpdateId: string) => void;
 }
 

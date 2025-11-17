@@ -9,6 +9,8 @@ export const getAllUsers = (page: number, limit: number) => {
       id: true,
       name: true,
       email: true,
+      createdAt: true,
+      role: true,
     },
   });
 };

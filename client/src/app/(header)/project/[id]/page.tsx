@@ -73,7 +73,8 @@ export default function ProjectBoard() {
     rejectPendingUpdate,
   } = taskActions;
 
-  const { addMember, removeMember, updateMemberAccess } = memberActions;
+  const { addMember, removeMember, updateMemberAccess, leaveProject } =
+    memberActions;
 
   const isOwnerOrAdmin = userRole === "owner" || userRole === "admin";
   const [isSavingSettings, setIsSavingSettings] = useState(false);
@@ -102,6 +103,10 @@ export default function ProjectBoard() {
 
   const handleToggleMembers = () => {
     setIsMembersPaneOpen(!isMembersPaneOpen);
+  };
+
+  const handleLeaveProject = () => {
+    openModal("showLeaveProjectModal");
   };
 
   const handleSaveProject = async () => {
@@ -196,6 +201,7 @@ export default function ProjectBoard() {
           onToggleSettings={handleToggleSettings}
           isMembersPaneOpen={isMembersPaneOpen}
           onToggleMembers={handleToggleMembers}
+          onLeaveProject={handleLeaveProject}
         />{" "}
         <div className="px-6 py-8 mx-auto max-w-7xl">
           <div className="flex gap-8">
@@ -461,6 +467,20 @@ export default function ProjectBoard() {
           forms={forms}
           updateForm={updateForm}
           addMember={addMember}
+        />
+        {/* Leave Project Confirmation */}
+        <ConfirmationModal
+          isOpen={modalStates.showLeaveProjectModal}
+          title="Leave Project"
+          message="Are you sure you want to leave this project? You will lose access to all project resources."
+          confirmText="Leave Project"
+          onConfirm={async () => {
+            await leaveProject(user?.id || "");
+            closeModal("showLeaveProjectModal");
+            router.push("/dashboard");
+          }}
+          onCancel={() => closeModal("showLeaveProjectModal")}
+          confirmButtonColor="red"
         />
       </div>
     </>

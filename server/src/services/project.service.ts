@@ -1,6 +1,6 @@
 import { projectModel } from "../model/index.js";
-import userModel from "../model/user.model.js";
-import { APIError } from "../utils/error.js";
+import { userModel } from "../model/index.js";
+import { APIError } from "../utils/index.js";
 
 export const createProject = (
   title: string,
@@ -91,6 +91,16 @@ export const checkUserAccess = async (
     requiredAccess,
   );
   return !!result;
+};
+
+export const isTargetRequester = async (projectId: string, userId: string) => {
+  const result = await projectModel.findProjectMember(projectId, userId);
+
+  if (!result) return false;
+
+  if (result.userId !== userId) return false;
+
+  return true;
 };
 
 export const promoteProjectMember = (

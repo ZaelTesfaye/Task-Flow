@@ -16,11 +16,7 @@ interface AdminUser {
   role?: string;
 }
 
-interface Props {
-  children: React.ReactNode;
-}
-
-export default function AdminLayout({ children }: Props) {
+export default function AdminLayout() {
   const [user, setUser] = useState<AdminUser | null>(null);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
@@ -61,7 +57,7 @@ export default function AdminLayout({ children }: Props) {
   };
 
   return (
-    <div className="min-h-screen bg-[hsl(var(--background))] text-[hsl(var(--foreground))]">
+    <div className="bg-[hsl(var(--background))] text-[hsl(var(--foreground))]">
       <header className="bg-[hsl(var(--card))] text-[hsl(var(--card-foreground))] border-b border-[hsl(var(--border))] sticky top-0 z-50">
         <div className="flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-2">
@@ -110,9 +106,6 @@ export default function AdminLayout({ children }: Props) {
           </div>
         </div>
       </header>
-
-      <main>{children}</main>
-
       {/* Logout confirmation */}
       <Dialog open={showLogoutModal} onOpenChange={setShowLogoutModal}>
         <DialogContent>

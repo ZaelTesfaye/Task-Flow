@@ -129,22 +129,30 @@ export const removeProjectMember = asyncWrapper(
     req: Request<{ projectId: string; userId: string }>,
     res: Response,
   ) => {
-    const { projectId, userId } = req.params;
-    const { id: requesterId } = req.user!;
+    const { projectId, userId: targetUserId } = req.params;
+    const { id: requesterUserId } = req.user!;
 
     const hasAccess = await projectServices.checkUserAccess(
       projectId,
-      requesterId,
+      requesterUserId,
       ["owner"],
     );
 
+    let isRequesterTarget: boolean;
     if (!hasAccess) {
-      return res.status(httpStatus.FORBIDDEN).json({
-        message: "Only project owner can remove members",
-      });
+      isRequesterTarget = await projectServices.isTargetRequester(
+        projectId,
+        targetUserId,
+      );
+
+      if (!isRequesterTarget) {
+        return res.status(httpStatus.FORBIDDEN).json({
+          message: "Only project owner or member itself can remove members",
+        });
+      }
     }
 
-    await projectServices.removeMember(projectId, userId);
+    await projectServices.removeMember(projectId, targetUserId);
 
     res.json({
       message: "Member removed successfully",

@@ -1,6 +1,6 @@
 import React from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Settings, Users } from "lucide-react";
+import { ArrowLeft, Settings, Users, LogOut } from "lucide-react";
 import { Project, UserRole } from "@/types";
 
 export interface ProjectHeaderProps {
@@ -10,6 +10,7 @@ export interface ProjectHeaderProps {
   isSettingsPaneOpen: boolean;
   onToggleMembers: () => void;
   isMembersPaneOpen: boolean;
+  onLeaveProject: () => void;
 }
 
 const ProjectHeader: React.FC<ProjectHeaderProps> = ({
@@ -19,6 +20,7 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
   isSettingsPaneOpen,
   onToggleMembers,
   isMembersPaneOpen,
+  onLeaveProject,
 }) => {
   const router = useRouter();
 
@@ -62,6 +64,18 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
             >
               <Users className="w-5 h-5" />
             </button>
+            {userRole !== "owner" && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onLeaveProject();
+                }}
+                className="hover:bg-red-500/10 p-2 border border-[hsl(var(--border))] rounded-lg transition hover:cursor-pointer"
+                title="Leave Project"
+              >
+                <LogOut className="w-5 h-5" />
+              </button>
+            )}
             {userRole === "owner" && (
               <button
                 onClick={(e) => {

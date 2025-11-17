@@ -22,9 +22,7 @@
     --input: 217.2 32.6% 17.5%;
     --ring: 224.3 76.3% 48%;
   }
-}
 
-@layer base {
   * {
     box-sizing: border-box;
     margin: 0;
@@ -59,28 +57,15 @@
 }
 
 /* During theme toggles, temporarily disable transitions to prevent flicker */
-.disable-transitions *,
-.disable-transitions *::before,
-.disable-transitions *::after {
+.disable-transitions * {
   transition: none !important;
   animation-duration: 0s !important;
 }
 
-/* Force light mode styles when light class is present */
-.light,
-:root:not(.dark) {
-  color-scheme: light;
-}
-
-.light *,
-:root:not(.dark) * {
-  border-color: hsl(var(--border));
-}
-
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -90,10 +75,6 @@
 
 .dark ::-webkit-scrollbar-track {
   background: rgb(31 41 55);
-}
-
-.light ::-webkit-scrollbar-track {
-  background: rgb(243 244 246);
 }
 
 ::-webkit-scrollbar-thumb {
@@ -114,7 +95,7 @@
   overflow: hidden;
 }
 
-/* Animations */
+
 @keyframes shimmer {
   0% {
     background-position: -1000px 0;

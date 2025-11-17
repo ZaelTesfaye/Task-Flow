@@ -33,9 +33,19 @@ export const useMemberActions = (
     [projectId, refetch]
   );
 
+  const leaveProject = useCallback(
+    async (userId: string) => {
+      await projectAPI.leaveProject(projectId as string, userId as string);
+      toast.success("You have left the project!");
+      // Redirect to dashboard or something
+    },
+    [projectId]
+  );
+
   return {
     addMember,
     removeMember,
     updateMemberAccess,
+    leaveProject,
   };
 };

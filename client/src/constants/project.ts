@@ -37,6 +37,7 @@ export const DEFAULT_MODAL_STATE = {
   showReviewUpdateModal: false,
   showDeleteCategoryModal: false,
   showRemoveMemberModal: false,
+  showLeaveProjectModal: false,
 };
 
 export const DEFAULT_FORM_STATE = {

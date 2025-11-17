@@ -16,15 +16,3 @@ export interface ApiResponse<T> {
   data: T;
   message?: string;
 }
-
-export interface PaginatedUsers {
-  users: AdminUser[];
-  total: number;
-  page: number;
-  limit: number;
-}
-
-export interface UpdatePasswordRequest {
-  userId: string;
-  newPassword: string;
-}

@@ -34,8 +34,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "eslint.config.ts",
-    "next.config.js",
+    "eslint.config.mjs",
+    "next.config.ts",
     ".next/dev/types/**/*.ts",
     "src/types/api.type.ts"
   ],

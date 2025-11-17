@@ -13,7 +13,7 @@ const router = express.Router();
 router.get(
   "/user/:page/:limit",
   validatorMiddleware(getAllUsersSchema),
-  adminController.viewAllUsers,
+  adminController.getAllUsers,
 );
 
 // Remove user

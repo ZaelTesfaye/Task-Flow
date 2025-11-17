@@ -4,15 +4,12 @@ import { defineConfig, globalIgnores } from "eslint/config";
 
 export default defineConfig([
   globalIgnores(["dist/**", "node_modules/**"]),
-  // {
-  //   ignores: ["dist/**", "node_modules/**"],
-  // },
 
-  tseslint.configs.recommended, // .. sets parser to @typescript-eslint/parser
   {
     files: ["**/*.{js,mjs,cjs,ts,mts,cts}"],
     // plugins: { js },
     // extends: ["js/recommended"], // only using TS recommended rules
+    extends: [tseslint.configs.recommended], // + sets parser to @typescript-eslint/parser
     languageOptions: {
       globals: globals.node,
       parserOptions: {
@@ -38,7 +35,7 @@ export default defineConfig([
         },
       ],
       "@typescript-eslint/no-explicit-any": "off",
-      "@typescript-eslint/no-empty-object-type": "off",
+      // "@typescript-eslint/no-empty-object-type": "off",
     },
   },
 ]);

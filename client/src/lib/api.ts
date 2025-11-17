@@ -112,6 +112,14 @@ export const projectAPI = {
       .delete<ApiResponse<void>>(`/project/member/${projectId}/${userId}`)
       .then((r) => r.data),
 
+  leaveProject: (
+    projectId: string,
+    userId: string
+  ): Promise<ApiResponse<void>> =>
+    api
+      .delete<ApiResponse<void>>(`/project/member/${projectId}/${userId}`)
+      .then((r) => r.data),
+
   getProjectInvitations: (
     projectId: string
   ): Promise<ApiResponse<ProjectInvitation[]>> =>

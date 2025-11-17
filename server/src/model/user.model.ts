@@ -22,6 +22,14 @@ export const findByEmail = async (email: string) => {
   });
 };
 
+export const findById = async (id: string) => {
+  return prisma.user.findUnique({
+    where: {
+      id,
+    },
+  });
+};
+
 export const getUser = async (userId: string) => {
   return prisma.user.findUnique({
     where: {
@@ -49,13 +57,3 @@ export const deleteUser = async (userId: string) => {
     },
   });
 };
-
-export const userModel = {
-  createUser,
-  findByEmail,
-  getUser,
-  updateUser,
-  deleteUser,
-};
-
-export default userModel;

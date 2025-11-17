@@ -8,11 +8,12 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(uuid())
-  name     String
-  email    String @unique
-  password String
-  role     String @default("user")
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("user")
+  createdAt DateTime @default(now())
 
   projects            Project[]
   projectMembers      ProjectMembers[]
@@ -28,8 +29,9 @@ model Project {
   title       String
   description String
 
-  ownerId String
-  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId   String
+  owner     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
 
   categories  Category[]
   members     ProjectMembers[]
@@ -75,8 +77,9 @@ model ProjectInvitation {
 }
 
 model Category {
-  id   String @id @default(uuid())
-  name String
+  id        String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
 
   projectId String
   project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
@@ -87,10 +90,11 @@ model Category {
 }
 
 model Task {
-  id          String @id @default(uuid())
+  id          String   @id @default(uuid())
   title       String
   description String
-  status      String @default("active") //complete, active, pending(pending approval)
+  status      String   @default("active") //complete, active, pending(pending approval)
+  createdAt   DateTime @default(now())
 
   assignedTo   String
   assignedUser User   @relation("assignedTo", fields: [assignedTo], references: [id], onDelete: Cascade)
@@ -109,6 +113,7 @@ model PendingUpdates {
   createdAt         DateTime @default(now())
   updateDescription String
   newStatus         String //complete, active, pending(pending approval)
+  createdAtDate     DateTime @default(now())
 
   taskId String
   task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
