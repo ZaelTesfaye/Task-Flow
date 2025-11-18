@@ -11,6 +11,9 @@ services:
         condition: service_healthy
       migrator:
         condition: service_completed_successfully
+      seeder:
+        condition: service_completed_successfully
+      
     volumes:
       - ./logs:/app/logs
     healthcheck:
@@ -32,6 +35,8 @@ services:
         condition: service_healthy
       migrator:
         condition: service_completed_successfully
+      seeder:
+        condition: service_completed_successfully
     volumes:
       - ./logs:/app/logs
     healthcheck:
@@ -47,7 +52,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx.conf:/etc/nginx/naginx.conf:ro
       - /etc/letsencrypt/live/zealtesfaye.me/fullchain.pem:/etc/nginx/certs/fullchain.pem:ro
       - /etc/letsencrypt/live/zealtesfaye.me/privkey.pem:/etc/nginx/certs/privkey.pem:ro
       # - /etc/nginx/ssl:/etc/nginx/ssl:ro
