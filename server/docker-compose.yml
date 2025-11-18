@@ -64,10 +64,13 @@ services:
 
   db:
     image: postgres:15.14
+    env_file:
+      - ./.env
     environment:
       POSTGRES_DB: tasks
       POSTGRES_USER: task-manager-db
       POSTGRES_PASSWORD: ${DB_PASSWORD}
+      
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
