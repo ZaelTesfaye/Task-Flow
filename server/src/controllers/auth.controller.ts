@@ -4,12 +4,12 @@ import httpStatus from "http-status";
 import { asyncWrapper } from "../lib/index.js";
 import { authServices } from "../services/index.js";
 import { type RegisterBody, type LoginBody } from "../dtos/index.js";
-import config from "../config/config.js";
+// import config from "../config/config.js";
 
 export const defaultCookieConfig: CookieOptions = {
   httpOnly: true,
-  secure: config.env === "production" ? true : false,
-  sameSite: "lax",
+  secure: false, // config.env === "production" ? true : false,
+  sameSite: "none",
   path: "/",
   maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
 };
