@@ -43,7 +43,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "server/docker-compose.yml, server/nginx.conf, server/prisma/"
+          source: "server/docker-compose.yml:docker-compose.yml, server/nginx.conf:nginx.conf, server/prisma:prisma"
           target: "~/todo"
 
       - name: Inject SSL Certificates
