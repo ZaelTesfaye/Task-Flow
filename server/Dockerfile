@@ -14,7 +14,6 @@ RUN pnpm install --frozen-lockfile --ignore-scripts --shamefully-hoist
 
 COPY . .
 ENV NODE_TLS_REJECT_UNAUTHORIZED=0
-RUN npm config set strict-ssl false
 RUN npx prisma generate
 RUN npm run build
 
@@ -41,7 +40,6 @@ COPY --from=build /app/views ./views
 # docker-compose.yml is not included in the image, instead, it is copied directly to the server inside the ci/cd pipeline as a best practice
 
 ENV NODE_TLS_REJECT_UNAUTHORIZED=0
-RUN npm config set strict-ssl false
 RUN npx prisma generate
 EXPOSE 5000
 
