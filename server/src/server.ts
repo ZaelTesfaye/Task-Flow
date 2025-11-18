@@ -54,7 +54,7 @@ const CorsOptions = {
   origin: config.env === "development" ? true : allowedOrigins, // corsOrigin
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-  allowedHeaders: ["Authorization"],
+  allowedHeaders: ["Authorization", "Content-Type"],
 };
 
 app.use(cors(CorsOptions));
