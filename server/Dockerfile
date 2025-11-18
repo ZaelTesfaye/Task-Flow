@@ -16,6 +16,7 @@ RUN pnpm install --frozen-lockfile --ignore-scripts --shamefully-hoist
 
 COPY . .
 ENV PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING=1
+ENV PRISMA_CLI_BINARY_TARGETS="debian-openssl-1.1.x"
 RUN npx prisma generate
 RUN npm run build
 
@@ -42,6 +43,7 @@ COPY --from=build /app/views ./views
 # docker-compose.yml is not included in the image, instead, it is copied directly to the server inside the ci/cd pipeline as a best practice
 
 ENV PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING=1
+ENV PRISMA_CLI_BINARY_TARGETS="debian-openssl-1.1.x"
 RUN npx prisma generate
 EXPOSE 5000
 
