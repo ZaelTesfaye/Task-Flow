@@ -26,11 +26,14 @@ const app = express();
 app.set("view engine", "ejs");
 app.set("trust proxy", true);
 
+const allowedOrigins = config.frontEndUrl?.split(",")?.map((o) => o.trim());
+
+console.log("Allowed Origins:", allowedOrigins);
 const CorsOptions = {
-  origin: config.env === "development" ? true : config.frontEndUrl,
+  origin: config.env === "development" ? true : allowedOrigins,
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  allowedHeaders: ["Authorization"],
 };
 
 app.use(cors(CorsOptions));
