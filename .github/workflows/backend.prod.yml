@@ -45,6 +45,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "./server/docker-compose.yml, ./server/nginx.conf, ./server/prisma/"
           target: "~/todo"
+          strip_components: 1
 
       - name: Inject SSL Certificates
         uses: appleboy/ssh-action@v1.0.3
