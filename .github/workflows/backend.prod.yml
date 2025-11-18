@@ -37,13 +37,20 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      - name: Prepare config files
+        run: |
+          mkdir -p deploy-files
+          cp server/docker-compose.yml deploy-files/
+          cp server/nginx.conf deploy-files/
+          cp -r server/prisma deploy-files/
+
       - name: Copy config files to EC2
         uses: appleboy/scp-action@v1.0.0
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "./server/docker-compose.yml, ./server/nginx.conf, ./server/prisma/"
+          source: "deploy-files/"
           target: "~/todo"
           strip_components: 1
 
