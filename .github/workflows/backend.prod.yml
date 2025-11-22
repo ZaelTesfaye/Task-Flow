@@ -17,6 +17,11 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
       - name: Build and Cache Docker Image
         uses: docker/setup-buildx-action@v3
 
@@ -85,7 +90,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd ~/task-flow/server
-            # write secret into .env
             cat > .env <<'EOF'
             ${{ secrets.PROD_VARIABLES }}
             EOF
