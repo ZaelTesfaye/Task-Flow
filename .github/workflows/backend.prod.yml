@@ -44,6 +44,15 @@ jobs:
           cp server/nginx.conf deploy-files/
           cp -r server/prisma deploy-files/
 
+      - name: Ensure remote directories exist
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            mkdir -p ~/task-flow/server
+
       - name: Copy config files to EC2
         uses: appleboy/scp-action@v1.0.0
         with:
@@ -51,7 +60,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "deploy-files/"
-          target: "~/todo"
+          target: "~/task-flow/server"
           strip_components: 1
 
       - name: Inject SSL Certificates
@@ -75,7 +84,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd ~/todo
+            cd ~/task-flow/server
             # write secret into .env
             cat > .env <<'EOF'
             ${{ secrets.PROD_VARIABLES }}
@@ -89,19 +98,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd ~/todo
+            cd ~/task-flow/server
             docker compose pull
             docker compose up -d --remove-orphans
             docker image prune -f
-
-      # - name: Start Nginx
-      #   uses: appleboy/ssh-action@v1.0.3
-      #   with:
-      #     host: ${{ secrets.SSH_HOST }}
-      #     username: ${{ secrets.SSH_USER }}
-      #     key: ${{ secrets.SSH_PRIVATE_KEY }}
-      #     request_pty: true
-      #     script: |
-      #       sudo cp ~/todo/nginx.conf /etc/nginx/nginx.conf 
-      #       sudo systemctl enable nginx
-      #       sudo systemctl reload nginx

@@ -52,10 +52,10 @@ services:
       - "80:80"
       - "443:443"
     volumes:
+      - ../task-flow:/var/www/task-flow:ro
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
       - /etc/letsencrypt/live/zealtesfaye.me/fullchain.pem:/etc/nginx/certs/fullchain.pem:ro
       - /etc/letsencrypt/live/zealtesfaye.me/privkey.pem:/etc/nginx/certs/privkey.pem:ro
-      - ../frontend:/var/www/frontend:ro
       # - /etc/nginx/ssl:/etc/nginx/ssl:ro
     depends_on:
       process1:
