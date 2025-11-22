@@ -47,7 +47,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            mkdir -p ~/task-flow/frontend
+            mkdir -p ~/task-flow/client
 
       - name: Copy build files to VPS
         uses: appleboy/scp-action@v1.0.0
