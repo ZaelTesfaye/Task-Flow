@@ -58,6 +58,15 @@ jobs:
           source: "server/nginx.conf"
           target: "~/todo"
 
+      - name: Copy docker-compose config to VPS
+        uses: appleboy/scp-action@v1.0.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "server/docker-compose.yml"
+          target: "~/todo"
+
       - name: Deploy to VPS
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -66,4 +75,4 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd ~/todo
-            docker compose restart nginx
+            docker compose up -d --no-deps nginx
