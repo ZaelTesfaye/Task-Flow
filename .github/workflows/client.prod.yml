@@ -56,5 +56,5 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "client/out/"
-          target: "~/task-flow/frontend"
+          target: "~/task-flow/client"
           strip_components: 2
