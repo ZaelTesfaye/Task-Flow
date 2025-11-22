@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - 'client/**'
+      - 'server/**'
       - '.github/workflows/client.prod.yml'
   workflow_dispatch:
 
@@ -46,7 +47,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            mkdir -p ~/task-flow/client
+            mkdir -p ~/task-flow/frontend
 
       - name: Copy build files to VPS
         uses: appleboy/scp-action@v1.0.0
@@ -55,5 +56,5 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "client/out/"
-          target: "~/task-flow/client"
+          target: "~/task-flow/frontend"
           strip_components: 2
