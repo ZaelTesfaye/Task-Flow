@@ -66,7 +66,7 @@ export default function Dashboard() {
       setTitle("");
       setDescription("");
       if (createdProject?.id) {
-        router.push(`/project/${createdProject.id}?createCategory=1`);
+        router.push(`/project?id=${createdProject.id}&createCategory=1`);
         return;
       }
       fetchProjects();

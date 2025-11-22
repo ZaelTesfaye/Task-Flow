@@ -42,7 +42,7 @@ const ProjectCard = ({
 
   return (
     <Card
-      onClick={() => router.push(`/project/${project.id}`)}
+      onClick={() => router.push(`/project?id=${project.id}`)}
       className="group cursor-pointer hover:scale-[1.02] transition-all duration-300 hover:shadow-sm
        border dark:border-gray-600 dark:shadow-gray-700 hover:dark:shadow-md"
     >
