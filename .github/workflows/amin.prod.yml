@@ -1,4 +1,4 @@
-name: Deploy Frontend to VPS
+name: Deploy Admin Frontend to VPS
 
 on:
   push:
@@ -27,10 +27,10 @@ jobs:
         with:
           node-version: '20'
           cache: 'pnpm'
-          cache-dependency-path: client/pnpm-lock.yaml
+          cache-dependency-path: admin/pnpm-lock.yaml
 
       - name: Install Dependencies
-        working-directory: ./client
+        working-directory: ./admin
         run: pnpm install --frozen-lockfile
 
       - name: Build App
