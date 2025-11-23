@@ -22,7 +22,7 @@ function Login() {
     const user = localStorage.getItem("adminUser");
 
     if (token && user) {
-      navigate("/dashboard");
+      navigate("/admin/dashboard");
     }
   }, [navigate]);
 
