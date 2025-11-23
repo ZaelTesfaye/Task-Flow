@@ -1,7 +1,6 @@
 # ------------------------ Build Stage ------------------------
 FROM node:20-slim AS build
 
-# user changed to a non-root user inside the container
 RUN addgroup --system app && adduser --system --ingroup app app
 RUN npm install -g pnpm
 
