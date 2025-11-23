@@ -20,7 +20,7 @@ RUN npm run build
 # ---------------------- Runtime Stage ----------------------
 FROM node:20-slim AS runtime
 
-RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y curl su-exec && rm -rf /var/lib/apt/lists/*
 RUN addgroup --system app && adduser --system --ingroup app app
 RUN npm install -g pnpm
 
@@ -38,12 +38,6 @@ COPY --from=build /app/views ./views
 
 ENV NODE_TLS_REJECT_UNAUTHORIZED=0
 RUN npx prisma generate
-
-# Fix permissions for mounted volumes
-USER root
-RUN chown -R app:app /app/logs
-USER app
-
 EXPOSE 5000
 
 CMD ["npm", "start"]
