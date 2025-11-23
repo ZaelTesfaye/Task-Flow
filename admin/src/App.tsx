@@ -18,8 +18,8 @@ function Layout() {
 
 function App() {
   return (
-    <BrowserRouter basename="/admin">
-      <div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
+      <BrowserRouter basename="/admin">
         <Toaster position="top-right" />
         <Routes>
           <Route path="/" element={<Login />} />
@@ -35,8 +35,8 @@ function App() {
           {/* 404 route */}
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </div>
-    </BrowserRouter>
+      </BrowserRouter>
+    </div>
   );
 }
 
