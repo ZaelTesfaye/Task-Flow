@@ -104,5 +104,5 @@ jobs:
           script: |
             cd ~/task-flow/server
             docker compose pull
-            docker compose up -d --remove-orphans
+            docker compose up -d --remove-orphans --force-recreate nginx db
             docker image prune -f
