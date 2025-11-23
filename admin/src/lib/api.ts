@@ -21,7 +21,6 @@ api.interceptors.request.use((config) => {
 });
 
 export const adminAPI = {
-  // Get all users with pagination
   getAllUsers: async (
     page: number = 1,
     limit: number = 10

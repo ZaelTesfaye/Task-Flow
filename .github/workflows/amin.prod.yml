@@ -37,7 +37,7 @@ jobs:
         working-directory: ./admin
         run: pnpm build
         env:
-          VITE_API_URL: ${{secrets.NEXT_PUBLIC_API_URL}}
+          VITE_API_URL: ${{secrets.VITE_API_URL}}
 
       - name: Ensure remote directory exists
         uses: appleboy/ssh-action@v1.0.3
