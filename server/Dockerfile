@@ -20,7 +20,7 @@ RUN npm run build
 # ---------------------- Runtime Stage ----------------------
 FROM node:20-slim AS runtime
 
-RUN apt-get update && apt-get install -y curl su-exec && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y curl gosu && rm -rf /var/lib/apt/lists/*
 RUN addgroup --system app && adduser --system --ingroup app app
 RUN npm install -g pnpm
 

@@ -7,7 +7,7 @@ services:
       CONTAINER_NAME: process1
     restart: on-failure
     user: root
-    entrypoint: ["sh", "-c", "chown -R app:app /app/logs && exec su-exec app npm start"]
+    entrypoint: ["sh", "-c", "chown -R app:app /app/logs && exec gosu app npm start"]
     depends_on:
       db:
         condition: service_healthy
@@ -33,7 +33,7 @@ services:
       CONTAINER_NAME: process2
     restart: on-failure
     user: root
-    entrypoint: ["sh", "-c", "chown -R app:app /app/logs && exec su-exec app npm start"]
+    entrypoint: ["sh", "-c", "chown -R app:app /app/logs && exec gosu app npm start"]
     depends_on:
       db:
         condition: service_healthy
