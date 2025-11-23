@@ -6,11 +6,11 @@ import config from "../config/config.js";
 import type { JwtPayload } from "../types/jwt.js";
 
 const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
-  const isAdminPath = req.baseUrl === "/admin";
-  const isSuperAdminPath = req.baseUrl === "/super-admin";
+  console.log("Auth Midddleware", req.baseUrl);
+  const isAdminPath = req.baseUrl.includes("/admin");
+  const isSuperAdminPath = req.baseUrl.includes("/super-admin");
 
   let token;
-
   if (isAdminPath || isSuperAdminPath) {
     token = req.cookies.adminAuth;
   } else {

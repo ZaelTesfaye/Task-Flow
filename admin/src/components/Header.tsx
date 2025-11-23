@@ -53,7 +53,7 @@ export default function AdminLayout() {
 
   const logout = () => {
     localStorage.removeItem("adminToken");
-    window.location.href = "/login";
+    window.location.href = "/admin/login";
   };
 
   return (
@@ -64,7 +64,7 @@ export default function AdminLayout() {
             <Shield className="w-5 h-5 text-blue-600" />
             <h1
               className="text-2xl font-bold text-blue-600 cursor-pointer dark:text-blue-400"
-              onClick={() => (window.location.href = "/dashboard")}
+              onClick={() => (window.location.href = "/admin/dashboard")}
             >
               TaskFlow
             </h1>
