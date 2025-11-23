@@ -5,7 +5,7 @@ export default function ProtectedRoute() {
     typeof window !== "undefined" ? localStorage.getItem("adminToken") : null;
   if (!token) {
     if (typeof window !== "undefined") {
-      window.location.href = "/login";
+      window.location.href = "/admin/login";
     }
     return null;
   }
