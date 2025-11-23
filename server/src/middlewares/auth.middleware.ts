@@ -8,6 +8,7 @@ import type { JwtPayload } from "../types/jwt.js";
 const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
   console.log("Auth Midddleware", req.baseUrl);
   const isAdminPath = req.baseUrl.includes("/admin");
+  console.log("isAdminPath", isAdminPath);
   const isSuperAdminPath = req.baseUrl.includes("/super-admin");
 
   let token;
@@ -16,13 +17,15 @@ const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
   } else {
     token = req.cookies.auth;
   }
-
+  console.log("Token:", token);
   if (!token) throw new APIError("Unauthorized", httpStatus.UNAUTHORIZED);
 
   let userData;
   try {
     userData = jwt.verify(token, config.jwtSecret) as JwtPayload;
-  } catch {
+    console.log("User Data:", userData);
+  } catch (error) {
+    console.error("JWT Verification Error:", error);
     throw new APIError("Unauthorized", httpStatus.UNAUTHORIZED);
   }
 

@@ -52,7 +52,7 @@ function Login() {
       localStorage.setItem("adminToken", response.token);
       localStorage.setItem("adminUser", JSON.stringify(response.user));
       toast.success("Login successful!");
-      navigate("/dashboard");
+      navigate("/admin/dashboard");
     } catch {
       toast.error("Login failed. Please check your credentials.");
     } finally {
