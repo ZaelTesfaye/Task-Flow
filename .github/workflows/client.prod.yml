@@ -6,7 +6,6 @@ on:
       - main
     paths:
       - 'client/**'
-      - 'server/**'
       - '.github/workflows/client.prod.yml'
   workflow_dispatch:
 
