@@ -15,7 +15,7 @@ services:
         condition: service_completed_successfully
       
     volumes:
-      - logs_volume:/app/logs
+      - logs_data:/app/logs
     healthcheck:
       test: ["CMD", "curl", "-s", "http://localhost:5000/api/health"]
       interval: 10s
@@ -38,7 +38,7 @@ services:
       seeder:
         condition: service_completed_successfully
     volumes:
-      - logs_volume:/app/logs
+      - logs_data:/app/logs
     healthcheck:
       test: ["CMD", "curl", "-s", "http://localhost:5000/api/health"]
       interval: 10s
@@ -107,4 +107,4 @@ services:
 
 volumes:
   postgres_data:
-  logs_volume:
+  logs_data:
