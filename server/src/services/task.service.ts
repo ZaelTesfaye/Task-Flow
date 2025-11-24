@@ -1,4 +1,4 @@
-import { taskModel } from "../model/index.js";
+import { memberModel, taskModel } from "../model/index.js";
 import type { RequestTaskUpdateDTO, UpdateTaskDTO } from "../dtos/index.js";
 
 export const createTask = async (
@@ -9,13 +9,17 @@ export const createTask = async (
   assignedTo: string,
   projectId: string,
 ) => {
+  const isMember = await memberModel.findMember(projectId, assignedTo);
+
+  if (!isMember) {
+    throw new Error("Assigned user must be a member of the project");
+  }
   return taskModel.createTask(
     title,
     description,
     userId,
     categoryId,
     assignedTo,
-    projectId,
   );
 };
 
@@ -24,11 +28,23 @@ export const updateProjectTask = async (
   updates: UpdateTaskDTO,
   projectId: string,
 ) => {
-  return taskModel.updateTaskInProject(taskId, updates, projectId);
+  const task = await taskModel.findTaskById(taskId);
+  if (!task) throw new Error("Task not found");
+
+  if (task.Category?.projectId !== projectId) {
+    throw new Error("Task does not belong to the specified project");
+  }
+
+  return taskModel.updateTask(taskId, updates);
 };
 
 export const removeTask = async (taskId: string, projectId: string) => {
-  return taskModel.removeTaskInProject(taskId, projectId);
+  const task = await taskModel.findTaskById(taskId);
+  if (!task) throw new Error("Task not found");
+  if (!task.Category || task.Category.projectId === projectId) {
+    throw new Error("Task does not belong to the specified project");
+  }
+  return taskModel.removeTask(taskId);
 };
 
 export const requestTaskUpdate = async (
@@ -37,24 +53,53 @@ export const requestTaskUpdate = async (
   projectId: string,
   updateData: RequestTaskUpdateDTO,
 ) => {
-  return taskModel.requestTaskUpdateInProject(
-    taskId,
-    userId,
-    projectId,
-    updateData,
-  );
+  const task = await taskModel.findTaskById(taskId);
+
+  if (!task) throw new Error("Task not found");
+
+  if (!task.Category || task.Category?.projectId !== projectId) {
+    throw new Error("Task does not belong to the specified project");
+  }
+
+  if (task.assignedTo !== userId) {
+    throw new Error("Only the user assigned to the task can request updates");
+  }
+
+  return taskModel.createPendingUpdate(taskId, userId, updateData);
 };
 
 export const acceptPendingUpdate = async (
   pendingUpdateId: string,
   projectId: string,
 ) => {
-  return taskModel.acceptPendingUpdateInProject(pendingUpdateId, projectId);
+  const pendingUpdate = await taskModel.findPendingUpdateById(pendingUpdateId);
+  if (!pendingUpdate) {
+    throw new Error("Pending update not found");
+  }
+
+  if (pendingUpdate.task.Category?.projectId !== projectId) {
+    throw new Error("Pending update does not belong to the specified project");
+  }
+
+  await taskModel.updateTask(pendingUpdate.taskId, {
+    status: pendingUpdate.newStatus as "active" | "complete" | "canceled",
+  });
+
+  return taskModel.removePendingUpdate(pendingUpdateId);
 };
 
 export const rejectPendingUpdate = async (
   pendingUpdateId: string,
   projectId: string,
 ) => {
-  return taskModel.rejectPendingUpdateInProject(pendingUpdateId, projectId);
+  const pendingUpdate = await taskModel.findPendingUpdateById(pendingUpdateId);
+  if (!pendingUpdate) {
+    throw new Error("Pending update not found");
+  }
+
+  if (pendingUpdate.task.Category?.projectId !== projectId) {
+    throw new Error("Pending update does not belong to the specified project");
+  }
+
+  return taskModel.removePendingUpdate(pendingUpdateId);
 };

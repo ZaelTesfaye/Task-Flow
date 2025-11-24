@@ -33,10 +33,7 @@ export const createTask: RequestHandler = asyncWrapper(
       });
     }
 
-    const category = await categoryServices.validateCategoryBelongsToProject(
-      categoryId,
-      projectId,
-    );
+    const category = await categoryServices.getCategory(categoryId, projectId);
     if (!category) {
       return res.status(httpStatus.FORBIDDEN).json({
         message: "Category does not belong to the specified project",

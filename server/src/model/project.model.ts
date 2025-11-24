@@ -1,7 +1,5 @@
 import prisma from "../lib/prisma.js";
 
-const prismaAny = prisma as any;
-
 export const createProject = (
   title: string,
   description: string,
@@ -48,68 +46,19 @@ export const removeProject = (id: string) => {
   });
 };
 
-export const addMember = (
-  projectId: string,
-  userId: string,
-  access: string = "member",
-) => {
-  return prisma.projectMembers.create({
-    data: {
-      userId,
-      projectId,
-      access,
-    },
-  });
-};
-
-export const findProjectMember = (projectId: string, userId: string) => {
-  return prisma.projectMembers.findUnique({
+export const getProjectById = (projectId: string) => {
+  return prisma.project.findUnique({
     where: {
-      userId_projectId: {
-        userId,
-        projectId,
+      id: projectId,
+    },
+    include: {
+      owner: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
       },
-    },
-  });
-};
-
-export const removeMember = (projectId: string, userId: string) => {
-  return prisma.projectMembers.delete({
-    where: {
-      userId_projectId: {
-        userId,
-        projectId,
-      },
-    },
-  });
-};
-
-export const checkUserAccess = (
-  projectId: string,
-  userId: string,
-  requiredAccess: string[],
-) => {
-  return prisma.projectMembers.findFirst({
-    where: {
-      projectId,
-      userId,
-      access: { in: requiredAccess },
-    },
-  });
-};
-
-export const promoteMember = (
-  projectId: string,
-  userId: string,
-  access: string,
-) => {
-  return prisma.projectMembers.updateMany({
-    where: {
-      projectId,
-      userId,
-    },
-    data: {
-      access,
     },
   });
 };
@@ -135,45 +84,11 @@ export const getUserProjects = (userId: string) => {
   });
 };
 
-export const getProjectMembers = (projectId: string) => {
-  return prisma.projectMembers.findMany({
-    where: {
-      projectId,
-    },
-    include: {
-      user: {
-        select: {
-          id: true,
-          name: true,
-          email: true,
-        },
-      },
-    },
-  });
-};
-
-export const getProjectById = (projectId: string) => {
-  return prisma.project.findUnique({
-    where: {
-      id: projectId,
-    },
-    include: {
-      owner: {
-        select: {
-          id: true,
-          name: true,
-          email: true,
-        },
-      },
-    },
-  });
-};
-
 export const getPendingInvitationByEmail = (
   projectId: string,
   email: string,
 ) => {
-  return prismaAny.projectInvitation.findFirst({
+  return prisma.projectInvitation.findFirst({
     where: {
       projectId,
       email,
@@ -189,13 +104,13 @@ export const createProjectInvitation = (
   access: string,
   inviteeId?: string,
 ) => {
-  return prismaAny.projectInvitation.create({
+  return prisma.projectInvitation.create({
     data: {
       projectId,
       inviterId,
       email,
       access,
-      inviteeId,
+      inviteeId: inviteeId || null,
     },
     include: {
       project: {
@@ -224,7 +139,7 @@ export const createProjectInvitation = (
 };
 
 export const getProjectInvitations = (projectId: string) => {
-  return prismaAny.projectInvitation.findMany({
+  return prisma.projectInvitation.findMany({
     where: {
       projectId,
       status: "pending",
@@ -252,7 +167,7 @@ export const getProjectInvitations = (projectId: string) => {
 };
 
 export const getInvitationById = (invitationId: string) => {
-  return prismaAny.projectInvitation.findUnique({
+  return prisma.projectInvitation.findUnique({
     where: {
       id: invitationId,
     },
@@ -294,7 +209,7 @@ export const updateInvitation = (
     inviteeId?: string | null;
   },
 ) => {
-  return prismaAny.projectInvitation.update({
+  return prisma.projectInvitation.update({
     where: {
       id: invitationId,
     },
@@ -326,7 +241,7 @@ export const updateInvitation = (
 };
 
 export const getUserPendingInvitations = (userId: string, email: string) => {
-  return prismaAny.projectInvitation.findMany({
+  return prisma.projectInvitation.findMany({
     where: {
       status: "pending",
       OR: [

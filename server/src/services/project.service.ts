@@ -1,4 +1,4 @@
-import { projectModel } from "../model/index.js";
+import { memberModel, projectModel } from "../model/index.js";
 import { userModel } from "../model/index.js";
 import { APIError } from "../utils/index.js";
 
@@ -49,7 +49,7 @@ export const addMember = async (
   }
 
   if (targetUser) {
-    const existingMember = await projectModel.findProjectMember(
+    const existingMember = await memberModel.findMember(
       projectId,
       targetUser.id,
     );
@@ -77,7 +77,7 @@ export const addMember = async (
 };
 
 export const removeMember = (projectId: string, userId: string) => {
-  return projectModel.removeMember(projectId, userId);
+  return memberModel.removeMember(projectId, userId);
 };
 
 export const checkUserAccess = async (
@@ -85,7 +85,7 @@ export const checkUserAccess = async (
   userId: string,
   requiredAccess: string[],
 ) => {
-  const result = await projectModel.checkUserAccess(
+  const result = await memberModel.getProjectMemberWithAccess(
     projectId,
     userId,
     requiredAccess,
@@ -94,7 +94,7 @@ export const checkUserAccess = async (
 };
 
 export const isTargetRequester = async (projectId: string, userId: string) => {
-  const result = await projectModel.findProjectMember(projectId, userId);
+  const result = await memberModel.findMember(projectId, userId);
 
   if (!result) return false;
 
@@ -108,7 +108,7 @@ export const promoteProjectMember = (
   userId: string,
   access: string,
 ) => {
-  return projectModel.promoteMember(projectId, userId, access);
+  return memberModel.updateMemberAccess(projectId, userId, access);
 };
 
 export const getUserProjects = async (userId: string) => {
@@ -140,7 +140,7 @@ export const getUserProjects = async (userId: string) => {
 };
 
 export const getProjectMembers = (projectId: string) => {
-  return projectModel.getProjectMembers(projectId);
+  return memberModel.getProjectMembers(projectId);
 };
 
 export const getProjectById = (projectId: string) => {
@@ -209,13 +209,13 @@ export const respondToInvitation = async (
     });
   }
 
-  const existingMember = await projectModel.findProjectMember(
+  const existingMember = await memberModel.findMember(
     invitation.projectId,
     userId,
   );
 
   if (!existingMember) {
-    await projectModel.addMember(
+    await memberModel.addMember(
       invitation.projectId,
       userId,
       invitation.access === "admin" ? "admin" : "member",

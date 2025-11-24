@@ -21,14 +21,6 @@ export const updateCategory = (
   });
 };
 
-export const removeCategory = (categoryId: string, projectId: string) => {
-  return prisma.category.delete({
-    where: {
-      id: categoryId,
-      projectId,
-    },
-  });
-};
 export const getCategories = (projectId: string) => {
   return prisma.category.findMany({
     where: {
@@ -51,11 +43,17 @@ export const getCategories = (projectId: string) => {
   });
 };
 
-export const validateCategoryBelongsToProject = (
-  categoryId: string,
-  projectId: string,
-) => {
-  return prisma.category.findFirst({
+export const getCategory = (categoryId: string, projectId: string) => {
+  return prisma.category.findUnique({
+    where: {
+      id: categoryId,
+      projectId,
+    },
+  });
+};
+
+export const removeCategory = (categoryId: string, projectId: string) => {
+  return prisma.category.delete({
     where: {
       id: categoryId,
       projectId,

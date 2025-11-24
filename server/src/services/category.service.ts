@@ -11,16 +11,13 @@ export const updateCategory = (
   return categoryModel.updateCategory(categoryId, updates);
 };
 
-export const removeCategory = (categoryId: string, projectId: string) => {
-  return categoryModel.removeCategory(categoryId, projectId);
-};
-
 export const getCategories = (projectId: string) => {
   return categoryModel.getCategories(projectId);
 };
-export const validateCategoryBelongsToProject = (
-  categoryId: string,
-  projectId: string,
-) => {
-  return categoryModel.validateCategoryBelongsToProject(categoryId, projectId);
+export const getCategory = (categoryId: string, projectId: string) => {
+  return categoryModel.getCategory(categoryId, projectId);
+};
+
+export const removeCategory = (categoryId: string, projectId: string) => {
+  return categoryModel.removeCategory(categoryId, projectId);
 };
