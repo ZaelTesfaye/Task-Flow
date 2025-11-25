@@ -27,12 +27,12 @@ USER app
 WORKDIR /app
 
 COPY package*.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile --prod --ignore-scripts --shamefully-hoist 
+RUN pnpm install --frozen-lockfile --ignore-scripts --shamefully-hoist 
 
 # Copy compiled code & dependencies
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/prisma ./prisma
-COPY --from=build /app/prisma.config.js ./prisma.config.js
+COPY --from=build /app/prisma.config.ts ./prisma.config.ts
 COPY --from=build /app/public ./public
 COPY --from=build /app/views ./views
 
