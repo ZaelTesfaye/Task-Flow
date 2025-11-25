@@ -13,7 +13,6 @@ RUN pnpm install --frozen-lockfile --ignore-scripts --shamefully-hoist
 
 COPY . .
 ENV NODE_TLS_REJECT_UNAUTHORIZED=0
-RUN npx prisma generate
 RUN npm run build
 
 # ---------------------- Runtime Stage ----------------------
@@ -32,6 +31,7 @@ RUN pnpm install --frozen-lockfile --prod --ignore-scripts --shamefully-hoist
 # Copy compiled code & dependencies
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/prisma ./prisma
+COPY --from=build /app/prisma.config.ts ./prisma.config.ts
 COPY --from=build /app/public ./public
 COPY --from=build /app/views ./views
 
