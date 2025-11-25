@@ -13,7 +13,6 @@ RUN pnpm install --frozen-lockfile --ignore-scripts --shamefully-hoist
 
 COPY . .
 ENV NODE_TLS_REJECT_UNAUTHORIZED=0
-RUN npx prisma generate
 RUN npm run build
 
 # ---------------------- Runtime Stage ----------------------

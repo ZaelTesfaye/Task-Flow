@@ -34,9 +34,13 @@ services:
     restart: on-failure
     user: root
     entrypoint: ["sh", "-c", "chown -R app:app /app/logs && exec gosu app npm start"]
-    # depends_on:
-    #     # seeder:
-    #     #   condition: service_completed_successfully
+    depends_on:
+      db:
+        condition: service_healthy
+      migrator:
+        condition: service_completed_successfully
+        # seeder:
+        #   condition: service_completed_successfully
     volumes:
       - logs_data:/app/logs
     healthcheck:
