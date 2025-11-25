@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "main": "server.js",
   "dependencies": {
-    "@prisma/client": "^6.13.0",
+    "@prisma/client": "^7.0.0",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
@@ -14,7 +14,6 @@
     "http-status": "^2.1.0",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
-    "prisma": "^6.13.0",
     "winston": "^3.17.0",
     "winston-daily-rotate-file": "^5.0.0"
   },
@@ -48,6 +47,7 @@
     "lint-staged": "^16.2.6",
     "nodemon": "^3.1.10",
     "prettier": "^3.6.2",
+    "prisma": "^7.0.0",
     "ts-node": "^10.9.2",
     "tsx": "^4.20.6",
     "typescript": "^5.9.2",

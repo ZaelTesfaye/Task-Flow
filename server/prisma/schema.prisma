@@ -105,6 +105,10 @@ model Task {
   Category   Category? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   pendingUpdates PendingUpdates[]
+
+  @@index([assignedTo])
+  @@index([assignedBy])
+  @@index([categoryId])
 }
 
 model PendingUpdates {
@@ -119,4 +123,7 @@ model PendingUpdates {
 
   updateBy String
   user     User   @relation(fields: [updateBy], references: [id], onDelete: Cascade)
+
+  @@index([taskId])
+  @@index([updateBy])
 }
