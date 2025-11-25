@@ -1,11 +1,12 @@
 import prisma from "../lib/prisma.js";
+import { Prisma } from "@prisma/client";
 
 export const createProject = (
   title: string,
   description: string,
   userId: string,
 ) => {
-  return prisma.$transaction(async (tx) => {
+  return prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     const project = await tx.project.create({
       data: {
         title: title,
