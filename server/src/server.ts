@@ -28,28 +28,6 @@ app.set("trust proxy", true);
 
 const allowedOrigins = config.frontEndUrl?.split(",")?.map((o) => o.trim());
 
-console.log("Allowed Origins:", allowedOrigins);
-
-// const corsOrigin = (origin, callback) => {
-//   if (!origin || config.env === "development") {
-//     return callback(null, true);  // Allow all in dev or non-browser requests
-//   }
-
-//   try {
-//     const originUrl = new URL(origin);
-//     const requestDomain = originUrl.hostname;  // Strips protocol, port, path
-//     const isAllowed = allowedDomains.some((domain) => domain === requestDomain);
-
-//     if (isAllowed) {
-//       return callback(null, true);  // Allow and echo back the full origin
-//     } else {
-//       return callback(new Error(`Origin ${origin} not allowed`), false);
-//     }
-//   } catch (err) {
-//     return callback(new Error('Invalid Origin'), false);
-//   }
-// };
-
 const CorsOptions = {
   origin: config.env === "development" ? true : allowedOrigins, // corsOrigin
   credentials: true,
