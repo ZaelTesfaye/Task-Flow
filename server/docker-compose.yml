@@ -51,6 +51,8 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - /home/deployment/task-flow/client:/var/www/task-flow-client:ro
       - /home/deployment/task-flow/admin:/var/www/task-flow-admin:ro
