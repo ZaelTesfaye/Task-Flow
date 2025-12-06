@@ -44,6 +44,10 @@ export const login = async (email: string, password: string) => {
     throw new APIError("User not found", 404);
   }
 
+  if (!user.password) {
+    throw new APIError("Password not set", 400);
+  }
+
   const isPasswordValid = await bcrypt.compare(password, user.password);
 
   if (!isPasswordValid) {
