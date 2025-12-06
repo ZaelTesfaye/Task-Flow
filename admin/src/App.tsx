@@ -22,12 +22,12 @@ function App() {
       <Toaster position="top-right" />
       <Routes>
         <Route path="/" element={<Login />} />
-        <Route path="/admin/login" element={<Login />} />
+        <Route path="/login" element={<Login />} />
 
         {/* Protected routes */}
         <Route element={<ProtectedRoute />}>
           <Route element={<Layout />}>
-            <Route path="/admin/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard" element={<Dashboard />} />
           </Route>
         </Route>
 
