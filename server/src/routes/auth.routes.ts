@@ -9,6 +9,8 @@ import { validatorMiddleware } from "../middlewares/index.js";
 
 const router: Router = express.Router();
 
+// router.all("/");
+
 // register
 router.post(
   "/register",

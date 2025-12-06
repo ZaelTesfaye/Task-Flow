@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { LogIn, UserPlus, Sun, Moon } from "lucide-react";
 import { useRouter } from "next/navigation";
+// import { useSignIn } from "better-auth/react";
+import { authClient } from "@/lib/auth-client";
 import toast from "react-hot-toast";
 
 import { useAuth } from "@/context";
@@ -18,6 +20,7 @@ type AuthFormData = {
 
 export default function LoginPage() {
   const { login, register, user } = useAuth();
+  // const signIn = useSignIn();
   const router = useRouter();
   const { theme, setTheme } = useThemeStore();
 
@@ -66,12 +69,17 @@ export default function LoginPage() {
     try {
       if (mode === "register") {
         await register(formData as RegisterFormData);
+        toast.success("Registration successful!");
       } else {
         await login(formData as LoginFormData);
+        toast.success("Login successful!");
       }
+      router.push("/dashboard");
     } catch (error) {
       if (mode === "login") {
         toast.error("Login failed.");
+      } else {
+        toast.error("Registration failed.");
       }
     } finally {
       setIsLoading(false);
@@ -209,9 +217,19 @@ export default function LoginPage() {
                 ? "Signing in..."
                 : "Creating account..."
               : mode === "login"
-              ? "Sign In"
-              : "Create Account"}
+                ? "Sign In"
+                : "Create Account"}
           </button>
+
+          {/* Better Auth GitHub Sign In */}
+          <div className="mt-4">
+            <button
+              onClick={() => authClient.signIn.social({ provider: "github" })}
+              className="w-full py-3 font-semibold text-white transition bg-gray-800 rounded-lg hover:bg-gray-900 hover:cursor-pointer"
+            >
+              Sign in with GitHub
+            </button>
+          </div>
         </form>
 
         <div className="mt-6 text-center">

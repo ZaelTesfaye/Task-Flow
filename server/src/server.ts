@@ -3,6 +3,8 @@ import type http from "http";
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import { toNodeHandler } from "better-auth/node";
+import { auth } from "./lib/auth.js";
 
 import config from "./config/config.js";
 import {
@@ -36,6 +38,9 @@ const CorsOptions = {
 };
 
 app.use(cors(CorsOptions));
+
+// app.use("/api/auth", toNodeHandler(auth));
+app.all("/api/auth/{*any}", toNodeHandler(auth));
 app.use(express.static("public"));
 app.use(express.json());
 app.use(cookieParser());
@@ -43,7 +48,7 @@ app.use(cookieParser());
 app.use("/api/super-admin", authMiddleware, superAdminRoutes);
 app.use("/api/admin", authMiddleware, adminRoutes);
 
-app.use("/api/auth", authRoutes);
+app.all("/api/custom-auth", authRoutes);
 app.use("/api/task", authMiddleware, taskRoutes);
 app.use("/api/project", authMiddleware, projectRoutes);
 app.use("/api/category", authMiddleware, categoryRoutes);

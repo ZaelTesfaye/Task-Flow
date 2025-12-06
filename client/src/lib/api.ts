@@ -35,16 +35,16 @@ const api = axios.create({
 export const authAPI = {
   register: (data: RegisterRequest): Promise<ApiResponse<AuthResponse>> =>
     api
-      .post<ApiResponse<AuthResponse>>("/auth/register", data)
+      .post<ApiResponse<AuthResponse>>("/custom-auth/register", data)
       .then((r) => r.data),
 
   login: (data: LoginRequest): Promise<ApiResponse<AuthResponse>> =>
     api
-      .post<ApiResponse<AuthResponse>>("/auth/login", data)
+      .post<ApiResponse<AuthResponse>>("/custom-auth/login", data)
       .then((r) => r.data),
 
   logout: (): Promise<ApiResponse<void>> =>
-    api.post<ApiResponse<void>>("/auth/logout").then((r) => r.data),
+    api.post<ApiResponse<void>>("/custom-auth/logout").then((r) => r.data),
 };
 
 // User endpoints
@@ -82,10 +82,9 @@ export const projectAPI = {
     data: AddMemberRequest
   ): Promise<ApiResponse<ProjectInvitation>> =>
     api
-      .post<ApiResponse<ProjectInvitation>>(
-        `/project/member/${projectId}`,
-        data
-      )
+      .post<
+        ApiResponse<ProjectInvitation>
+      >(`/project/member/${projectId}`, data)
       .then((r) => r.data),
 
   updateMember: (
@@ -124,9 +123,9 @@ export const projectAPI = {
     projectId: string
   ): Promise<ApiResponse<ProjectInvitation[]>> =>
     api
-      .get<ApiResponse<ProjectInvitation[]>>(
-        `/project/member/${projectId}/invitations`
-      )
+      .get<
+        ApiResponse<ProjectInvitation[]>
+      >(`/project/member/${projectId}/invitations`)
       .then((r) => r.data),
 
   getMyInvitations: (): Promise<ApiResponse<ProjectInvitation[]>> =>
@@ -139,10 +138,9 @@ export const projectAPI = {
     data: RespondInvitationRequest
   ): Promise<ApiResponse<ProjectInvitation>> =>
     api
-      .patch<ApiResponse<ProjectInvitation>>(
-        `/project/invitations/${invitationId}`,
-        data
-      )
+      .patch<
+        ApiResponse<ProjectInvitation>
+      >(`/project/invitations/${invitationId}`, data)
       .then((r) => r.data),
 };
 
@@ -210,10 +208,9 @@ export const taskAPI = {
     data: RequestUpdateRequest
   ): Promise<ApiResponse<any>> =>
     api
-      .post<ApiResponse<any>>(
-        `/task/request-update/${projectId}/${taskId}`,
-        data
-      )
+      .post<
+        ApiResponse<any>
+      >(`/task/request-update/${projectId}/${taskId}`, data)
       .then((r) => r.data),
 
   acceptPendingUpdate: (
@@ -222,10 +219,9 @@ export const taskAPI = {
     data: AcceptUpdateRequest
   ): Promise<ApiResponse<void>> =>
     api
-      .patch<ApiResponse<void>>(
-        `/task/accept-update/${projectId}/${pendingUpdateId}`,
-        data
-      )
+      .patch<
+        ApiResponse<void>
+      >(`/task/accept-update/${projectId}/${pendingUpdateId}`, data)
       .then((r) => r.data),
 
   rejectPendingUpdate: (
@@ -233,8 +229,8 @@ export const taskAPI = {
     pendingUpdateId: string
   ): Promise<ApiResponse<void>> =>
     api
-      .patch<ApiResponse<void>>(
-        `/task/reject-update/${projectId}/${pendingUpdateId}`
-      )
+      .patch<
+        ApiResponse<void>
+      >(`/task/reject-update/${projectId}/${pendingUpdateId}`)
       .then((r) => r.data),
 };

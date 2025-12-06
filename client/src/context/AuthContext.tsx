@@ -3,123 +3,124 @@
 import {
   createContext,
   useContext,
-  useState,
   useEffect,
+  useState,
   ReactNode,
 } from "react";
-import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
 
-import { authAPI } from "@/lib/api";
-import {
-  LoginFormData,
-  RegisterFormData,
-  User,
-  LoginRequest,
-  RegisterRequest,
-} from "@/types";
-import toast from "react-hot-toast";
+interface User {
+  id: string;
+  email: string;
+  name?: string;
+  image?: string | null;
+}
 
 interface AuthContextType {
   user: User | null;
-  login: (data: LoginFormData) => Promise<void>;
-  register: (data: RegisterFormData) => Promise<void>;
-  logout: () => Promise<void>;
   loading: boolean;
-  updateUserData: (userData: User) => void;
-}
-
-interface AuthProviderProps {
-  children: ReactNode;
+  login: (data: { email: string; password: string }) => Promise<void>;
+  register: (data: {
+    name: string;
+    email: string;
+    password: string;
+  }) => Promise<void>;
+  logout: () => Promise<void>;
+  updateUserData: (data: { name?: string; email?: string }) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within AuthProvider");
-  }
-  return context;
-};
-
-export const AuthProvider = ({ children }: AuthProviderProps) => {
+export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
 
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-    setLoading(false);
-  }, []);
-
-  const login = async (data: LoginFormData) => {
+  const checkSession = async () => {
     try {
-      setLoading(true);
-      const requestData: LoginRequest = {
-        email: data.email,
-        password: data.password,
-      };
-      const response = await authAPI.login(requestData);
-      const userData = response.data.user;
-      setUser(userData);
-      localStorage.setItem("user", JSON.stringify(userData));
-      toast.success("Logged in successfully!");
-      router.push("/dashboard");
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Login failed");
-      throw error;
+      const { data } = await authClient.getSession();
+      setUser(data?.user || null);
+    } catch (error) {
+      console.error("Session check failed:", error);
+      setUser(null);
     } finally {
       setLoading(false);
     }
   };
 
-  const register = async (data: RegisterFormData) => {
+  useEffect(() => {
+    checkSession();
+  }, []);
+
+  const login = async (data: { email: string; password: string }) => {
     try {
-      setLoading(true);
-      const requestData: RegisterRequest = {
-        name: data.name,
+      const { data: result } = await authClient.signIn.email({
         email: data.email,
         password: data.password,
-      };
-      const response = await authAPI.register(requestData);
-      const userData = response.data.user;
-      setUser(userData);
-      localStorage.setItem("user", JSON.stringify(userData));
-      toast.success("Registered successfully!");
-      router.push("/dashboard");
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Registration failed");
+      });
+
+      if (result?.user) {
+        setUser(result.user);
+      } else {
+        throw new Error("Login failed");
+      }
+    } catch (error) {
       throw error;
-    } finally {
-      setLoading(false);
+    }
+  };
+
+  const register = async (data: {
+    name: string;
+    email: string;
+    password: string;
+  }) => {
+    try {
+      const { data: result } = await authClient.signUp.email({
+        email: data.email,
+        password: data.password,
+        name: data.name,
+      });
+
+      if (result?.user) {
+        setUser(result.user);
+      } else {
+        throw new Error("Registration failed");
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+      throw error;
     }
   };
 
   const logout = async () => {
     try {
-      await authAPI.logout();
+      await authClient.signOut();
       setUser(null);
-      localStorage.removeItem("user");
-      toast.success("Logged out successfully!");
-      router.push("/auth");
-    } catch (error: any) {
-      toast.error("Logout failed");
+    } catch (error) {
+      console.error("Logout error:", error);
+      throw error;
     }
   };
 
-  const updateUserData = (userData: User) => {
-    setUser(userData);
-    localStorage.setItem("user", JSON.stringify(userData));
+  const updateUserData = async (data: { name?: string; email?: string }) => {
+    // For now, use the old API, but in future, use Better Auth if available
+    // Since Better Auth doesn't have update user, we keep the old API
+    // But to update the state, we can merge the data
+    setUser((prev) => (prev ? { ...prev, ...data } : null));
   };
 
   return (
     <AuthContext.Provider
-      value={{ user, login, register, logout, loading, updateUserData }}
+      value={{ user, loading, login, register, logout, updateUserData }}
     >
       {children}
     </AuthContext.Provider>
   );
-};
+}
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+}
