@@ -51,7 +51,7 @@ export const adminAPI = {
   ): Promise<{ token: string; user: AdminUser }> => {
     const response = await api.post<
       ApiResponse<{ token: string; user: AdminUser }>
-    >("/api/auth/admin-login", { email, password });
+    >("/api/custom-auth/admin-login", { email, password });
     return response.data.data;
   },
 

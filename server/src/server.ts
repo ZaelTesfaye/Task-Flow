@@ -31,7 +31,7 @@ app.set("trust proxy", true);
 const allowedOrigins = config.frontEndUrl?.split(",")?.map((o) => o.trim());
 
 const CorsOptions = {
-  origin: config.env === "development" ? true : allowedOrigins, // corsOrigin
+  origin: config.env === "development" ? true : allowedOrigins,
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
   allowedHeaders: ["Authorization", "Content-Type"],
@@ -48,7 +48,7 @@ app.use(cookieParser());
 app.use("/api/super-admin", authMiddleware, superAdminRoutes);
 app.use("/api/admin", authMiddleware, adminRoutes);
 
-app.all("/api/custom-auth", authRoutes);
+app.use("/api/custom-auth", authRoutes);
 app.use("/api/task", authMiddleware, taskRoutes);
 app.use("/api/project", authMiddleware, projectRoutes);
 app.use("/api/category", authMiddleware, categoryRoutes);
