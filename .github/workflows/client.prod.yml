@@ -57,7 +57,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: client-build-files
-          path: /client-build/
+          path: client-build/
 
       - name: Ensure remote directory exists
         uses: appleboy/ssh-action@v1.0.3
@@ -74,6 +74,6 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "/client-build/"
+          source: "client-build/"
           target: "~/task-flow/client"
           strip_components: 1
