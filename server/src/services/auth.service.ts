@@ -8,11 +8,17 @@ export const register = async (
   name: string,
   email: string,
   password: string,
+  role: string = "user",
 ) => {
   email = email.toLowerCase();
   //check if email already exists
   const hashedPassword = await bcrypt.hash(password, 10);
-  const userData = await userModel.createUser(name, email, hashedPassword);
+  const userData = await userModel.createUser(
+    name,
+    email,
+    hashedPassword,
+    role,
+  );
 
   const tokenData = {
     id: userData.id,

@@ -2,6 +2,9 @@ import { APIError } from "../utils/index.js";
 import httpStatus from "http-status";
 import type { Request, Response, NextFunction } from "express";
 import { auth } from "../lib/auth.js";
+import jwt from "jsonwebtoken";
+import config from "../config/config.js";
+import type { JwtPayload } from "../types/jwt.js";
 
 const authMiddleware = async (
   req: Request,
@@ -10,33 +13,46 @@ const authMiddleware = async (
 ) => {
   const isAdminPath = req.baseUrl.includes("/admin");
   const isSuperAdminPath = req.baseUrl.includes("/super-admin");
+  let isAdmin = false;
+  let isSuperAdmin = false;
 
   try {
-    const headers: Record<string, string> = {};
-    for (const [key, value] of Object.entries(req.headers)) {
-      if (value) {
-        headers[key] = Array.isArray(value) ? value.join(", ") : value;
+    const token = req.cookies.adminAuth;
+
+    // admin auth
+    if (token) {
+      try {
+        const userData = jwt.verify(token, config.jwtSecret) as JwtPayload;
+        if (userData.role === "admin") isAdmin = true;
+        if (userData.role === "super-admin") isSuperAdmin = true;
+
+        req.user = userData;
+      } catch {
+        throw new APIError("Unauthorized", httpStatus.UNAUTHORIZED);
       }
+      // user auth
+    } else {
+      const headers: Record<string, string> = {};
+      for (const [key, value] of Object.entries(req.headers)) {
+        if (value) {
+          headers[key] = Array.isArray(value) ? value.join(", ") : value;
+        }
+      }
+      const session = await auth.api.getSession({
+        headers,
+      });
+
+      if (!session?.user) {
+        throw new APIError("Unauthorized", httpStatus.UNAUTHORIZED);
+      }
+
+      req.user = {
+        id: session.user.id,
+        email: session.user.email,
+        name: session.user.name,
+        role: session.user.role!,
+      };
     }
-    const session = await auth.api.getSession({
-      headers,
-    });
-
-    if (!session?.user) {
-      throw new APIError("Unauthorized", httpStatus.UNAUTHORIZED);
-    }
-
-    req.user = {
-      id: session.user.id,
-      email: session.user.email,
-      name: session.user.name,
-      role: session.user.role!,
-    };
-
-    // Role-based access
-    const isAdmin =
-      session.user.role === "admin" || session.user.role === "super-admin";
-    const isSuperAdmin = session.user.role === "super-admin";
 
     if (
       (!isAdmin && !isAdminPath && !isSuperAdminPath) ||

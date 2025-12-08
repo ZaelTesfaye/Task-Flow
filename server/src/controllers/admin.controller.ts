@@ -7,7 +7,7 @@ import type {
   RemoveUser,
   UpdateUserPassword,
 } from "../dtos/index.js";
-import { adminServices } from "../services/index.js";
+import { adminServices, authServices } from "../services/index.js";
 import { asyncWrapper } from "../lib/index.js";
 
 export const getAllUsers = asyncWrapper(
@@ -52,12 +52,12 @@ export const updateUserPassword = asyncWrapper(
   },
 );
 
-export const addAdmin = asyncWrapper(
+export const createAdmin = asyncWrapper(
   async (req: Request<{}, {}, AddAdmin>, res: Response, next: NextFunction) => {
     const { username, name, password } = req.body;
-    await adminServices.addAdmin(username, name, password);
+    await authServices.register(username, name, password, "admin");
     res.json({
-      message: "Admin added successfully",
+      message: "Admin created successfully",
     });
   },
 );

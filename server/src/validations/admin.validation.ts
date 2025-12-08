@@ -1,6 +1,7 @@
 import Joi from "joi";
 import type {
   AddAdmin,
+  AdminLogin,
   GetAllUsers,
   RemoveUser,
   UpdateUserPassword,
@@ -36,6 +37,15 @@ export const addAdminSchema = {
   body: Joi.object<AddAdmin>({
     username: Joi.string().alphanum().min(3).max(30).required(),
     name: Joi.string().min(3).max(50).required(),
+    password: Joi.string().min(4).required(),
+  })
+    .required()
+    .unknown(true),
+};
+
+export const adminLoginSchema = {
+  body: Joi.object<AdminLogin>({
+    email: Joi.string().min(3).max(30).required(),
     password: Joi.string().min(4).required(),
   })
     .required()

@@ -33,18 +33,3 @@ export const updateUserPassword = (userId: string, password: string) => {
     },
   });
 };
-
-export const createAdmin = (
-  username: string,
-  name: string,
-  password: string,
-) => {
-  return prisma.user.create({
-    data: {
-      email: username,
-      password: password,
-      name: name,
-      role: "admin",
-    },
-  });
-};

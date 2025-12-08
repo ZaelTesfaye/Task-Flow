@@ -9,7 +9,7 @@ const router: Router = express.Router();
 router.post(
   "/create-admin",
   validatorMiddleware(addAdminSchema),
-  adminController.addAdmin,
+  adminController.createAdmin,
 );
 
 export default router;
