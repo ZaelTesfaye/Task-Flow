@@ -1,5 +1,6 @@
 import axios from "axios";
-import type { AdminUser, ApiResponse } from "../types";
+import type { AdminUser } from "../types";
+import { authClient } from "./auth-client";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -11,14 +12,7 @@ const api = axios.create({
   },
 });
 
-// Add token to requests if available
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("adminToken");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
+// Remove JWT interceptor, Better Auth uses session cookies
 
 export const adminAPI = {
   getAllUsers: async (
@@ -44,15 +38,14 @@ export const adminAPI = {
     await api.patch("/api/admin/user", { userId, password: newPassword });
   },
 
-  // Login (assuming there's a login endpoint for admin)
+  // Login using Better Auth
   login: async (
     email: string,
     password: string
   ): Promise<{ token: string; user: AdminUser }> => {
-    const response = await api.post<
-      ApiResponse<{ token: string; user: AdminUser }>
-    >("/api/custom-auth/admin-login", { email, password });
-    return response.data.data;
+    const result = await authClient.signIn.email({ email, password });
+    if (result.error) throw new Error(result.error.message);
+    return { token: "session", user: result.data.user as unknown as AdminUser };
   },
 
   // Create new admin (super-admin functionality)

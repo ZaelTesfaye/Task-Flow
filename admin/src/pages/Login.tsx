@@ -5,6 +5,7 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { adminAPI } from "../lib/api";
+import { authClient } from "../lib/auth-client";
 import toast, { Toaster } from "react-hot-toast";
 
 function Login() {
@@ -16,14 +17,19 @@ function Login() {
   );
   const navigate = useNavigate();
 
-  // Check if user isauthenticated
+  // Check if user is authenticated
   useEffect(() => {
-    const token = localStorage.getItem("adminToken");
-    const user = localStorage.getItem("adminUser");
-
-    if (token && user) {
-      navigate("/dashboard");
-    }
+    const checkAuth = async () => {
+      try {
+        const session = await authClient.getSession();
+        if (session.data?.user) {
+          navigate("/dashboard");
+        }
+      } catch {
+        // Not authenticated
+      }
+    };
+    checkAuth();
   }, [navigate]);
 
   const validateForm = () => {
@@ -49,7 +55,6 @@ function Login() {
     setLoading(true);
     try {
       const response = await adminAPI.login(email, password);
-      localStorage.setItem("adminToken", response.token);
       localStorage.setItem("adminUser", JSON.stringify(response.user));
       toast.success("Login successful!");
       navigate("/dashboard");
