@@ -8,7 +8,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from "./ui/dialog";
-import { authClient } from "../lib/auth-client";
+import { adminAPI } from "../lib/api";
 
 interface AdminUser {
   id: string;
@@ -53,8 +53,8 @@ export default function AdminLayout() {
   }, [showProfileMenu]);
 
   const logout = async () => {
-    await authClient.signOut();
-    localStorage.removeItem("adminToken"); // cleanup
+    await adminAPI.logout();
+    localStorage.removeItem("adminUser");
     window.location.href = "/login";
   };
 

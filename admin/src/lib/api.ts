@@ -1,6 +1,5 @@
 import axios from "axios";
 import type { AdminUser } from "../types";
-import { authClient } from "./auth-client";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -48,6 +47,11 @@ export const adminAPI = {
       password,
     });
     return { token: "session", user: response.data.data.user };
+  },
+
+  // Logout
+  logout: async (): Promise<void> => {
+    await api.post("/api/custom-auth/logout");
   },
 
   // Create new admin (super-admin functionality)

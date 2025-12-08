@@ -52,5 +52,8 @@ export const logout = asyncWrapper(async (req: Request, res: Response) => {
     .clearCookie("auth", {
       path: "/",
     })
+    .clearCookie("adminAuth", {
+      path: "/",
+    })
     .send();
 });
