@@ -62,7 +62,7 @@ services:
       - /home/deployment/task-flow/client:/var/www/task-flow-client:ro
       - /home/deployment/task-flow/admin:/var/www/task-flow-admin:ro
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
-      - /etc/letsencrypt/live:/etc/nginx/certs:ro
+      - /etc/letsencrypt/archive:/etc/nginx/certs:ro
       - /etc/nginx/ssl:/etc/nginx/ssl:ro
     depends_on:
       process1:
