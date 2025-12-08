@@ -1,9 +1,11 @@
-import { createAuthClient } from "better-auth/react";
-export const authClient = createAuthClient({
+import axios from "axios";
+
+export const authClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL
-    ? `${import.meta.env.VITE_API_URL}/api/auth`
-    : "http://localhost:5000/api/auth",
-  fetchOptions: {
-    credentials: "include",
+    ? `${import.meta.env.VITE_API_URL}/api`
+    : "http://localhost:5000/api",
+  withCredentials: true,
+  headers: {
+    "Content-Type": "application/json",
   },
 });

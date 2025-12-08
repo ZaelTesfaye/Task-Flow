@@ -38,14 +38,16 @@ export const adminAPI = {
     await api.patch("/api/admin/user", { userId, password: newPassword });
   },
 
-  // Login using Better Auth
+  // Login using custom auth
   login: async (
     email: string,
     password: string
   ): Promise<{ token: string; user: AdminUser }> => {
-    const result = await authClient.signIn.email({ email, password });
-    if (result.error) throw new Error(result.error.message);
-    return { token: "session", user: result.data.user as unknown as AdminUser };
+    const response = await api.post("/api/custom-auth/login", {
+      email,
+      password,
+    });
+    return { token: "session", user: response.data.data.user };
   },
 
   // Create new admin (super-admin functionality)
