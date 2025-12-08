@@ -18,7 +18,7 @@ export const getAllUsersSchema = {
 
 export const removeUserSchema = {
   params: Joi.object<RemoveUser>({
-    userId: Joi.string().uuid().required(),
+    userId: Joi.string().required(),
   })
     .required()
     .unknown(true),
@@ -26,7 +26,7 @@ export const removeUserSchema = {
 
 export const updateUserPasswordSchema = {
   body: Joi.object<UpdateUserPassword>({
-    userId: Joi.string().uuid().required(),
+    userId: Joi.string().required(),
     password: Joi.string().min(4).required(),
   })
     .required()

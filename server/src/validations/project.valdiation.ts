@@ -44,7 +44,7 @@ export const removeProjectSchema = {
 export const addMemberSchema = {
   body: joi
     .object<AddMemberDTO>({
-      userId: joi.string().uuid().optional(),
+      userId: joi.string().optional(),
       email: joi.string().email().optional(),
       access: joi.string().valid("admin", "member").optional(),
     })
@@ -63,7 +63,7 @@ export const removeMemberSchema = {
   params: joi
     .object({
       projectId: joi.string().uuid().required(),
-      userId: joi.string().uuid().required(),
+      userId: joi.string().required(),
     })
     .required()
     .unknown(true),
@@ -73,7 +73,7 @@ export const updateMemberSchema = {
   params: joi
     .object({
       projectId: joi.string().uuid().required(),
-      userId: joi.string().uuid().required(),
+      userId: joi.string().required(),
     })
     .required()
     .unknown(true),

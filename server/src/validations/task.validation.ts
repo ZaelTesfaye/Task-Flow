@@ -10,7 +10,7 @@ export const createTaskSchema = {
     .object<CreateTaskDTO>({
       title: joi.string().min(1).max(60).required(),
       description: joi.string().min(1).max(255).required(),
-      assignedTo: joi.string().uuid().required(),
+      assignedTo: joi.string().required(),
     })
     .required()
     .unknown(true),
