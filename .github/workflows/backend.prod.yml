@@ -58,6 +58,7 @@ jobs:
           cp server/docker-compose.yml deploy-files/
           cp server/nginx.conf deploy-files/
           cp -r server/prisma deploy-files/
+          cp -r server/infra deploy-files/
 
       - name: Ensure remote directories exist
         uses: appleboy/ssh-action@v1.0.3

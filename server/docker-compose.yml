@@ -112,7 +112,38 @@ services:
     depends_on:
       migrator:
         condition: service_completed_successfully
-        
+  
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    # We don't usually need to expose 3100 to the world, 
+    # but it's okay for testing.
+    volumes:
+      - ./infra/loki-config.yaml:/etc/loki/local-config.yaml
+    command: -config.file=/etc/loki/local-config.yaml
+
+  promtail:
+    image: grafana/promtail:latest
+    container_name: promtail
+    volumes:
+      - ./infra/promtail-config.yaml:/etc/promtail/config.yml
+      # THESE TWO LINES ARE THE FIX:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+    command: -config.file=/etc/promtail/config.yml
+    depends_on:
+      - loki
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin # Change this later!
+    depends_on:
+      - loki
+      
 volumes:
   postgres_data:
   logs_data:

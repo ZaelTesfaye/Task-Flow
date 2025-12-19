@@ -5,14 +5,14 @@ const { createLogger, format, transports } = winston;
 const { combine, timestamp, printf, colorize, errors, json } = format;
 
 const consoleFormat = combine(
-  colorize({ all: true }), // ensure all levels are colorized
+  colorize({ all: true }),
   timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
   errors({ stack: true }),
   printf(({ timestamp, level, message, stack }) => {
     return `Date: ${timestamp}  
-Level: ${level}
-Message: ${message}
-${stack ? `Stack: ${stack}` : ""}`;
+      Level: ${level}
+      Message: ${message}
+      ${stack ? `Stack: ${stack}` : ""}`;
   }),
 );
 
