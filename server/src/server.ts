@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth.js";
+import { register, collectDefaultMetrics } from "prom-client";
 
 import config from "./config/config.js";
 import {
@@ -24,6 +25,8 @@ import {
 import { logger } from "./lib/index.js";
 
 const app = express();
+
+collectDefaultMetrics();
 
 app.set("view engine", "ejs");
 app.set("trust proxy", true);
@@ -65,6 +68,12 @@ app.get("/home", (req, res) => {
 // health check
 app.get("/api/health", (req, res) => {
   res.send("Ok!");
+});
+
+// metrics
+app.get("/api/metrics", async (req, res) => {
+  res.set("Content-Type", register.contentType);
+  res.end(await register.metrics());
 });
 
 // not found handler

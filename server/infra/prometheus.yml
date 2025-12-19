@@ -3,10 +3,10 @@ global:
   evaluation_interval: 15s
 
 scrape_configs:
-  - job_name: 'app'
+  - job_name: "app"
     static_configs:
-      - targets: ['process1:5000', 'process2:5000']
-    metrics_path: '/api/metrics'
-  - job_name: 'prometheus'
+      - targets: ["process1:5000", "process2:5000"]
+    metrics_path: "/api/metrics"
+  - job_name: "prometheus"
     static_configs:
-      - targets: ['localhost:9090']
+      - targets: ["localhost:9090"]
