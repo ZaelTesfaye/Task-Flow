@@ -71,6 +71,8 @@ services:
         condition: service_healthy
       process2:
         condition: service_healthy
+      grafana:
+        condition: service_started
 
   db:
     image: postgres:15.14
