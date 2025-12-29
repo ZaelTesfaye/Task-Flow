@@ -275,3 +275,11 @@ export const getUserPendingInvitations = (userId: string, email: string) => {
     },
   });
 };
+
+export const countProjectsByOwnerId = (ownerId: string) => {
+  return prisma.project.count({
+    where: {
+      ownerId,
+    },
+  });
+};

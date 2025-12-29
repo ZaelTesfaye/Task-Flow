@@ -8,3 +8,7 @@ export const updateUser = async (userId: string, updates: UpdateUserDTO) => {
 export const deleteUser = async (userId: string) => {
   return userModel.deleteUser(userId);
 };
+
+export const getUserById = async (userId: string) => {
+  return userModel.getUser(userId);
+};

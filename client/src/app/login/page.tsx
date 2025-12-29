@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { LogIn, UserPlus, Sun, Moon } from "lucide-react";
 import { useRouter } from "next/navigation";
-// import { useSignIn } from "better-auth/react";
 import { authClient } from "@/lib/auth-client";
 import toast from "react-hot-toast";
 
@@ -20,7 +19,6 @@ type AuthFormData = {
 
 export default function LoginPage() {
   const { login, register, user } = useAuth();
-  // const signIn = useSignIn();
   const router = useRouter();
   const { theme, setTheme } = useThemeStore();
 
@@ -33,15 +31,14 @@ export default function LoginPage() {
   const [errors, setErrors] = useState<Partial<AuthFormData>>({});
   const [isLoading, setIsLoading] = useState(false);
 
-  // Already logged in
   useEffect(() => {
+    // logged in
     if (user) {
       router.push("/dashboard");
     }
   }, [user, router]);
 
   const validateForm = (): boolean => {
-    console.log("Validating form");
     try {
       if (mode === "register") {
         RegisterRequestSchema.parse(formData);
@@ -69,18 +66,20 @@ export default function LoginPage() {
     try {
       if (mode === "register") {
         await register(formData as RegisterFormData);
-        toast.success("Registration successful!");
+        toast.success(
+          "Registration successful! Please check your email for the verification code."
+        );
+        router.push(
+          `/verify-email?email=${encodeURIComponent(formData.email.trim())}`
+        );
       } else {
         await login(formData as LoginFormData);
         toast.success("Login successful!");
+        router.push("/dashboard");
       }
-      router.push("/dashboard");
     } catch (error) {
-      if (mode === "login") {
-        toast.error("Login failed.");
-      } else {
-        toast.error("Registration failed.");
-      }
+      if (mode === "login") toast.error("Login failed.");
+      else toast.error("Registration failed.");
     } finally {
       setIsLoading(false);
     }
@@ -100,7 +99,7 @@ export default function LoginPage() {
 
   return (
     <div className="flex items-center justify-center min-h-screen p-4 bg-[hsl(var(--background))] dark:bg-[hsl(var(--background))]">
-      {/* Theme Switcher Button*/}
+      {/* Theme Toggle*/}
       <button
         onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
         className="hover:cursor-pointer absolute top-4 right-4 p-2 rounded-full bg-[hsl(var(--muted))] hover:bg-[hsl(var(--accent))] transition-colors z-10"
@@ -221,13 +220,19 @@ export default function LoginPage() {
                 : "Create Account"}
           </button>
 
-          {/* Better Auth GitHub Sign In */}
           <div className="mt-4">
             <button
-              onClick={() => authClient.signIn.social({ provider: "github" })}
-              className="w-full py-3 font-semibold text-white transition bg-gray-800 rounded-lg hover:bg-gray-900 hover:cursor-pointer"
+              type="button"
+              onClick={() =>
+                authClient.signIn.social({
+                  provider: "google",
+
+                  // callbackURL: `${window.location.origin}/dashboard`,
+                })
+              }
+              className="w-full py-3 font-semibold text-white transition bg-red-500 rounded-lg hover:bg-red-600 hover:cursor-pointer"
             >
-              Sign in with GitHub
+              Continue with Google
             </button>
           </div>
         </form>

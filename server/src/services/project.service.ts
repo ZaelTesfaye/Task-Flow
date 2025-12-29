@@ -1,12 +1,41 @@
 import { memberModel, projectModel } from "../model/index.js";
 import { userModel } from "../model/index.js";
 import { APIError } from "../utils/index.js";
+import config from "../config/config.js";
 
-export const createProject = (
+export const createProject = async (
   title: string,
   description: string,
   userId: string,
 ) => {
+  const user = await userModel.getUser(userId);
+  if (!user) {
+    throw new APIError("User not found", 404);
+  }
+
+  const projectCount = await projectModel.countProjectsByOwnerId(userId);
+  let limit = 5;
+
+  const isSubscribed =
+    user.stripePriceId &&
+    user.stripeCurrentPeriodEnd &&
+    user.stripeCurrentPeriodEnd > new Date();
+
+  if (isSubscribed) {
+    if (user.stripePriceId === config.stripe.starter.priceId) {
+      limit = 10;
+    } else if (user.stripePriceId === config.stripe.pro.priceId) {
+      limit = 1000; // Unlimited effectively
+    }
+  }
+
+  if (projectCount >= limit) {
+    throw new APIError(
+      `You have reached the project limit of ${limit} for your current plan. Please upgrade to create more projects.`,
+      403,
+    );
+  }
+
   return projectModel.createProject(title, description, userId);
 };
 

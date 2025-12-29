@@ -49,6 +49,8 @@ export const authAPI = {
 
 // User endpoints
 export const userAPI = {
+  getMe: (): Promise<any> => api.get<any>("/user/me").then((r) => r.data),
+
   updateUser: (data: UpdateUserRequest): Promise<ApiResponse<any>> =>
     api.patch<ApiResponse<any>>("/user", data).then((r) => r.data),
 
@@ -232,5 +234,12 @@ export const taskAPI = {
       .patch<
         ApiResponse<void>
       >(`/task/reject-update/${projectId}/${pendingUpdateId}`)
+      .then((r) => r.data),
+};
+
+export const stripeAPI = {
+  createCheckoutSession: (plan: string): Promise<{ url: string }> =>
+    api
+      .post<{ url: string }>("/stripe/subscribe", { plan })
       .then((r) => r.data),
 };

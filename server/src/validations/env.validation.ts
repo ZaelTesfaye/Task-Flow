@@ -8,6 +8,16 @@ export interface EnvSchemaType {
   ADMIN_NAME: string;
   ADMIN_EMAIL: string;
   ADMIN_PASSWORD: string;
+  RESEND_API_KEY: string;
+  GOOGLE_CLIENT_ID: string;
+  GOOGLE_CLIENT_SECRET: string;
+  STRIPE_API_KEY: string;
+  BETTER_AUTH_URL: string;
+  STRIPE_PRODUCT_STARTER_ID: string;
+  STRIPE_PRICE_STARTER_ID: string;
+  STRIPE_PRODUCT_PRO_ID: string;
+  STRIPE_PRICE_PRO_ID: string;
+  STRIPE_WEBHOOK_SECRET: string;
 }
 
 export const envSchema = joi
@@ -19,6 +29,16 @@ export const envSchema = joi
     ADMIN_NAME: joi.string().required(),
     ADMIN_EMAIL: joi.string().required(),
     ADMIN_PASSWORD: joi.string().required(),
+    RESEND_API_KEY: joi.string().required(),
+    GOOGLE_CLIENT_ID: joi.string().required(),
+    GOOGLE_CLIENT_SECRET: joi.string().required(),
+    STRIPE_API_KEY: joi.string().required(),
+    BETTER_AUTH_URL: joi.string().uri().required(),
+    STRIPE_PRODUCT_STARTER_ID: joi.string().required(),
+    STRIPE_PRICE_STARTER_ID: joi.string().required(),
+    STRIPE_PRODUCT_PRO_ID: joi.string().required(),
+    STRIPE_PRICE_PRO_ID: joi.string().required(),
+    STRIPE_WEBHOOK_SECRET: joi.string().required(),
   })
   .required()
   .unknown(true);

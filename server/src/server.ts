@@ -16,6 +16,7 @@ import {
   userRoutes,
   adminRoutes,
   superAdminRoutes,
+  stripeRoutes,
 } from "./routes/index.js";
 import {
   authMiddleware,
@@ -43,9 +44,15 @@ const CorsOptions = {
 app.use(cors(CorsOptions));
 
 // app.use("/api/auth", toNodeHandler(auth));
-app.all("/api/auth/{*any}", toNodeHandler(auth));
+app.use("/api/auth", toNodeHandler(auth));
 app.use(express.static("public"));
-app.use(express.json());
+app.use((req, res, next) => {
+  if (req.originalUrl === "/api/stripe/webhook") {
+    next();
+  } else {
+    express.json()(req, res, next);
+  }
+});
 app.use(cookieParser());
 
 app.use("/api/super-admin", authMiddleware, superAdminRoutes);
@@ -56,6 +63,7 @@ app.use("/api/task", authMiddleware, taskRoutes);
 app.use("/api/project", authMiddleware, projectRoutes);
 app.use("/api/category", authMiddleware, categoryRoutes);
 app.use("/api/user", authMiddleware, userRoutes);
+app.use("/api/stripe", stripeRoutes);
 
 // ejs
 app.get("/home", (req, res) => {

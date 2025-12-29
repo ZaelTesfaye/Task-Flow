@@ -28,3 +28,11 @@ export const deleteUser: RequestHandler = asyncWrapper(
     });
   },
 );
+
+export const getMe: RequestHandler = asyncWrapper(
+  async (req: Request, res: Response) => {
+    const { id: userId } = req.user!;
+    const user = await userServices.getUserById(userId);
+    res.json(user);
+  },
+);

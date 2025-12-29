@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import toast from "react-hot-toast";
+import { Crown } from "lucide-react";
 
 import { useThemeStore } from "@/stores";
 import { useAuth } from "@/context";
@@ -11,7 +12,12 @@ import {
   UpdateUserRequest,
   ProjectInvitation,
 } from "@/types";
-import { ConfirmationModal, ProfileMenu, EditProfileModal } from "./";
+import {
+  ConfirmationModal,
+  ProfileMenu,
+  EditProfileModal,
+  SubscriptionModal,
+} from "./";
 
 export default function Header() {
   const { user, logout, updateUserData, loading } = useAuth();
@@ -19,6 +25,7 @@ export default function Header() {
   const pathname = usePathname();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [name, setName] = useState(user?.name || "");
@@ -119,8 +126,11 @@ export default function Header() {
               className="relative flex items-center gap-3 px-3 py-2 transition rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 hover:cursor-pointer"
             >
               <div className="text-right">
-                <p className="text-sm font-semibold text-[hsl(var(--foreground))]">
+                <p className="text-sm font-semibold text-[hsl(var(--foreground))] flex items-center justify-end gap-1">
                   {user.name}
+                  {user.stripePriceId && (
+                    <Crown className="w-3 h-3 text-amber-500" />
+                  )}
                 </p>
                 <p className="text-xs text-[hsl(var(--muted-foreground))]">
                   {user.email}
@@ -136,6 +146,7 @@ export default function Header() {
             </button>
 
             <ProfileMenu
+              user={user}
               onEditProfile={() => {
                 setName(user.name || "");
                 setEmail(user.email || "");
@@ -150,6 +161,10 @@ export default function Header() {
                 setShowLogoutModal(true);
                 setShowProfileMenu(false);
               }}
+              onUpgrade={() => {
+                setShowSubscriptionModal(true);
+                setShowProfileMenu(false);
+              }}
               isOpen={showProfileMenu}
               onClose={() => setShowProfileMenu(false)}
               invitationsCount={invitationsCount}
@@ -157,6 +172,12 @@ export default function Header() {
           </div>
         </div>
       </header>
+
+      {/* Subscription Modal */}
+      <SubscriptionModal
+        isOpen={showSubscriptionModal}
+        onClose={() => setShowSubscriptionModal(false)}
+      />
 
       {/* Profile Edit Modal */}
       <EditProfileModal

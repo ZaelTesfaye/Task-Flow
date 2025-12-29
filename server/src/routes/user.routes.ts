@@ -5,6 +5,9 @@ import { userController } from "../controllers/index.js";
 
 const router: Router = express.Router();
 
+// Get current user
+router.get("/me", userController.getMe);
+
 // Update user
 router.patch(
   "/",

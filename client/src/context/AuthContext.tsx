@@ -8,12 +8,18 @@ import {
   ReactNode,
 } from "react";
 import { authClient } from "@/lib/auth-client";
+import { userAPI } from "@/lib";
 
 interface User {
   id: string;
   email: string;
   name?: string;
   image?: string | null;
+  stripePriceId?: string;
+  stripeSubscriptionId?: string;
+  stripeCustomerId?: string;
+  stripeCurrentPeriodEnd?: string;
+  [key: string]: any;
 }
 
 interface AuthContextType {
@@ -24,7 +30,7 @@ interface AuthContextType {
     name: string;
     email: string;
     password: string;
-  }) => Promise<void>;
+  }) => Promise<any>;
   logout: () => Promise<void>;
   updateUserData: (data: { name?: string; email?: string }) => Promise<void>;
 }
@@ -38,7 +44,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const checkSession = async () => {
     try {
       const { data } = await authClient.getSession();
-      setUser(data?.user || null);
+      if (data?.user) {
+        try {
+          const fullUser = await userAPI.getMe();
+          setUser(fullUser);
+        } catch (err) {
+          console.error("Failed to fetch full user profile:", err);
+          setUser(data.user);
+        }
+      } else {
+        setUser(null);
+      }
     } catch (error) {
       console.error("Session check failed:", error);
       setUser(null);
@@ -80,11 +96,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         name: data.name,
       });
 
-      if (result?.user) {
-        setUser(result.user);
-      } else {
-        throw new Error("Registration failed");
-      }
+      // Send verification email
+      await authClient.sendVerificationEmail({ email: data.email });
+
+      // With email verification, user is created but not signed in until verified
+      // Don't set user here; instead, return success and let component handle message
+      return result;
     } catch (error) {
       console.error("Registration error:", error);
       throw error;

@@ -120,6 +120,124 @@ export default function HomePage() {
           })}
         </div>
 
+        {/* Pricing Section */}
+        <div className="mb-16">
+          <h2 className="text-3xl font-bold text-center mb-12">
+            Simple, Transparent Pricing
+          </h2>
+          <div className="grid gap-8 md:grid-cols-3">
+            {/* Free Plan */}
+            <Card className="border-2 hover:border-blue-500 transition-colors">
+              <CardHeader>
+                <CardTitle className="text-2xl">Free</CardTitle>
+                <p className="text-4xl font-bold mt-4">
+                  $0
+                  <span className="text-sm font-normal text-gray-500">
+                    /month
+                  </span>
+                </p>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-3 mb-6">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span>5 Projects</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span>Basic Task Management</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span>Team Collaboration</span>
+                  </li>
+                </ul>
+                <Button
+                  className="w-full"
+                  variant="outline"
+                  onClick={() => router.push("/login")}
+                >
+                  Get Started
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Starter Plan */}
+            <Card className="border-2 border-blue-500 relative transform scale-105 shadow-xl">
+              <div className="absolute top-0 right-0 bg-blue-500 text-white px-3 py-1 rounded-bl-lg rounded-tr-lg text-sm font-medium">
+                Popular
+              </div>
+              <CardHeader>
+                <CardTitle className="text-2xl">Starter</CardTitle>
+                <p className="text-4xl font-bold mt-4">
+                  $9
+                  <span className="text-sm font-normal text-gray-500">
+                    /month
+                  </span>
+                </p>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-3 mb-6">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span>10 Projects</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span>Everything in Free</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span>Basic Support</span>
+                  </li>
+                </ul>
+                <Button
+                  className="w-full bg-blue-600 hover:bg-blue-700"
+                  onClick={() => router.push("/login")}
+                >
+                  Subscribe
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Pro Plan */}
+            <Card className="border-2 hover:border-blue-500 transition-colors">
+              <CardHeader>
+                <CardTitle className="text-2xl">Pro</CardTitle>
+                <p className="text-4xl font-bold mt-4">
+                  $19
+                  <span className="text-sm font-normal text-gray-500">
+                    /month
+                  </span>
+                </p>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-3 mb-6">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span>Unlimited Projects</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span>Priority Support</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span>Advanced Analytics</span>
+                  </li>
+                </ul>
+                <Button
+                  className="w-full"
+                  variant="outline"
+                  onClick={() => router.push("/login")}
+                >
+                  Subscribe
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
         {/* Moto */}
         <div className="p-8 text-center bg-white shadow-lg dark:bg-gray-800 rounded-2xl">
           <h2 className="mb-4 text-3xl font-bold">
