@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { CheckCircle, XCircle, Loader2, Mail } from "lucide-react";
 import Link from "next/link";
 
-export default function VerifyEmailPage() {
+function VerifyEmailContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const email = searchParams.get("email")?.trim() ?? "";
@@ -61,7 +61,7 @@ export default function VerifyEmailPage() {
       <div className="min-h-screen bg-[hsl(var(--background))] flex items-center justify-center p-4">
         <div className="w-full max-w-lg bg-[hsl(var(--card))] border border-[hsl(var(--border))] rounded-2xl shadow-xl p-8">
           <div className="flex flex-col items-center justify-center text-center">
-            <CheckCircle className="w-20 h-20 text-green-500 mb-6" />
+            <CheckCircle className="w-20 h-20 mb-6 text-green-500" />
             <h2 className="text-3xl font-bold text-[hsl(var(--foreground))] mb-2">
               Email Verified!
             </h2>
@@ -81,14 +81,14 @@ export default function VerifyEmailPage() {
   return (
     <div className="min-h-screen bg-[hsl(var(--background))] flex items-center justify-center p-4">
       <div className="w-full max-w-lg bg-[hsl(var(--card))] border border-[hsl(var(--border))] rounded-2xl shadow-xl p-8">
-        <div className="text-center mb-8">
-          <Mail className="w-16 h-16 text-blue-500 mx-auto mb-4" />
+        <div className="mb-8 text-center">
+          <Mail className="w-16 h-16 mx-auto mb-4 text-blue-500" />
           <h1 className="text-3xl font-bold text-[hsl(var(--foreground))] mb-2">
             Verify Your Email
           </h1>
           <p className="text-[hsl(var(--muted-foreground))]">
-            We've sent a 6-digit verification code to {email || "your email"}.
-            Enter it below to verify your account.
+            We&apos;ve sent a 6-digit verification code to{" "}
+            {email || "your email"}. Enter it below to verify your account.
           </p>
         </div>
 
@@ -124,7 +124,7 @@ export default function VerifyEmailPage() {
           <button
             type="submit"
             disabled={status === "loading" || code.length !== 6}
-            className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-colors flex items-center justify-center space-x-2"
+            className="flex items-center justify-center w-full px-4 py-3 space-x-2 font-semibold text-white transition-colors bg-blue-600 rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
           >
             {status === "loading" ? (
               <>
@@ -139,17 +139,25 @@ export default function VerifyEmailPage() {
 
         <div className="mt-8 text-center">
           <p className="text-sm text-[hsl(var(--muted-foreground))] mb-4">
-            Didn't receive the code? Check your spam folder or try signing up
-            again.
+            Didn&apos;t receive the code? Check your spam folder or try signing
+            up again.
           </p>
           <Link
             href="/login"
-            className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+            className="text-sm font-medium text-blue-600 hover:text-blue-700"
           >
             Back to Login
           </Link>
         </div>
       </div>
     </div>
+  );
+}
+
+export default function VerifyEmailPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <VerifyEmailContent />
+    </Suspense>
   );
 }
