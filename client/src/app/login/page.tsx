@@ -107,7 +107,7 @@ export default function LoginPage() {
     <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
       <div className="flex items-center justify-center min-h-screen p-4 bg-[hsl(var(--background))] dark:bg-[hsl(var(--background))]">
         {/* Theme Toggle*/}
-        <div className="absolute top-4 right-4 z-10">
+        <div className="absolute z-10 top-4 right-4">
           <ThemeToggle />
         </div>
 
