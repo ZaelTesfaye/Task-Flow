@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { useQuery } from "@tanstack/react-query";
 
 import { projectAPI } from "@/lib";
 import type { Project } from "@/types";
@@ -19,40 +20,27 @@ interface ProjectGroups {
 }
 
 export default function Dashboard() {
-  const [projects, setProjects] = useState<ProjectGroups>({
-    owner: [],
-    admin: [],
-    member: [],
+  const { user, loading: authLoading } = useAuth();
+  const router = useRouter();
+
+  const {
+    data: projectsData,
+    isLoading: projectsLoading,
+    refetch: fetchProjects,
+  } = useQuery({
+    queryKey: ["user-projects"],
+    queryFn: () => projectAPI.getUserProjects(),
+    enabled: !!user && !authLoading,
   });
-  const [projectsLoading, setProjectsLoading] = useState(true);
+
+  const projects = projectsData?.data || { owner: [], admin: [], member: [] };
+
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [activeView, setActiveView] = useState<
     "all" | "owner" | "admin" | "member"
   >("all");
-
-  const router = useRouter();
-  const { user, loading: authLoading } = useAuth();
-
-  useEffect(() => {
-    if (!authLoading && user) {
-      fetchProjects();
-    } else if (!authLoading && !user) {
-      setProjectsLoading(false);
-    }
-  }, [user, authLoading]);
-
-  const fetchProjects = async () => {
-    try {
-      const response = await projectAPI.getUserProjects();
-      setProjects(response.data || { owner: [], admin: [], member: [] });
-    } catch (error) {
-      toast.error("Failed to fetch projects");
-    } finally {
-      setProjectsLoading(false);
-    }
-  };
 
   const handleCreateProject = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
