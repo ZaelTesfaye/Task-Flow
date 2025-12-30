@@ -5,12 +5,15 @@ services:
       - ./.env
     environment:
       CONTAINER_NAME: process1
+      REDIS_URL: redis://redis:6379
     restart: on-failure
     user: root
     entrypoint: ["sh", "-c", "chown -R app:app /app/logs && gosu app npx prisma generate && exec gosu app npm start"]
     depends_on:
       db:
         condition: service_healthy
+      redis:
+        condition: service_started
       migrator:
         condition: service_completed_successfully
       seeder:
@@ -31,12 +34,15 @@ services:
       - ./.env
     environment:
       CONTAINER_NAME: process2
+      REDIS_URL: redis://redis:6379
     restart: on-failure
     user: root
     entrypoint: ["sh", "-c", "chown -R app:app /app/logs && gosu app npx prisma generate && exec gosu app npm start"]
     depends_on:
       db:
         condition: service_healthy
+      redis:
+        condition: service_started
       migrator:
         condition: service_completed_successfully
       seeder:
@@ -160,7 +166,17 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=admin # Change this later!
     depends_on:
       - loki
+
+  redis:
+    image: redis:alpine3.22
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
       
 volumes:
   postgres_data:
   logs_data:
+  redis_data:

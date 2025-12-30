@@ -1,7 +1,7 @@
 import type { Request, Response, RequestHandler } from "express";
 import httpStatus from "http-status";
 
-import { asyncWrapper } from "../lib/index.js";
+import { asyncWrapper, redis } from "../lib/index.js";
 import { projectServices } from "../services/index.js";
 import type {
   CreateProjectDTO,
@@ -16,6 +16,9 @@ export const createProject: RequestHandler = asyncWrapper(
     const { title, description } = req.body;
 
     const result = await projectServices.createProject(title, description, id);
+
+    // Invalidate user projects cache
+    await redis.del(`user:${id}:projects`);
 
     res.json({
       message: "Project created successfully",
@@ -68,6 +71,9 @@ export const removeProject: RequestHandler = asyncWrapper(
 
     await projectServices.removeProject(projectId);
 
+    // Invalidate user projects cache
+    await redis.del(`user:${userId}:projects`);
+
     res.json({
       message: "Project removed successfully",
     });
@@ -105,6 +111,10 @@ export const addMember: RequestHandler = asyncWrapper(
       payload,
     );
 
+    // Invalidate project members and invitations caches
+    await redis.del(`project:${projectId}:members`);
+    await redis.del(`project:${projectId}:invitations`);
+
     res.json({
       message: "Invitation sent successfully",
       data: result,
@@ -116,7 +126,18 @@ export const getUserProjects: RequestHandler = asyncWrapper(
   async (req: Request, res: Response) => {
     const { id: userId } = req.user!;
 
+    const cacheKey = `user:${userId}:projects`;
+    const cachedProjects = await redis.get(cacheKey);
+
+    if (cachedProjects) {
+      return res.json({
+        data: JSON.parse(cachedProjects),
+      });
+    }
+
     const result = await projectServices.getUserProjects(userId);
+
+    await redis.set(cacheKey, JSON.stringify(result), "EX", 60);
 
     res.json({
       data: result,
@@ -154,6 +175,9 @@ export const removeProjectMember: RequestHandler = asyncWrapper(
 
     await projectServices.removeMember(projectId, targetUserId);
 
+    // Invalidate project members cache
+    await redis.del(`project:${projectId}:members`);
+
     res.json({
       message: "Member removed successfully",
     });
@@ -182,6 +206,11 @@ export const promoteProjectMember: RequestHandler = asyncWrapper(
     }
 
     await projectServices.promoteProjectMember(projectId, userId, access);
+
+    // Invalidate project members cache
+    await redis.del(`project:${projectId}:members`);
+    // Invalidate target user projects cache as their role changed
+    await redis.del(`user:${userId}:projects`);
 
     res.json({
       message: "Member updated successfully",
@@ -266,6 +295,17 @@ export const respondToInvitation: RequestHandler = asyncWrapper(
       userId,
       action,
     );
+
+    // Invalidate user invitations cache
+    await redis.del(`user:${userId}:invitations`);
+
+    if (action === "accept") {
+      // Invalidate project caches
+      await redis.del(`project:${result.projectId}:members`);
+      await redis.del(`project:${result.projectId}:invitations`);
+      // Also invalidate user projects cache since they joined a new project
+      await redis.del(`user:${userId}:projects`);
+    }
 
     res.json({
       message:

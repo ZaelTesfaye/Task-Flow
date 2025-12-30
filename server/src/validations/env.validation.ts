@@ -18,6 +18,7 @@ export interface EnvSchemaType {
   STRIPE_PRODUCT_PRO_ID: string;
   STRIPE_PRICE_PRO_ID: string;
   STRIPE_WEBHOOK_SECRET: string;
+  REDIS_URL: string;
 }
 
 export const envSchema = joi

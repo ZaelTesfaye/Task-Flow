@@ -1,5 +1,5 @@
 import type { Request, Response, RequestHandler } from "express";
-import { asyncWrapper } from "../lib/index.js";
+import { asyncWrapper, redis } from "../lib/index.js";
 import { userServices } from "../services/index.js";
 import type { UpdateUserDTO } from "../dtos/index.js";
 
@@ -9,6 +9,9 @@ export const updateUser: RequestHandler = asyncWrapper(
     const updates = req.body;
 
     const result = await userServices.updateUser(userId, updates);
+
+    // Invalidate user profile cache
+    await redis.del(`user:${userId}:profile`);
 
     res.json({
       message: "User updated successfully",
@@ -23,6 +26,9 @@ export const deleteUser: RequestHandler = asyncWrapper(
 
     await userServices.deleteUser(userId);
 
+    // Invalidate user profile cache
+    await redis.del(`user:${userId}:profile`);
+
     res.json({
       message: "User deleted successfully",
     });
@@ -32,7 +38,18 @@ export const deleteUser: RequestHandler = asyncWrapper(
 export const getMe: RequestHandler = asyncWrapper(
   async (req: Request, res: Response) => {
     const { id: userId } = req.user!;
+
+    const cacheKey = `user:${userId}:profile`;
+    const cachedUser = await redis.get(cacheKey);
+
+    if (cachedUser) {
+      return res.json(JSON.parse(cachedUser));
+    }
+
     const user = await userServices.getUserById(userId);
+
+    await redis.set(cacheKey, JSON.stringify(user), "EX", 60);
+
     res.json(user);
   },
 );

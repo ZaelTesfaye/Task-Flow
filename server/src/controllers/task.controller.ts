@@ -1,7 +1,7 @@
 import type { Request, Response, RequestHandler } from "express";
 import httpStatus from "http-status";
 
-import { asyncWrapper } from "../lib/index.js";
+import { asyncWrapper, redis } from "../lib/index.js";
 import {
   taskServices,
   categoryServices,
@@ -49,6 +49,9 @@ export const createTask: RequestHandler = asyncWrapper(
       projectId,
     );
 
+    // Invalidate categories cache (which includes tasks)
+    await redis.del(`project:${projectId}:categories`);
+
     res.json({
       message: "Task created successfully",
       data: result,
@@ -81,6 +84,9 @@ export const updateTask: RequestHandler = asyncWrapper(
       projectId,
     );
 
+    // Invalidate categories cache (which includes tasks)
+    await redis.del(`project:${projectId}:categories`);
+
     res.json({
       message: "Task updated successfully",
       data: result,
@@ -107,6 +113,9 @@ export const removeTask: RequestHandler = asyncWrapper(
     }
 
     await taskServices.removeTask(taskId, projectId);
+
+    // Invalidate categories cache (which includes tasks)
+    await redis.del(`project:${projectId}:categories`);
 
     res.json({
       message: "Task removed successfully",
@@ -143,6 +152,9 @@ export const requestTaskUpdate: RequestHandler = asyncWrapper(
       updateData,
     );
 
+    // Invalidate categories cache (which includes tasks)
+    await redis.del(`project:${projectId}:categories`);
+
     res.json({
       message: "Task update requested successfully",
       data: result,
@@ -177,6 +189,9 @@ export const acceptPendingUpdate: RequestHandler = asyncWrapper(
       projectId,
     );
 
+    // Invalidate categories cache (which includes tasks)
+    await redis.del(`project:${projectId}:categories`);
+
     res.json({
       message: "Pending update accepted successfully",
       data: result,
@@ -206,6 +221,9 @@ export const rejectPendingUpdate: RequestHandler = asyncWrapper(
       pendingUpdateId,
       projectId,
     );
+
+    // Invalidate categories cache (which includes tasks)
+    await redis.del(`project:${projectId}:categories`);
 
     res.json({
       message: "Pending update rejected successfully",

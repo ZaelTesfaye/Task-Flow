@@ -13,6 +13,7 @@ const env = {
   port: envVars.PORT,
   env: envVars.NODE_ENV,
   jwtSecret: envVars.JWT_SECRET,
+  redisUrl: envVars.REDIS_URL,
   frontEndUrl: envVars.FRONTEND_URL,
   adminName: envVars.ADMIN_NAME,
   adminEmail: envVars.ADMIN_EMAIL,

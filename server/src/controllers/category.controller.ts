@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import httpStatus from "http-status";
 
-import { asyncWrapper } from "../lib/index.js";
+import { asyncWrapper, redis } from "../lib/index.js";
 import { categoryServices, projectServices } from "../services/index.js";
 import type { CreateCategoryDTO, UpdateCategoryDTO } from "../dtos/index.js";
 
@@ -25,6 +25,9 @@ export const createCategory = asyncWrapper(
     }
 
     const result = await categoryServices.createCategory(name, projectId);
+
+    // Invalidate categories cache
+    await redis.del(`project:${projectId}:categories`);
 
     res.json({
       message: "Category created successfully",
@@ -58,6 +61,9 @@ export const updateCategory = asyncWrapper(
 
     const result = await categoryServices.updateCategory(categoryId, updates);
 
+    // Invalidate categories cache
+    await redis.del(`project:${projectId}:categories`);
+
     res.json({
       message: "Category updated successfully",
       data: result,
@@ -82,15 +88,34 @@ export const getCategories = asyncWrapper(
       });
     }
 
+    const cacheKey = `project:${projectId}:categories`;
+    const cachedCategories = await redis.get(cacheKey);
+
+    if (cachedCategories) {
+      return res.json({
+        message: "Categories retrieved successfully",
+        data: JSON.parse(cachedCategories),
+      });
+    }
+
     const categories = await categoryServices.getCategories(projectId);
     const project = await projectServices.getProjectById(projectId);
 
+    const result = {
+      project,
+      categories,
+    };
+
+    await redis.set(
+      `project:${projectId}:categories`,
+      JSON.stringify(result),
+      "EX",
+      60,
+    );
+
     res.json({
       message: "Categories retrieved successfully",
-      data: {
-        project,
-        categories,
-      },
+      data: result,
     });
   },
 );
@@ -113,6 +138,9 @@ export const removeCategory = asyncWrapper(
     }
 
     await categoryServices.removeCategory(categoryId, projectId);
+
+    // Invalidate categories cache
+    await redis.del(`project:${projectId}:categories`);
 
     res.json({
       message: "Category removed successfully",

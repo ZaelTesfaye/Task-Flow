@@ -10,6 +10,11 @@ import { useAuth } from "@/context";
 import { useThemeStore } from "@/stores";
 import { LoginRequestSchema, RegisterRequestSchema } from "@/validation";
 import type { LoginFormData, RegisterFormData } from "@/types";
+import {
+  GoogleOAuthProvider,
+  GoogleLogin,
+  CredentialResponse,
+} from "@react-oauth/google";
 
 type AuthFormData = {
   name?: string;
@@ -18,7 +23,7 @@ type AuthFormData = {
 };
 
 export default function LoginPage() {
-  const { login, register, user } = useAuth();
+  const { login, register, user, checkSession } = useAuth();
   const router = useRouter();
   const { theme, setTheme } = useThemeStore();
 
@@ -98,156 +103,170 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-4 bg-[hsl(var(--background))] dark:bg-[hsl(var(--background))]">
-      {/* Theme Toggle*/}
-      <button
-        onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-        className="hover:cursor-pointer absolute top-4 right-4 p-2 rounded-full bg-[hsl(var(--muted))] hover:bg-[hsl(var(--accent))] transition-colors z-10"
-        title="Toggle theme"
-      >
-        {theme === "dark" ? (
-          <Moon className="w-5 h-5 text-[hsl(var(--foreground))]" />
-        ) : (
-          <Sun className="w-5 h-5 text-[hsl(var(--foreground))]" />
-        )}
-      </button>
+    <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
+      <div className="flex items-center justify-center min-h-screen p-4 bg-[hsl(var(--background))] dark:bg-[hsl(var(--background))]">
+        {/* Theme Toggle*/}
+        <button
+          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+          className="hover:cursor-pointer absolute top-4 right-4 p-2 rounded-full bg-[hsl(var(--muted))] hover:bg-[hsl(var(--accent))] transition-colors z-10"
+          title="Toggle theme"
+        >
+          {theme === "dark" ? (
+            <Moon className="w-5 h-5 text-[hsl(var(--foreground))]" />
+          ) : (
+            <Sun className="w-5 h-5 text-[hsl(var(--foreground))]" />
+          )}
+        </button>
 
-      <div className="w-full max-w-md p-8 bg-[hsl(var(--card))] shadow-xl border border-[hsl(var(--border))] rounded-2xl">
-        <div className="mb-8 text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 mb-4 bg-blue-600 rounded-full">
-            {mode === "login" ? (
-              <LogIn className="w-8 h-8 text-white" />
-            ) : (
-              <UserPlus className="w-8 h-8 text-white" />
-            )}
+        <div className="w-full max-w-md p-8 bg-[hsl(var(--card))] shadow-xl border border-[hsl(var(--border))] rounded-2xl">
+          <div className="mb-8 text-center">
+            <div className="inline-flex items-center justify-center w-16 h-16 mb-4 bg-blue-600 rounded-full">
+              {mode === "login" ? (
+                <LogIn className="w-8 h-8 text-white" />
+              ) : (
+                <UserPlus className="w-8 h-8 text-white" />
+              )}
+            </div>
+            <h1 className="text-3xl font-bold text-[hsl(var(--foreground))]">
+              {mode === "login" ? "Welcome Back" : "Create Account"}
+            </h1>
+            <p className="mt-2 text-[hsl(var(--muted-foreground))]">
+              {mode === "login"
+                ? "Sign in to your account"
+                : "Join us to manage your tasks"}
+            </p>
           </div>
-          <h1 className="text-3xl font-bold text-[hsl(var(--foreground))]">
-            {mode === "login" ? "Welcome Back" : "Create Account"}
-          </h1>
-          <p className="mt-2 text-[hsl(var(--muted-foreground))]">
-            {mode === "login"
-              ? "Sign in to your account"
-              : "Join us to manage your tasks"}
-          </p>
-        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {mode === "register" && (
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {mode === "register" && (
+              <div>
+                <label
+                  htmlFor="name"
+                  className="block mb-2 text-sm font-medium text-[hsl(var(--foreground))]"
+                >
+                  Full Name
+                </label>
+                <input
+                  id="name"
+                  type="text"
+                  value={formData.name || ""}
+                  onChange={(e) => handleInputChange("name", e.target.value)}
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition bg-[hsl(var(--background))] text-[hsl(var(--foreground))] border-[hsl(var(--border))] ${
+                    errors.name ? "border-red-500" : ""
+                  }`}
+                  placeholder="John Doe"
+                />
+                {errors.name && (
+                  <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                    {errors.name}
+                  </p>
+                )}
+              </div>
+            )}
+
             <div>
               <label
-                htmlFor="name"
+                htmlFor="email"
                 className="block mb-2 text-sm font-medium text-[hsl(var(--foreground))]"
               >
-                Full Name
+                Email Address
               </label>
               <input
-                id="name"
-                type="text"
-                value={formData.name || ""}
-                onChange={(e) => handleInputChange("name", e.target.value)}
+                id="email"
+                type="email"
+                value={formData.email}
+                onChange={(e) => handleInputChange("email", e.target.value)}
                 className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition bg-[hsl(var(--background))] text-[hsl(var(--foreground))] border-[hsl(var(--border))] ${
-                  errors.name ? "border-red-500" : ""
+                  errors.email ? "border-red-500" : ""
                 }`}
-                placeholder="John Doe"
+                placeholder="john@example.com"
               />
-              {errors.name && (
+              {errors.email && (
                 <p className="mt-1 text-sm text-red-600 dark:text-red-400">
-                  {errors.name}
+                  {errors.email}
                 </p>
               )}
             </div>
-          )}
 
-          <div>
-            <label
-              htmlFor="email"
-              className="block mb-2 text-sm font-medium text-[hsl(var(--foreground))]"
-            >
-              Email Address
-            </label>
-            <input
-              id="email"
-              type="email"
-              value={formData.email}
-              onChange={(e) => handleInputChange("email", e.target.value)}
-              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition bg-[hsl(var(--background))] text-[hsl(var(--foreground))] border-[hsl(var(--border))] ${
-                errors.email ? "border-red-500" : ""
-              }`}
-              placeholder="john@example.com"
-            />
-            {errors.email && (
-              <p className="mt-1 text-sm text-red-600 dark:text-red-400">
-                {errors.email}
-              </p>
-            )}
-          </div>
+            <div>
+              <label
+                htmlFor="password"
+                className="block mb-2 text-sm font-medium text-[hsl(var(--foreground))]"
+              >
+                Password
+              </label>
+              <input
+                id="password"
+                type="password"
+                value={formData.password}
+                onChange={(e) => handleInputChange("password", e.target.value)}
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition bg-[hsl(var(--background))] text-[hsl(var(--foreground))] border-[hsl(var(--border))] ${
+                  errors.password ? "border-red-500" : ""
+                }`}
+                placeholder="••••••••"
+              />
+              {errors.password && (
+                <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                  {errors.password}
+                </p>
+              )}
+            </div>
 
-          <div>
-            <label
-              htmlFor="password"
-              className="block mb-2 text-sm font-medium text-[hsl(var(--foreground))]"
-            >
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              value={formData.password}
-              onChange={(e) => handleInputChange("password", e.target.value)}
-              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition bg-[hsl(var(--background))] text-[hsl(var(--foreground))] border-[hsl(var(--border))] ${
-                errors.password ? "border-red-500" : ""
-              }`}
-              placeholder="••••••••"
-            />
-            {errors.password && (
-              <p className="mt-1 text-sm text-red-600 dark:text-red-400">
-                {errors.password}
-              </p>
-            )}
-          </div>
-
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full py-3 dark:text-white font-semibold text-[hsl(var(--primary-foreground))] transition bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed hover:cursor-pointer"
-          >
-            {isLoading
-              ? mode === "login"
-                ? "Signing in..."
-                : "Creating account..."
-              : mode === "login"
-                ? "Sign In"
-                : "Create Account"}
-          </button>
-
-          <div className="mt-4">
             <button
-              type="button"
-              onClick={() =>
-                authClient.signIn.social({
-                  provider: "google",
-
-                  // callbackURL: `${window.location.origin}/dashboard`,
-                })
-              }
-              className="w-full py-3 font-semibold text-white transition bg-red-500 rounded-lg hover:bg-red-600 hover:cursor-pointer"
+              type="submit"
+              disabled={isLoading}
+              className="w-full py-3 dark:text-white font-semibold text-[hsl(var(--primary-foreground))] transition bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed hover:cursor-pointer"
             >
-              Continue with Google
+              {isLoading
+                ? mode === "login"
+                  ? "Signing in..."
+                  : "Creating account..."
+                : mode === "login"
+                  ? "Sign In"
+                  : "Create Account"}
+            </button>
+
+            <div className="flex justify-center w-full mt-4">
+              <GoogleLogin
+                onSuccess={async (credentialResponse: CredentialResponse) => {
+                  if (credentialResponse.credential) {
+                    try {
+                      await authClient.signIn.social({
+                        provider: "google",
+                        idToken: {
+                          token: credentialResponse.credential,
+                        },
+                      });
+                      await checkSession();
+                      toast.success("Login successful!");
+                      router.push("/dashboard");
+                    } catch (error) {
+                      toast.error("Google Login failed.");
+                    }
+                  }
+                }}
+                onError={() => {
+                  toast.error("Google Login Failed");
+                }}
+                useOneTap
+                auto_select
+                theme={theme === "dark" ? "filled_black" : "outline"}
+              />
+            </div>
+          </form>
+
+          <div className="mt-6 text-center">
+            <button
+              onClick={toggleLoginMode}
+              className="font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:cursor-pointer"
+            >
+              {mode === "login"
+                ? "Don't have an account? Sign up"
+                : "Already have an account? Sign in"}
             </button>
           </div>
-        </form>
-
-        <div className="mt-6 text-center">
-          <button
-            onClick={toggleLoginMode}
-            className="font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:cursor-pointer"
-          >
-            {mode === "login"
-              ? "Don't have an account? Sign up"
-              : "Already have an account? Sign in"}
-          </button>
         </div>
       </div>
-    </div>
+    </GoogleOAuthProvider>
   );
 }
