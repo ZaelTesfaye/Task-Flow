@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { LogIn, UserPlus, Sun, Moon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
@@ -36,6 +36,8 @@ export default function LoginPage() {
   });
   const [errors, setErrors] = useState<Partial<AuthFormData>>({});
   const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoaded, setIsGoogleLoaded] = useState(false);
+  const googleButtonRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // logged in
@@ -43,6 +45,32 @@ export default function LoginPage() {
       router.push("/dashboard");
     }
   }, [user, router]);
+
+  // Detect when Google button iframe is loaded
+  useEffect(() => {
+    const checkGoogleLoaded = () => {
+      if (googleButtonRef.current) {
+        const iframe = googleButtonRef.current.querySelector('iframe');
+        if (iframe) {
+          setIsGoogleLoaded(true);
+          return true;
+        }
+      }
+      return false;
+    };
+
+    // Check immediately
+    if (checkGoogleLoaded()) return;
+
+    // Poll for iframe appearance
+    const interval = setInterval(() => {
+      if (checkGoogleLoaded()) {
+        clearInterval(interval);
+      }
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const validateForm = (): boolean => {
     try {
@@ -101,6 +129,11 @@ export default function LoginPage() {
   const toggleLoginMode = () => {
     setMode(mode === "login" ? "register" : "login");
     setErrors({});
+    setFormData({
+      name: "",
+      email: "",
+      password: "",
+    });
   };
 
   return (
@@ -220,31 +253,67 @@ export default function LoginPage() {
             </button>
 
             <div className="flex justify-center w-full mt-4">
-              <GoogleLogin
-                onSuccess={async (credentialResponse: CredentialResponse) => {
-                  if (credentialResponse.credential) {
-                    try {
-                      await authClient.signIn.social({
-                        provider: "google",
-                        idToken: {
-                          token: credentialResponse.credential,
-                        },
-                      });
-                      await checkSession();
-                      toast.success("Login successful!");
-                      router.push("/dashboard");
-                    } catch (error) {
-                      toast.error("Google Login failed.");
-                    }
-                  }
-                }}
-                onError={() => {
-                  toast.error("Google Login Failed");
-                }}
-                useOneTap
-                auto_select
-                theme={theme === "dark" ? "filled_black" : "outline"}
-              />
+              {/* Custom styled container with Google's button as overlay */}
+              <div className={`relative w-full group ${isGoogleLoaded ? 'cursor-pointer' : 'cursor-not-allowed'}`}>
+                {/* Custom visual button (underneath) */}
+                <div
+                  className={`
+                    flex items-center justify-center w-full px-4 py-3 
+                    font-medium transition-all duration-200 ease-in-out
+                    bg-white dark:bg-neutral-800 
+                    border border-gray-200 dark:border-neutral-700 
+                    rounded-lg shadow-sm 
+                    ${isGoogleLoaded ? 'group-hover:shadow-md group-hover:bg-gray-50 dark:group-hover:bg-neutral-700 group-hover:border-gray-300 dark:group-hover:border-neutral-600' : 'opacity-50'}
+                    pointer-events-none
+                  `}
+                >
+                  <img
+                    src="https://www.svgrepo.com/show/475656/google-color.svg"
+                    alt="Google"
+                    className="w-5 h-5 mr-3"
+                  />
+                  <span className="text-gray-700 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-white">
+                    Sign in with Google
+                  </span>
+                </div>
+
+                {/* Google's actual button (transparent overlay on top - clickable) */}
+                <div
+                  ref={googleButtonRef}
+                  className={`absolute inset-0 flex items-center justify-center overflow-hidden rounded-lg [&_iframe]:!w-full [&_iframe]:!h-full [&_div]:!w-full [&_div]:!h-full ${!isGoogleLoaded ? 'pointer-events-none' : ''}`}
+                  style={{ opacity: 0.01 }}
+                >
+                  <GoogleLogin
+                    onSuccess={async (
+                      credentialResponse: CredentialResponse
+                    ) => {
+                      if (credentialResponse.credential) {
+                        try {
+                          await authClient.signIn.social({
+                            provider: "google",
+                            idToken: {
+                              token: credentialResponse.credential,
+                            },
+                          });
+                          await checkSession();
+                          toast.success("Login successful!");
+                          router.push("/dashboard");
+                        } catch (error) {
+                          toast.error("Google Login failed.");
+                        }
+                      }
+                    }}
+                    onError={() => {
+                      toast.error("Google Login Failed");
+                    }}
+                    useOneTap
+                    auto_select
+                    theme={theme === "dark" ? "filled_black" : "outline"}
+                    size="large"
+                    width={400}
+                  />
+                </div>
+              </div>
             </div>
           </form>
 
