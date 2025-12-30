@@ -7,11 +7,7 @@ import { Crown } from "lucide-react";
 import { useThemeStore } from "@/stores";
 import { useAuth } from "@/context";
 import { userAPI, projectAPI } from "@/lib";
-import {
-  User as UserType,
-  UpdateUserRequest,
-  ProjectInvitation,
-} from "@/types";
+import { UpdateUserRequest, ProjectInvitation } from "@/types";
 import {
   ConfirmationModal,
   ProfileMenu,
