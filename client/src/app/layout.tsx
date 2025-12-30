@@ -6,6 +6,7 @@ import { AuthProvider } from "@/context";
 import { QueryProvider } from "@/components/providers";
 import { Toaster } from "react-hot-toast";
 import { useThemeStore } from "@/stores";
+import { useEffect } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,7 +16,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   // intialize to theme last/default
-  useThemeStore();
+  const { initializeTheme } = useThemeStore();
+
+  useEffect(() => {
+    initializeTheme();
+  }, [initializeTheme]);
 
   return (
     <html lang="en">

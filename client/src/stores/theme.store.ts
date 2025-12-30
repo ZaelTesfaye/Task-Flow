@@ -10,6 +10,7 @@ interface ThemeState {
   theme: Theme;
   toggleTheme: () => void;
   setTheme: (theme: Theme) => void;
+  initializeTheme: () => void;
 }
 
 const resolveInitialTheme = (): Theme => {
@@ -50,11 +51,8 @@ const applyTheme = (value: Theme) => {
 };
 
 export const useThemeStore = create<ThemeState>()((set, get) => {
-  const initialTheme = resolveInitialTheme();
-  applyTheme(initialTheme);
-
   return {
-    theme: initialTheme,
+    theme: "light", // Default to light to avoid hydration mismatch, will be updated by initializeTheme
 
     toggleTheme: () => {
       const state = get();
@@ -68,6 +66,12 @@ export const useThemeStore = create<ThemeState>()((set, get) => {
       if (current === theme) return;
       set({ theme });
       applyTheme(theme);
+    },
+
+    initializeTheme: () => {
+      const initialTheme = resolveInitialTheme();
+      set({ theme: initialTheme });
+      applyTheme(initialTheme);
     },
   };
 });

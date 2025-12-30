@@ -11,6 +11,7 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
+  ThemeToggle,
 } from "@/components/ui";
 
 const features = [
@@ -61,7 +62,10 @@ export default function HomePage() {
   if (user) return null;
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 relative">
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
       {/* Hero Section */}
       <div className="container px-6 py-16 mx-auto">
         <div className="mb-16 text-center">

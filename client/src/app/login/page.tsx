@@ -15,6 +15,7 @@ import {
   GoogleLogin,
   CredentialResponse,
 } from "@react-oauth/google";
+import { ThemeToggle } from "@/components/ui";
 
 type AuthFormData = {
   name?: string;
@@ -25,7 +26,7 @@ type AuthFormData = {
 export default function LoginPage() {
   const { login, register, user, checkSession } = useAuth();
   const router = useRouter();
-  const { theme, setTheme } = useThemeStore();
+  const { theme } = useThemeStore();
 
   const [mode, setMode] = useState<"login" | "register">("login");
   const [formData, setFormData] = useState<AuthFormData>({
@@ -106,17 +107,9 @@ export default function LoginPage() {
     <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
       <div className="flex items-center justify-center min-h-screen p-4 bg-[hsl(var(--background))] dark:bg-[hsl(var(--background))]">
         {/* Theme Toggle*/}
-        <button
-          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-          className="hover:cursor-pointer absolute top-4 right-4 p-2 rounded-full bg-[hsl(var(--muted))] hover:bg-[hsl(var(--accent))] transition-colors z-10"
-          title="Toggle theme"
-        >
-          {theme === "dark" ? (
-            <Moon className="w-5 h-5 text-[hsl(var(--foreground))]" />
-          ) : (
-            <Sun className="w-5 h-5 text-[hsl(var(--foreground))]" />
-          )}
-        </button>
+        <div className="absolute top-4 right-4 z-10">
+          <ThemeToggle />
+        </div>
 
         <div className="w-full max-w-md p-8 bg-[hsl(var(--card))] shadow-xl border border-[hsl(var(--border))] rounded-2xl">
           <div className="mb-8 text-center">
