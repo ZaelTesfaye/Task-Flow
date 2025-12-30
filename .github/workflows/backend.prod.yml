@@ -1,4 +1,4 @@
-name: Deploy to EC2 with Docker Compose
+name: Deploy backend with Docker Compose
 
 on:
   push:
