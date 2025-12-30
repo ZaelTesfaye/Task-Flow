@@ -38,7 +38,7 @@ export const auth = betterAuth({
       },
     },
   },
-  trustedOrigins: [config.frontEndUrl],
+  trustedOrigins: config.frontEndUrl?.split(",")?.map((o) => o.trim()),
   cookie: {
     secure: config.env === "production",
   },
@@ -47,7 +47,7 @@ export const auth = betterAuth({
       overrideDefaultEmailVerification: true,
       expiresIn: 600,
       sendVerificationOTP: async ({ email, otp }) => {
-        const verificationUrl = `${config.frontEndUrl}/verify-email?email=${encodeURIComponent(email)}`;
+        const verificationUrl = `${config.frontEndUrl?.split(",")?.map((o) => o.trim())[0]}/verify-email?email=${encodeURIComponent(email)}`;
 
         try {
           await resend.emails.send({

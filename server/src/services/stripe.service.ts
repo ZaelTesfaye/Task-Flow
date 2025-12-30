@@ -123,7 +123,9 @@ export const createCheckoutSession = async (
           data: updateData,
         });
 
-        return { url: `${config.frontEndUrl}/dashboard?success=true` };
+        return {
+          url: `${config.frontEndUrl?.split(",")?.map((o) => o.trim())[0]}/dashboard?success=true`,
+        };
       }
 
       return { url: invoice.hosted_invoice_url };
@@ -138,8 +140,8 @@ export const createCheckoutSession = async (
       },
     ],
     mode: "subscription",
-    success_url: `${config.frontEndUrl}/dashboard?success=true`,
-    cancel_url: `${config.frontEndUrl}/dashboard`,
+    success_url: `${config.frontEndUrl?.split(",")?.map((o) => o.trim())[0]}/dashboard?success=true`,
+    cancel_url: `${config.frontEndUrl?.split(",")?.map((o) => o.trim())[0]}/dashboard`,
     customer_email: email,
     metadata: {
       userId: userId,
@@ -159,7 +161,7 @@ export const createPortalSession = async (userId: string) => {
     throw new APIError("No stripe customer found", httpStatus.BAD_REQUEST);
   }
 
-  const frontEndUrl = config.frontEndUrl.split(",")[0];
+  const frontEndUrl = config.frontEndUrl?.split(",")?.map((o) => o.trim())[0];
 
   const portalSession = await stripe.billingPortal.sessions.create({
     customer: userRecord.stripeCustomerId,
