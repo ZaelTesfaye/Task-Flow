@@ -49,9 +49,10 @@ export const useMemberActions = (
     async (userId: string) => {
       await projectAPI.leaveProject(projectId as string, userId as string);
       toast.success("You have left the project!");
-      // Redirect to dashboard or something
+      // Invalidate the user projects cache to remove this project from the dashboard
+      await queryClient.invalidateQueries({ queryKey: ["user-projects"] });
     },
-    [projectId]
+    [projectId, queryClient]
   );
 
   return {
