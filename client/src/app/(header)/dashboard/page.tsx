@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { projectAPI, stripeAPI } from "@/lib";
 import type { Project } from "@/types";
@@ -23,6 +23,7 @@ export default function Dashboard() {
   const { user, loading: authLoading, checkSession } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const queryClient = useQueryClient();
 
   const {
     data: projectsData,
@@ -127,11 +128,12 @@ export default function Dashboard() {
       setShowCreateModal(false);
       setTitle("");
       setDescription("");
+      // Invalidate and refetch projects list
+      await queryClient.invalidateQueries({ queryKey: ["user-projects"] });
       if (createdProject?.id) {
         router.push(`/project?id=${createdProject.id}&createCategory=1`);
         return;
       }
-      fetchProjects();
     } catch (error: any) {
       toast.error(error.response?.data?.message || "Failed to create project");
     }

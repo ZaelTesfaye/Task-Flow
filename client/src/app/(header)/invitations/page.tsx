@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { RefreshCw, Clock } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { projectAPI } from "@/lib";
 import type { ProjectInvitation } from "@/types";
@@ -19,6 +20,7 @@ export default function InvitationsPage() {
   const [invitations, setInvitations] = useState<ProjectInvitation[]>([]);
   const [loading, setLoading] = useState(true);
   const [invitationLoading, setInvitationLoading] = useState<boolean>(false);
+  const queryClient = useQueryClient();
 
   const loadInvitations = async () => {
     try {
@@ -47,6 +49,10 @@ export default function InvitationsPage() {
       toast.success(
         action === "accept" ? "Invitation accepted!" : "Invitation declined."
       );
+      // Invalidate projects cache when accepting an invitation
+      if (action === "accept") {
+        await queryClient.invalidateQueries({ queryKey: ["user-projects"] });
+      }
       loadInvitations();
     } catch (error: any) {
       toast.error(
