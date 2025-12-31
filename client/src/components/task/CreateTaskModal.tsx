@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { X } from "lucide-react";
 
 import { Modal } from "@/components/modals";
@@ -30,6 +30,13 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
     description: "",
     assignee: "",
   });
+
+  // Set default assignee to first member when modal opens or members change
+  useEffect(() => {
+    if (isOpen && members.length > 0 && !formData.assignee) {
+      setFormData((prev) => ({ ...prev, assignee: members[0].userId }));
+    }
+  }, [isOpen, members]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -126,7 +133,6 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
             required
             className="w-full px-4 py-2.5 text-[hsl(var(--foreground))] bg-[hsl(var(--background))] border border-[hsl(var(--border))] rounded-lg outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
-            <option value="">Select member...</option>
             {members.map((member) => (
               <option
                 key={member.userId}
