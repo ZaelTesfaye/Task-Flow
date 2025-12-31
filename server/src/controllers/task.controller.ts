@@ -222,8 +222,8 @@ export const rejectPendingUpdate: RequestHandler = asyncWrapper(
       projectId,
     );
 
-    // Invalidate phases cache (which includes tasks)
-    await redis.del(`project:${projectId}:phases`);
+    // Invalidate categories cache (which includes tasks)
+    await redis.del(`project:${projectId}:categories`);
 
     res.json({
       message: "Pending update rejected successfully",

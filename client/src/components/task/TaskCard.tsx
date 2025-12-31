@@ -45,7 +45,13 @@ const TaskCard: React.FC<TaskCardProps> = ({
   const isOwnerOrAdmin = userRole === "owner" || userRole === "admin";
 
   return (
-    <div className="p-2 bg-gray-100 dark:bg-gray-900/50 rounded-lg border border-[hsl(var(--border))]">
+    <div
+      className={`p-2 rounded-lg border ${
+        task.assignedTo === currentUserId
+          ? "bg-blue-50 dark:bg-blue-950/30 border-blue-300 dark:border-blue-700"
+          : "bg-gray-100 dark:bg-gray-900/50 border-[hsl(var(--border))]"
+      }`}
+    >
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
           {/* Title */}
@@ -55,8 +61,10 @@ const TaskCard: React.FC<TaskCardProps> = ({
                 task.status === "complete"
                   ? "bg-green-500"
                   : task.status === "canceled"
-                  ? "bg-red-500"
-                  : "border-2 border-gray-300 dark:border-gray-500"
+                    ? "bg-red-500"
+                    : task.assignedTo === currentUserId
+                      ? "bg-blue-400"
+                      : "border-2 border-gray-300 dark:border-gray-500"
               }`}
             >
               {task.status === "complete" && (
@@ -71,8 +79,8 @@ const TaskCard: React.FC<TaskCardProps> = ({
                 task.status === "complete"
                   ? "opacity-60 line-through"
                   : task.status === "canceled"
-                  ? "text-red-500 line-through"
-                  : ""
+                    ? "text-red-500 line-through"
+                    : ""
               }`}
             >
               {task.title}
@@ -101,7 +109,9 @@ const TaskCard: React.FC<TaskCardProps> = ({
         {/* Assigned User & Action Buttons */}
         <div className="flex flex-col items-end gap-0.5 shrink-0">
           <span className="text-xs text-right truncate opacity-70 max-w-20 text-[hsl(var(--muted-foreground))]">
-            To: {task.assignedUser?.name}
+            {task.assignedTo === currentUserId
+              ? "You"
+              : `To: ${task.assignedUser?.name}`}
           </span>
           <div className="flex items-center gap-0">
             {/* Request Update Button - for assigned user only */}

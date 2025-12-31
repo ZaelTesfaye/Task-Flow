@@ -38,6 +38,8 @@ export default function InvitationsPage() {
   useEffect(() => {
     // Invalidate the invitations cache when page loads to ensure fresh data
     queryClient.invalidateQueries({ queryKey: ["user-invitations"] });
+    // Refetch the user invitations query to update the notification icon immediately
+    queryClient.refetchQueries({ queryKey: ["user-invitations"] });
     loadInvitations();
   }, [queryClient]);
 
