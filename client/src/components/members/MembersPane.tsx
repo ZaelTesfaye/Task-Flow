@@ -1,5 +1,6 @@
-import React from "react";
-import { X, UserPlus } from "lucide-react";
+import React, { useState } from "react";
+import { X, UserPlus, RefreshCw } from "lucide-react";
+import toast from "react-hot-toast";
 import {
   MemberFilter,
   Project,
@@ -18,6 +19,7 @@ export interface MembersPaneProps {
   onAddMember: () => void;
   onViewAllMembers: () => void;
   onManageInvitations: () => void;
+  onRefresh: () => void;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -36,9 +38,24 @@ const MembersPane: React.FC<MembersPaneProps> = ({
   onAddMember,
   onViewAllMembers,
   invitations,
+  onRefresh,
   isOpen,
   onClose,
 }) => {
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    try {
+      await onRefresh();
+      toast.success("Members list refreshed!");
+    } catch (error) {
+      toast.error("Failed to refresh members");
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
+
   const filteredMembers = members.filter((member) => {
     if (memberFilter === "all") return true;
     if (memberFilter === "owner") return member.userId === project?.ownerId;
@@ -65,13 +82,25 @@ const MembersPane: React.FC<MembersPaneProps> = ({
           <h3 className="flex items-center gap-2 text-lg font-semibold text-[hsl(var(--foreground))]">
             <span>Members ({filteredMembers.length})</span>
           </h3>
-          <button
-            onClick={onClose}
-            className="p-2 hover:bg-[hsl(var(--accent))] rounded-lg transition"
-            title="Close Members"
-          >
-            <X className="w-4 h-4 hover:cursor-pointer" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleRefresh}
+              disabled={isRefreshing}
+              className="p-2 hover:bg-[hsl(var(--accent))] rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+              title="Refresh Members"
+            >
+              <RefreshCw
+                className={`w-4 h-4 hover:cursor-pointer ${isRefreshing ? "animate-spin" : ""}`}
+              />
+            </button>
+            <button
+              onClick={onClose}
+              className="p-2 hover:bg-[hsl(var(--accent))] rounded-lg transition"
+              title="Close Members"
+            >
+              <X className="w-4 h-4 hover:cursor-pointer" />
+            </button>
+          </div>
         </div>
 
         {/* Member Filter */}

@@ -10,7 +10,6 @@ import {
   Sun,
   Inbox,
   CreditCard,
-  Crown,
 } from "lucide-react";
 import { useThemeStore } from "@/stores";
 import { Switch } from "@/components/ui";
@@ -71,10 +70,30 @@ export default function ProfileMenu({
         </span>
       );
     }
+
+    // Determine if it's starter or pro based on price
+    const isStarterPrice =
+      user.stripePriceId.includes("starter") ||
+      user.stripePriceId === process.env.NEXT_PUBLIC_STRIPE_PRICE_STARTER_ID;
+
+    if (isStarterPrice) {
+      return (
+        <span className="text-xs bg-gray-400 dark:bg-gray-600 text-white px-2 py-0.5 rounded-full ml-2">
+          Starter
+        </span>
+      );
+    }
+
+    // Pro plan
     return (
-      <span className="text-xs bg-gradient-to-r from-amber-500 to-orange-500 text-white px-2 py-0.5 rounded-full flex items-center gap-1 ml-2">
-        <Crown className="w-3 h-3" /> Premium
-      </span>
+      <div className="flex items-center gap-1.5 ml-2">
+        <span className="text-xs bg-gradient-to-r from-amber-500 to-orange-500 text-white px-2 py-0.5 rounded-full">
+          Premium
+        </span>
+        <span className="text-[10px] text-amber-600 dark:text-amber-400 font-medium">
+          Pro
+        </span>
+      </div>
     );
   };
 

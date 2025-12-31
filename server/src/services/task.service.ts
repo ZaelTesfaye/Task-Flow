@@ -1,7 +1,12 @@
-import { memberModel, taskModel, userModel } from "../model/index.js";
+import {
+  memberModel,
+  taskModel,
+  userModel,
+  projectModel,
+} from "../model/index.js";
 import type { RequestTaskUpdateDTO, UpdateTaskDTO } from "../dtos/index.js";
-import { emailServices } from "./email.service.js";
-import { notificationServices } from "./notification.service.js";
+import { sendTaskAssignmentEmail } from "./email.service.js";
+import { createTaskAssignedNotification } from "./notification.service.js";
 
 export const createTask = async (
   title: string,
@@ -26,42 +31,34 @@ export const createTask = async (
   );
 
   // Get assignee and assigner details
-  const [assignee, assigner] = await Promise.all([
-    userModel.findUserById(assignedTo),
-    userModel.findUserById(userId),
+  const [assignee, assigner, project] = await Promise.all([
+    userModel.findById(assignedTo),
+    userModel.findById(userId),
+    projectModel.getProjectById(projectId),
   ]);
-
-  // Get project details
-  const project = await memberModel
-    .findMember(projectId, assignedTo)
-    .then((member) => member?.project);
 
   if (assignee && assigner && project) {
     // Send email notification (don't await to avoid blocking)
-    emailServices
-      .sendTaskAssignmentEmail(
-        assignee.name,
-        assignee.email,
-        title,
-        description,
-        project.title,
-        assigner.name,
-        projectId,
-      )
-      .catch((err) =>
-        console.error("Failed to send task assignment email:", err),
-      );
+    sendTaskAssignmentEmail(
+      assignee.name,
+      assignee.email,
+      title,
+      description,
+      project.title,
+      assigner.name,
+      projectId,
+    ).catch((err) =>
+      console.error("Failed to send task assignment email:", err),
+    );
 
     // Create in-app notification (don't await to avoid blocking)
-    notificationServices
-      .createTaskAssignedNotification(
-        assignedTo,
-        task.id,
-        projectId,
-        title,
-        assigner.name,
-      )
-      .catch((err) => console.error("Failed to create notification:", err));
+    createTaskAssignedNotification(
+      assignedTo,
+      task.id,
+      projectId,
+      title,
+      assigner.name,
+    ).catch((err) => console.error("Failed to create notification:", err));
   }
 
   return task;

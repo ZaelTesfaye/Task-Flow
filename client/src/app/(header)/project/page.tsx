@@ -297,6 +297,7 @@ function ProjectBoard() {
           onAddMember={() => openModal("showAddMemberModal")}
           onViewAllMembers={() => openModal("showMembersModal")}
           onManageInvitations={() => router.push("/invitations")}
+          onRefresh={projectData.refetch}
         />
 
         <ProjectSettingsPane

@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import toast from "react-hot-toast";
-import { Crown } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { useAuth } from "@/context";
@@ -116,11 +115,8 @@ export default function Header() {
               className="relative flex items-center gap-3 px-3 py-2 transition rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 hover:cursor-pointer"
             >
               <div className="text-right">
-                <p className="text-sm font-semibold text-[hsl(var(--foreground))] flex items-center justify-end gap-1">
+                <p className="text-sm font-semibold text-[hsl(var(--foreground))]">
                   {user.name}
-                  {user.stripePriceId && (
-                    <Crown className="w-3 h-3 text-amber-500" />
-                  )}
                 </p>
                 <p className="text-xs text-[hsl(var(--muted-foreground))]">
                   {user.email}

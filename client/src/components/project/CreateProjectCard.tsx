@@ -27,14 +27,14 @@ const AddProjectCard = ({
           {isFirst ? "Create your first project" : "Add Project"}
         </CardTitle>
       </div>
-      <CardDescription className="min-h-10">
+      <CardDescription className="text-left min-h-10">
         {isFirst
           ? "Start organizing your tasks and collaborating with your team"
           : "Create a new project to organize tasks and collaborate"}
       </CardDescription>
     </CardHeader>
-    <CardContent>
-      <span className="px-3 py-1.5 text-xs font-semibold text-[hsl(var(--foreground))] bg-[hsl(var(--muted))] dark:bg-gray-900/50 border border-[hsl(var(--border))] rounded-full">
+    <CardContent className="flex justify-start">
+      <span className=" px-3 py-1.5 text-xs font-semibold text-[hsl(var(--foreground))] bg-[hsl(var(--muted))] dark:bg-gray-900/50 border border-[hsl(var(--border))] rounded-full">
         New Project
       </span>
     </CardContent>
