@@ -158,7 +158,7 @@ const MembersPane: React.FC<MembersPaneProps> = ({
             className="w-full mt-4 px-3 py-2 bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] rounded-lg hover:brightness-110 transition hover:cursor-pointer"
           >
             <UserPlus className="inline w-4 h-4 mr-2" />
-            Add Member
+            Invite Member
           </button>
         )}
 

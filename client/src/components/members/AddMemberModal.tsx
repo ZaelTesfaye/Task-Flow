@@ -28,7 +28,7 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <h2 className="text-2xl font-bold mb-6 text-[hsl(var(--foreground))]">
-        Add Member
+        Invite Member
       </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
@@ -74,7 +74,7 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({
             type="submit"
             className="flex-1 px-4 py-2 text-[hsl(var(--primary-foreground))] transition bg-blue-600 rounded-lg hover:cursor-pointer hover:bg-blue-700"
           >
-            Add Member
+            Invite Member
           </button>
         </div>
       </form>

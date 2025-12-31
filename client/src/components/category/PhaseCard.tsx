@@ -100,6 +100,7 @@ const PhaseCard: React.FC<PhaseCardProps> = ({
                 task={task}
                 userRole={userRole}
                 currentUserId={currentUserId}
+                phaseName={phase.name}
                 onUpdateStatus={onUpdateTaskStatus}
                 onRequestUpdate={onRequestUpdate}
                 onEdit={onEditTask}
