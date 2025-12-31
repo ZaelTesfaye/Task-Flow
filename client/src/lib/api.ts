@@ -45,6 +45,21 @@ export const authAPI = {
 
   logout: (): Promise<ApiResponse<void>> =>
     api.post<ApiResponse<void>>("/custom-auth/logout").then((r) => r.data),
+
+  requestPasswordReset: (email: string): Promise<ApiResponse<{ message: string }>> =>
+    api
+      .post<ApiResponse<{ message: string }>>("/custom-auth/forgot-password", { email })
+      .then((r) => r.data),
+
+  verifyResetCode: (email: string, code: string): Promise<ApiResponse<{ message: string }>> =>
+    api
+      .post<ApiResponse<{ message: string }>>("/custom-auth/verify-reset-code", { email, code })
+      .then((r) => r.data),
+
+  resetPassword: (email: string, newPassword: string): Promise<ApiResponse<AuthResponse>> =>
+    api
+      .post<ApiResponse<AuthResponse>>("/custom-auth/reset-password", { email, newPassword })
+      .then((r) => r.data),
 };
 
 // User endpoints

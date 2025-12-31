@@ -57,3 +57,46 @@ export const logout = asyncWrapper(async (req: Request, res: Response) => {
     })
     .send();
 });
+
+export const requestPasswordReset = asyncWrapper(
+  async (req: Request<{}, {}, { email: string }>, res: Response) => {
+    const { email } = req.body;
+    const result = await authServices.requestPasswordReset(email);
+    res.json({
+      message: result.message,
+    });
+  },
+);
+
+export const verifyResetCode = asyncWrapper(
+  async (
+    req: Request<{}, {}, { email: string; code: string }>,
+    res: Response,
+  ) => {
+    const { email, code } = req.body;
+    const result = await authServices.verifyResetCode(email, code);
+    res.json({
+      message: result.message,
+    });
+  },
+);
+
+export const resetPassword = asyncWrapper(
+  async (
+    req: Request<{}, {}, { email: string; newPassword: string }>,
+    res: Response,
+  ) => {
+    const { email, newPassword } = req.body;
+    const data = await authServices.resetPassword(email, newPassword);
+    res
+      .cookie("auth", data.token, defaultCookieConfig)
+      .json({
+        message: data.message,
+        data: {
+          user: data.user,
+          token: data.token,
+        },
+      });
+  },
+);
+

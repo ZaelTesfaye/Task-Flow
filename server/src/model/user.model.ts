@@ -42,7 +42,7 @@ export const getUser = async (userId: string) => {
 
 export const updateUser = async (
   userId: string,
-  updates: { name?: string },
+  updates: { name?: string; password?: string },
 ) => {
   return prisma.user.update({
     where: {

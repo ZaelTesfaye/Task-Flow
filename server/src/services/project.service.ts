@@ -2,6 +2,7 @@ import { memberModel, projectModel } from "../model/index.js";
 import { userModel } from "../model/index.js";
 import { APIError } from "../utils/index.js";
 import config from "../config/config.js";
+import * as emailServices from "./email.service.js";
 
 export const createProject = async (
   title: string,
@@ -73,6 +74,11 @@ export const addMember = async (
 
   invitationEmail = invitationEmail.trim().toLowerCase();
 
+  // If email provided but no userId, check if user exists with that email
+  if (!targetUser && invitationEmail) {
+    targetUser = await userModel.findByEmail(invitationEmail);
+  }
+
   if (targetUser && targetUser.id === inviterId) {
     throw new APIError("You cannot invite yourself", 400);
   }
@@ -130,13 +136,46 @@ export const addMember = async (
     );
   }
 
-  return projectModel.createProjectInvitation(
+  // Get inviter information for email
+  const inviter = await userModel.getUser(inviterId);
+  if (!inviter) {
+    throw new APIError("Inviter not found", 404);
+  }
+
+  // Create the invitation
+  const invitation = await projectModel.createProjectInvitation(
     projectId,
     inviterId,
     invitationEmail,
     normalizedAccess,
     targetUser?.id,
   );
+
+  // Send invitation email
+  try {
+    if (targetUser) {
+      // User is registered - send email with link to invitations page
+      await emailServices.sendInvitationToRegisteredUser(
+        inviter.name,
+        targetUser.name,
+        invitationEmail,
+        project.title,
+      );
+    } else {
+      // User is not registered - send email with link to signup
+      await emailServices.sendInvitationToNonRegisteredUser(
+        inviter.name,
+        invitationEmail,
+        project.title,
+      );
+    }
+  } catch (emailError) {
+    // Log the error but don't fail the invitation creation
+    console.error("Failed to send invitation email:", emailError);
+    // Invitation is still created successfully
+  }
+
+  return invitation;
 };
 
 export const removeMember = (projectId: string, userId: string) => {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { LogIn, UserPlus, Sun, Moon } from "lucide-react";
+import { LogIn, UserPlus, Mail, KeyRound } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import toast from "react-hot-toast";
@@ -16,6 +16,7 @@ import {
   CredentialResponse,
 } from "@react-oauth/google";
 import { ThemeToggle } from "@/components/ui";
+import { authAPI } from "@/lib";
 
 type AuthFormData = {
   name?: string;
@@ -39,6 +40,16 @@ export default function LoginPage() {
   const [isGoogleLoaded, setIsGoogleLoaded] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const googleButtonRef = useRef<HTMLDivElement>(null);
+
+  // Forgot password states
+  const [failedAttempts, setFailedAttempts] = useState(0);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [forgotPasswordStep, setForgotPasswordStep] = useState<"email" | "code" | "password">("email");
+  const [resetEmail, setResetEmail] = useState("");
+  const [resetCode, setResetCode] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isResetting, setIsResetting] = useState(false);
 
   useEffect(() => {
     // logged in
@@ -110,13 +121,85 @@ export default function LoginPage() {
       } else {
         await login(formData as LoginFormData);
         toast.success("Login successful!");
+        setFailedAttempts(0); // Reset on success
         router.push("/dashboard");
       }
-    } catch (error) {
-      if (mode === "login") toast.error("Login failed.");
-      else toast.error("Registration failed.");
+    } catch (error: any) {
+      if (mode === "login") {
+        const newAttempts = failedAttempts + 1;
+        setFailedAttempts(newAttempts);
+        
+        if (newAttempts >= 3) {
+          toast.error("Too many failed attempts. Please use Forgot Password.");
+        } else {
+          toast.error(`Login failed. ${3 - newAttempts} attempts remaining.`);
+        }
+      } else {
+        toast.error("Registration failed.");
+      }
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    if (!resetEmail || !resetEmail.includes("@")) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
+
+    setIsResetting(true);
+    try {
+      await authAPI.requestPasswordReset(resetEmail);
+      toast.success("Reset code sent to your email!");
+      setForgotPasswordStep("code");
+    } catch {
+      toast.error(error.response?.data?.message || "Failed to send reset code");
+    } finally {
+      setIsResetting(false);
+    }
+  };
+
+  const handleVerifyCode = async () => {
+    if (resetCode.length !== 6) {
+      toast.error("Please enter the 6-digit code");
+      return;
+    }
+
+    setIsResetting(true);
+    try {
+      await authAPI.verifyResetCode(resetEmail, resetCode);
+      toast.success("Code verified! Set your new password.");
+      setForgotPasswordStep("password");
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Invalid or expired code");
+    } finally {
+      setIsResetting(false);
+    }
+  };
+
+  const handleResetPassword = async () => {
+    if (newPassword.length < 6) {
+      toast.error("Password must be at least 6 characters");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
+    setIsResetting(true);
+    try {
+      await authAPI.resetPassword(resetEmail, newPassword);
+      toast.success("Password reset successful! Logging you in...");
+      
+      // Auto-login with the response data
+      await checkSession();
+      router.push("/dashboard");
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Failed to reset password");
+    } finally {
+      setIsResetting(false);
     }
   };
 
@@ -135,6 +218,8 @@ export default function LoginPage() {
       email: "",
       password: "",
     });
+    setFailedAttempts(0);
+    setShowForgotPassword(false);
   };
 
   return (
@@ -146,25 +231,149 @@ export default function LoginPage() {
         </div>
 
         <div className="w-full max-w-md p-8 bg-[hsl(var(--card))] shadow-xl border border-[hsl(var(--border))] rounded-2xl">
-          <div className="mb-8 text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 mb-4 bg-blue-600 rounded-full">
-              {mode === "login" ? (
-                <LogIn className="w-8 h-8 text-white" />
-              ) : (
-                <UserPlus className="w-8 h-8 text-white" />
-              )}
-            </div>
-            <h1 className="text-3xl font-bold text-[hsl(var(--foreground))]">
-              {mode === "login" ? "Welcome Back" : "Create Account"}
-            </h1>
-            <p className="mt-2 text-[hsl(var(--muted-foreground))]">
-              {mode === "login"
-                ? "Sign in to your account"
-                : "Join us to manage your tasks"}
-            </p>
-          </div>
+          {/* Show Forgot Password UI if triggered */}
+          {showForgotPassword ? (
+            <div>
+              <div className="mb-8 text-center">
+                <div className="inline-flex items-center justify-center w-16 h-16 mb-4 bg-blue-600 rounded-full">
+                  <KeyRound className="w-8 h-8 text-white" />
+                </div>
+                <h1 className="text-3xl font-bold text-[hsl(var(--foreground))]">
+                  Reset Password
+                </h1>
+                <p className="mt-2 text-[hsl(var(--muted-foreground))]">
+                  {forgotPasswordStep === "email" && "Enter your email to receive a reset code"}
+                  {forgotPasswordStep === "code" && "Enter the 6-digit code sent to your email"}
+                  {forgotPasswordStep === "password" && "Set your new password"}
+                </p>
+              </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-6">
+                {forgotPasswordStep === "email" && (
+                  <>
+                    <div>
+                      <label className="block mb-2 text-sm font-medium text-[hsl(var(--foreground))]">
+                        Email Address
+                      </label>
+                      <input
+                        type="email"
+                        value={resetEmail}
+                        onChange={(e) => setResetEmail(e.target.value)}
+                        className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition bg-[hsl(var(--background))] text-[hsl(var(--foreground))] border-[hsl(var(--border))]"
+                        placeholder="john@example.com"
+                      />
+                    </div>
+                    <button
+                      onClick={handleForgotPassword}
+                      disabled={isResetting}
+                      className="w-full py-3 font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isResetting ? "Sending..." : "Send Reset Code"}
+                    </button>
+                  </>
+                )}
+
+                {forgotPasswordStep === "code" && (
+                  <>
+                    <div>
+                      <label className="block mb-2 text-sm font-medium text-[hsl(var(--foreground))]">
+                        Reset Code
+                      </label>
+                      <input
+                        type="text"
+                        value={resetCode}
+                        onChange={(e) => setResetCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                        className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition bg-[hsl(var(--background))] text-[hsl(var(--foreground))] border-[hsl(var(--border))] text-center text-2xl tracking-widest font-mono"
+                        placeholder="000000"
+                        maxLength={6}
+                      />
+                      <p className="mt-2 text-xs text-center text-[hsl(var(--muted-foreground))]">
+                        Code sent to {resetEmail}
+                      </p>
+                    </div>
+                    <button
+                      onClick={handleVerifyCode}
+                      disabled={isResetting || resetCode.length !== 6}
+                      className="w-full py-3 font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isResetting ? "Verifying..." : "Verify Code"}
+                    </button>
+                  </>
+                )}
+
+                {forgotPasswordStep === "password" && (
+                  <>
+                    <div>
+                      <label className="block mb-2 text-sm font-medium text-[hsl(var(--foreground))]">
+                        New Password
+                      </label>
+                      <input
+                        type="password"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition bg-[hsl(var(--background))] text-[hsl(var(--foreground))] border-[hsl(var(--border))]"
+                        placeholder="••••••••"
+                      />
+                    </div>
+                    <div>
+                      <label className="block mb-2 text-sm font-medium text-[hsl(var(--foreground))]">
+                        Confirm New Password
+                      </label>
+                      <input
+                        type="password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition bg-[hsl(var(--background))] text-[hsl(var(--foreground))] border-[hsl(var(--border))]"
+                        placeholder="••••••••"
+                      />
+                    </div>
+                    <button
+                      onClick={handleResetPassword}
+                      disabled={isResetting || !newPassword || newPassword !== confirmPassword}
+                      className="w-full py-3 font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isResetting ? "Resetting..." : "Reset Password"}
+                    </button>
+                  </>
+                )}
+
+                <button
+                  onClick={() => {
+                    setShowForgotPassword(false);
+                    setForgotPasswordStep("email");
+                    setResetEmail("");
+                    setResetCode("");
+                    setNewPassword("");
+                    setConfirmPassword("");
+                  }}
+                  className="w-full py-2 text-sm text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))]"
+                >
+                  Back to Login
+                </button>
+              </div>
+            </div>
+          ) : (
+            <>
+              {/* Normal Login/Register Form */}
+              <div className="mb-8 text-center">
+                <div className="inline-flex items-center justify-center w-16 h-16 mb-4 bg-blue-600 rounded-full">
+                  {mode === "login" ? (
+                    <LogIn className="w-8 h-8 text-white" />
+                  ) : (
+                    <UserPlus className="w-8 h-8 text-white" />
+                  )}
+                </div>
+                <h1 className="text-3xl font-bold text-[hsl(var(--foreground))]">
+                  {mode === "login" ? "Welcome Back" : "Create Account"}
+                </h1>
+                <p className="mt-2 text-[hsl(var(--muted-foreground))]">
+                  {mode === "login"
+                    ? "Sign in to your account"
+                    : "Join us to manage your tasks"}
+                </p>
+              </div>
+
+              <form onSubmit={handleSubmit} className="space-y-6">
             {mode === "register" && (
               <div>
                 <label
@@ -252,6 +461,21 @@ export default function LoginPage() {
                   ? "Sign In"
                   : "Create Account"}
             </button>
+
+            {/* Show Forgot Password button after 3 failed attempts */}
+            {mode === "login" && failedAttempts >= 3 && (
+              <button
+                type="button"
+                onClick={() => {
+                  setShowForgotPassword(true);
+                  setResetEmail(formData.email);
+                }}
+                className="w-full py-2 text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 flex items-center justify-center gap-2"
+              >
+                <Mail className="w-4 h-4" />
+                Forgot Password?
+              </button>
+            )}
 
             <div className="flex justify-center w-full mt-4">
               {/* Custom styled container with Google's button as overlay */}
@@ -344,6 +568,8 @@ export default function LoginPage() {
                 : "Already have an account? Sign in"}
             </button>
           </div>
+            </>
+          )}
         </div>
       </div>
     </GoogleOAuthProvider>
