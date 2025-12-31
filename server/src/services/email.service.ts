@@ -1,6 +1,99 @@
 import { email } from "../lib/index.js";
 import config from "../config/config.js";
 
+// Consistent email template styles for branding
+const getEmailTemplate = (content: string) => `
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>
+        body { 
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+          line-height: 1.6; 
+          color: #1f2937; 
+          background-color: #f3f4f6;
+          margin: 0;
+          padding: 20px;
+        }
+        .container { 
+          max-width: 600px; 
+          margin: 0 auto; 
+          background: white;
+          border-radius: 12px;
+          overflow: hidden;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .header { 
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+          color: white; 
+          padding: 32px 24px;
+          text-align: center;
+        }
+        .header h1 {
+          margin: 0;
+          font-size: 28px;
+          font-weight: 700;
+          letter-spacing: -0.5px;
+        }
+        .logo {
+          font-size: 36px;
+          margin-bottom: 8px;
+        }
+        .content { 
+          padding: 32px 24px;
+          background: white;
+        }
+        .content p {
+          margin: 0 0 16px 0;
+          color: #374151;
+        }
+        .button { 
+          display: inline-block; 
+          padding: 14px 32px; 
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white; 
+          text-decoration: none; 
+          border-radius: 8px; 
+          font-weight: 600;
+          font-size: 15px;
+          transition: transform 0.2s;
+        }
+        .button:hover {
+          transform: translateY(-2px);
+        }
+        .footer { 
+          text-align: center; 
+          padding: 24px;
+          background: #f9fafb;
+          border-top: 1px solid #e5e7eb;
+          font-size: 13px; 
+          color: #6b7280;
+        }
+        .divider {
+          height: 1px;
+          background: #e5e7eb;
+          margin: 24px 0;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <div class="logo">📋</div>
+          <h1>TaskFlow</h1>
+        </div>
+        ${content}
+        <div class="footer">
+          <p style="margin: 0;">© 2025 TaskFlow. All rights reserved.</p>
+          <p style="margin: 8px 0 0 0;">This email was sent by TaskFlow project management platform.</p>
+        </div>
+      </div>
+    </body>
+  </html>
+`;
+
 /**
  * Send invitation email to a registered user
  */
@@ -12,47 +105,25 @@ export const sendInvitationToRegisteredUser = async (
 ) => {
   const invitationsUrl = `${config.frontEndUrl}/invitations`;
 
+  const content = `
+    <div class="content">
+      <h2 style="color: #1f2937; margin: 0 0 20px 0; font-size: 22px;">🎉 You've Been Invited!</h2>
+      <p>Hi <strong>${inviteeName}</strong>,</p>
+      <p><strong>${inviterName}</strong> has invited you to collaborate on the project <strong>"${projectTitle}"</strong>.</p>
+      <p>Accept this invitation to start working together and contributing to the project.</p>
+      <div style="text-align: center; margin: 32px 0;">
+        <a href="${invitationsUrl}" class="button">View Invitation →</a>
+      </div>
+      <p style="font-size: 13px; color: #6b7280;">Or copy this link: <a href="${invitationsUrl}" style="color: #667eea;">${invitationsUrl}</a></p>
+    </div>
+  `;
+
   try {
     await email.emails.send({
       from: "TaskFlow <onboarding@resend.dev>",
       to: inviteeEmail,
       subject: `${inviterName} invited you to join "${projectTitle}"`,
-      html: `
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <meta charset="utf-8">
-            <style>
-              body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-              .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-              .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-              .content { background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; }
-              .button { display: inline-block; padding: 12px 30px; background: #667eea; color: white; text-decoration: none; border-radius: 5px; margin: 20px 0; font-weight: bold; }
-              .footer { text-align: center; margin-top: 20px; font-size: 12px; color: #666; }
-            </style>
-          </head>
-          <body>
-            <div class="container">
-              <div class="header">
-                <h1 style="margin: 0;">🎉 Project Invitation</h1>
-              </div>
-              <div class="content">
-                <p>Hi ${inviteeName},</p>
-                <p><strong>${inviterName}</strong> has invited you to join the project <strong>"${projectTitle}"</strong> on TaskFlow.</p>
-                <p>Click the button below to view your invitation and start collaborating:</p>
-                <div style="text-align: center;">
-                  <a href="${invitationsUrl}" class="button">View Invitation</a>
-                </div>
-                <p>Or copy this link: <a href="${invitationsUrl}">${invitationsUrl}</a></p>
-                <p>Best regards,<br>The TaskFlow Team</p>
-              </div>
-              <div class="footer">
-                <p>This email was sent because someone invited you to a project on TaskFlow.</p>
-              </div>
-            </div>
-          </body>
-        </html>
-      `,
+      html: getEmailTemplate(content),
     });
   } catch (error) {
     console.error("Error sending invitation email to registered user:", error);
@@ -70,52 +141,32 @@ export const sendInvitationToNonRegisteredUser = async (
 ) => {
   const registerUrl = `${config.frontEndUrl}/login`;
 
+  const content = `
+    <div class="content">
+      <h2 style="color: #1f2937; margin: 0 0 20px 0; font-size: 22px;">🎉 Welcome to TaskFlow!</h2>
+      <p>Hello,</p>
+      <p><strong>${inviterName}</strong> has invited you to join the project <strong>"${projectTitle}"</strong> on TaskFlow.</p>
+      <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 20px; border-radius: 8px; margin: 24px 0; border-left: 4px solid #f59e0b;">
+        <p style="margin: 0 0 8px 0; font-weight: 600; color: #92400e;">📝 Get Started in 2 Steps:</p>
+        <ol style="margin: 0; padding-left: 20px; color: #78350f;">
+          <li>Create your free TaskFlow account</li>
+          <li>Find the invitation waiting in your invitations page</li>
+        </ol>
+      </div>
+      <p>TaskFlow is a powerful project management platform that helps teams collaborate effectively on projects and tasks.</p>
+      <div style="text-align: center; margin: 32px 0;">
+        <a href="${registerUrl}" class="button">Sign Up & View Invitation →</a>
+      </div>
+      <p style="font-size: 13px; color: #6b7280;">Or copy this link: <a href="${registerUrl}" style="color: #667eea;">${registerUrl}</a></p>
+    </div>
+  `;
+
   try {
     await email.emails.send({
       from: "TaskFlow <onboarding@resend.dev>",
       to: inviteeEmail,
       subject: `${inviterName} invited you to join "${projectTitle}" on TaskFlow`,
-      html: `
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <meta charset="utf-8">
-            <style>
-              body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-              .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-              .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-              .content { background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; }
-              .button { display: inline-block; padding: 12px 30px; background: #667eea; color: white; text-decoration: none; border-radius: 5px; margin: 20px 0; font-weight: bold; }
-              .footer { text-align: center; margin-top: 20px; font-size: 12px; color: #666; }
-              .highlight { background: #fef3c7; padding: 15px; border-radius: 5px; margin: 15px 0; border-left: 4px solid #f59e0b; }
-            </style>
-          </head>
-          <body>
-            <div class="container">
-              <div class="header">
-                <h1 style="margin: 0;">🎉 You're Invited to TaskFlow!</h1>
-              </div>
-              <div class="content">
-                <p>Hello,</p>
-                <p><strong>${inviterName}</strong> has invited you to join the project <strong>"${projectTitle}"</strong> on TaskFlow.</p>
-                <div class="highlight">
-                  <p style="margin: 0;"><strong>📝 Next Steps:</strong></p>
-                  <p style="margin: 5px 0 0 0;">Sign up for TaskFlow to accept this invitation and start collaborating on the project.</p>
-                </div>
-                <p>TaskFlow is a powerful project management platform that helps teams collaborate effectively. Once you sign up, you'll find this invitation waiting for you in your invitations page.</p>
-                <div style="text-align: center;">
-                  <a href="${registerUrl}" class="button">Sign Up & View Invitation</a>
-                </div>
-                <p>Or copy this link: <a href="${registerUrl}">${registerUrl}</a></p>
-                <p>Best regards,<br>The TaskFlow Team</p>
-              </div>
-              <div class="footer">
-                <p>This email was sent because someone invited you to a project on TaskFlow.</p>
-              </div>
-            </div>
-          </body>
-        </html>
-      `,
+      html: getEmailTemplate(content),
     });
   } catch (error) {
     console.error(
@@ -134,49 +185,29 @@ export const sendPasswordResetCode = async (
   userEmail: string,
   resetCode: string,
 ) => {
+  const content = `
+    <div class="content">
+      <h2 style="color: #1f2937; margin: 0 0 20px 0; font-size: 22px;">🔐 Password Reset Request</h2>
+      <p>Hi <strong>${userName}</strong>,</p>
+      <p>We received a request to reset your password for your TaskFlow account. Use the verification code below to complete the reset:</p>
+      <div style="background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%); border: 2px solid #8b5cf6; padding: 24px; text-align: center; border-radius: 12px; margin: 24px 0;">
+        <div style="font-size: 36px; font-weight: 700; letter-spacing: 8px; color: #6d28d9; font-family: 'Courier New', monospace;">${resetCode}</div>
+        <p style="margin: 12px 0 0 0; color: #7c3aed; font-size: 13px; font-weight: 600;">⏱️ Valid for 10 minutes</p>
+      </div>
+      <div style="background: #fee2e2; border-left: 4px solid #dc2626; padding: 16px; margin: 24px 0; border-radius: 8px;">
+        <p style="margin: 0 0 8px 0; font-weight: 600; color: #991b1b;">⚠️ Security Notice</p>
+        <p style="margin: 0; font-size: 14px; color: #7f1d1d;">If you didn't request this password reset, please ignore this email or contact support if you're concerned. Your password will remain unchanged.</p>
+      </div>
+      <p style="color: #6b7280; font-size: 14px;">Never share this code with anyone. TaskFlow will never ask for your password or verification code via email.</p>
+    </div>
+  `;
+
   try {
     await email.emails.send({
       from: "TaskFlow <onboarding@resend.dev>",
       to: userEmail,
       subject: "Password Reset Code - TaskFlow",
-      html: `
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <meta charset="utf-8">
-            <style>
-              body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-              .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-              .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-              .content { background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; }
-              .code-box { background: white; border: 2px dashed #667eea; padding: 20px; text-align: center; font-size: 32px; font-weight: bold; letter-spacing: 8px; color: #667eea; margin: 20px 0; border-radius: 8px; }
-              .warning { background: #fee; border-left: 4px solid #dc2626; padding: 15px; margin: 20px 0; border-radius: 4px; }
-              .footer { text-align: center; margin-top: 20px; font-size: 12px; color: #666; }
-            </style>
-          </head>
-          <body>
-            <div class="container">
-              <div class="header">
-                <h1 style="margin: 0;">🔐 Password Reset Request</h1>
-              </div>
-              <div class="content">
-                <p>Hi ${userName},</p>
-                <p>We received a request to reset your password for your TaskFlow account. Use the code below to reset your password:</p>
-                <div class="code-box">${resetCode}</div>
-                <p style="text-align: center; color: #666; font-size: 14px;">This code will expire in 10 minutes.</p>
-                <div class="warning">
-                  <p style="margin: 0; font-weight: bold; color: #dc2626;">⚠️ Security Notice</p>
-                  <p style="margin: 5px 0 0 0; font-size: 14px;">If you didn't request this password reset, please ignore this email. Your password will remain unchanged.</p>
-                </div>
-                <p>Best regards,<br>The TaskFlow Team</p>
-              </div>
-              <div class="footer">
-                <p>This is an automated email. Please do not reply.</p>
-              </div>
-            </div>
-          </body>
-        </html>
-      `,
+      html: getEmailTemplate(content),
     });
   } catch (error) {
     console.error("Error sending password reset code email:", error);
@@ -198,58 +229,34 @@ export const sendTaskAssignmentEmail = async (
 ) => {
   const projectUrl = `${config.frontEndUrl}/project?id=${projectId}`;
 
+  const content = `
+    <div class="content">
+      <h2 style="color: #1f2937; margin: 0 0 20px 0; font-size: 22px;">📋 New Task Assigned</h2>
+      <p>Hi <strong>${assigneeName}</strong>,</p>
+      <p><strong>${assignerName}</strong> has assigned you a new task in <strong>"${projectTitle}"</strong>.</p>
+      
+      <div style="background: white; border: 2px solid #e5e7eb; border-left: 4px solid #667eea; padding: 20px; margin: 24px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+        <div style="font-size: 18px; font-weight: 600; color: #1f2937; margin-bottom: 12px;">✓ ${taskTitle}</div>
+        <div style="color: #6b7280; font-size: 14px; line-height: 1.6; margin-bottom: 16px;">${taskDescription}</div>
+        <div style="display: inline-block; background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); color: #1e40af; padding: 6px 14px; border-radius: 16px; font-size: 13px; font-weight: 600;">
+          📁 ${projectTitle}
+        </div>
+      </div>
+
+      <p>Click the button below to view the task details and get started:</p>
+      <div style="text-align: center; margin: 32px 0;">
+        <a href="${projectUrl}" class="button">View Task in Project →</a>
+      </div>
+      <p style="font-size: 13px; color: #6b7280;">Or copy this link: <a href="${projectUrl}" style="color: #667eea;">${projectUrl}</a></p>
+    </div>
+  `;
+
   try {
     await email.emails.send({
       from: "TaskFlow <onboarding@resend.dev>",
       to: assigneeEmail,
       subject: `New Task Assigned: ${taskTitle}`,
-      html: `
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <meta charset="utf-8">
-            <style>
-              body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-              .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-              .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-              .content { background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; }
-              .task-card { background: white; border-left: 4px solid #667eea; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-              .task-title { font-size: 18px; font-weight: bold; color: #1f2937; margin-bottom: 10px; }
-              .task-description { color: #6b7280; font-size: 14px; margin-bottom: 15px; }
-              .project-badge { display: inline-block; background: #dbeafe; color: #1e40af; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; }
-              .button { display: inline-block; padding: 12px 30px; background: #667eea; color: white; text-decoration: none; border-radius: 5px; margin: 20px 0; font-weight: bold; }
-              .footer { text-align: center; margin-top: 20px; font-size: 12px; color: #666; }
-            </style>
-          </head>
-          <body>
-            <div class="container">
-              <div class="header">
-                <h1 style="margin: 0;">📋 New Task Assigned</h1>
-              </div>
-              <div class="content">
-                <p>Hi ${assigneeName},</p>
-                <p><strong>${assignerName}</strong> has assigned you a new task in the project <strong>"${projectTitle}"</strong>.</p>
-                
-                <div class="task-card">
-                  <div class="task-title">${taskTitle}</div>
-                  <div class="task-description">${taskDescription}</div>
-                  <span class="project-badge">📁 ${projectTitle}</span>
-                </div>
-
-                <p>Click the button below to view the task and get started:</p>
-                <div style="text-align: center;">
-                  <a href="${projectUrl}" class="button">View Task in Project</a>
-                </div>
-                <p>Or copy this link: <a href="${projectUrl}">${projectUrl}</a></p>
-                <p>Best regards,<br>The TaskFlow Team</p>
-              </div>
-              <div class="footer">
-                <p>You received this email because you were assigned a task in TaskFlow.</p>
-              </div>
-            </div>
-          </body>
-        </html>
-      `,
+      html: getEmailTemplate(content),
     });
   } catch (error) {
     console.error("Error sending task assignment email:", error);

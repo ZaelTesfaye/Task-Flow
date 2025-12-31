@@ -27,7 +27,7 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
   return (
     <div className="bg-[hsl(var(--card))] text-[hsl(var(--card-foreground))] border-b border-[hsl(var(--border))]">
       <div
-        className={`max-w-7xl mx-auto px-6 py-6 ${
+        className={`max-w-7xl mx-auto px-6 py-3 ${
           isMembersPaneOpen || isSettingsPaneOpen ? "pr-80" : ""
         }`}
       >
@@ -40,10 +40,10 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
               <ArrowLeft className="w-5 h-5" />
             </button>
             <div>
-              <h1 className="text-2xl font-bold text-[hsl(var(--foreground))]">
+              <h1 className="text-xl font-bold text-[hsl(var(--foreground))]">
                 {project?.title}
               </h1>
-              <p className="mt-1 text-sm text-[hsl(var(--muted-foreground))]">
+              <p className="text-sm text-[hsl(var(--muted-foreground))]">
                 {project?.description}
               </p>
             </div>
