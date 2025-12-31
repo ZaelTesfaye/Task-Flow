@@ -1,10 +1,10 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 import { useQuery } from "@tanstack/react-query";
 
-import { projectAPI } from "@/lib";
+import { projectAPI, stripeAPI } from "@/lib";
 import type { Project } from "@/types";
 import { useAuth } from "@/context";
 import {
@@ -20,8 +20,9 @@ interface ProjectGroups {
 }
 
 export default function Dashboard() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, checkSession } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const {
     data: projectsData,
@@ -41,6 +42,79 @@ export default function Dashboard() {
   const [activeView, setActiveView] = useState<
     "all" | "owner" | "admin" | "member"
   >("all");
+
+  // Handle subscription verification
+  useEffect(() => {
+    const sessionId = searchParams.get("session_id");
+    const success = searchParams.get("success");
+
+    if (success === "true" && sessionId && user) {
+      let attempts = 0;
+      const maxAttempts = 60; // 5 minutes with 5 second intervals
+      const pollInterval = 5000; // 5 seconds
+
+      const verifySubscription = async () => {
+        try {
+          const result = await stripeAPI.verifySubscriptionStatus(sessionId);
+
+          if (result.isPremium && result.status === "active") {
+            // Success - subscription is active
+            await checkSession(); // Refresh user data
+            toast.success("🎉 Subscription activated successfully!");
+            // Remove query params from URL
+            router.replace("/dashboard");
+            return true;
+          } else if (attempts >= maxAttempts) {
+            // Timeout after 5 minutes
+            toast.error(
+              "Subscription verification timed out. Please contact support at support@task-flows.tech if you were charged.",
+              { duration: 10000 }
+            );
+            router.replace("/dashboard");
+            return true;
+          }
+          return false;
+        } catch (error) {
+          console.error("Subscription verification error:", error);
+          if (attempts >= maxAttempts) {
+            toast.error(
+              "Failed to verify subscription. Please contact support@task-flows.tech",
+              { duration: 10000 }
+            );
+            router.replace("/dashboard");
+            return true;
+          }
+          return false;
+        }
+      };
+
+      // Show loading toast
+      const loadingToast = toast.loading("Verifying your subscription...");
+
+      const interval = setInterval(async () => {
+        attempts++;
+        const done = await verifySubscription();
+        if (done) {
+          clearInterval(interval);
+          toast.dismiss(loadingToast);
+        }
+      }, pollInterval);
+
+      // Initial verification
+      verifySubscription().then((done) => {
+        if (done) {
+          clearInterval(interval);
+          toast.dismiss(loadingToast);
+        }
+      });
+
+      // Cleanup
+      return () => {
+        clearInterval(interval);
+        toast.dismiss(loadingToast);
+      };
+    }
+  }, [searchParams, user, checkSession, router]);
 
   const handleCreateProject = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

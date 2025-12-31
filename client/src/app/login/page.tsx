@@ -37,6 +37,7 @@ export default function LoginPage() {
   const [errors, setErrors] = useState<Partial<AuthFormData>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoaded, setIsGoogleLoaded] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const googleButtonRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -50,7 +51,7 @@ export default function LoginPage() {
   useEffect(() => {
     const checkGoogleLoaded = () => {
       if (googleButtonRef.current) {
-        const iframe = googleButtonRef.current.querySelector('iframe');
+        const iframe = googleButtonRef.current.querySelector("iframe");
         if (iframe) {
           setIsGoogleLoaded(true);
           return true;
@@ -254,7 +255,21 @@ export default function LoginPage() {
 
             <div className="flex justify-center w-full mt-4">
               {/* Custom styled container with Google's button as overlay */}
-              <div className={`relative w-full group ${isGoogleLoaded ? 'cursor-pointer' : 'cursor-not-allowed'}`}>
+              <div
+                className={`relative w-full group ${isGoogleLoaded ? "cursor-pointer" : "cursor-not-allowed"}`}
+              >
+                {/* Loading Overlay */}
+                {isGoogleLoading && (
+                  <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/80 dark:bg-neutral-800/80 rounded-lg backdrop-blur-sm">
+                    <div className="flex flex-col items-center gap-2">
+                      <div className="w-6 h-6 border-2 border-blue-600 rounded-full border-t-transparent animate-spin"></div>
+                      <span className="text-sm text-gray-700 dark:text-gray-200">
+                        Signing in...
+                      </span>
+                    </div>
+                  </div>
+                )}
+
                 {/* Custom visual button (underneath) */}
                 <div
                   className={`
@@ -263,7 +278,7 @@ export default function LoginPage() {
                     bg-white dark:bg-neutral-800 
                     border border-gray-200 dark:border-neutral-700 
                     rounded-lg shadow-sm 
-                    ${isGoogleLoaded ? 'group-hover:shadow-md group-hover:bg-gray-50 dark:group-hover:bg-neutral-700 group-hover:border-gray-300 dark:group-hover:border-neutral-600' : 'opacity-50'}
+                    ${isGoogleLoaded ? "group-hover:shadow-md group-hover:bg-gray-50 dark:group-hover:bg-neutral-700 group-hover:border-gray-300 dark:group-hover:border-neutral-600" : "opacity-50"}
                     pointer-events-none
                   `}
                 >
@@ -280,7 +295,7 @@ export default function LoginPage() {
                 {/* Google's actual button (transparent overlay on top - clickable) */}
                 <div
                   ref={googleButtonRef}
-                  className={`absolute inset-0 flex items-center justify-center overflow-hidden rounded-lg [&_iframe]:!w-full [&_iframe]:!h-full [&_div]:!w-full [&_div]:!h-full ${!isGoogleLoaded ? 'pointer-events-none' : ''}`}
+                  className={`absolute inset-0 flex items-center justify-center overflow-hidden rounded-lg [&_iframe]:!w-full [&_iframe]:!h-full [&_div]:!w-full [&_div]:!h-full ${!isGoogleLoaded ? "pointer-events-none" : ""}`}
                   style={{ opacity: 0.01 }}
                 >
                   <GoogleLogin
@@ -288,6 +303,7 @@ export default function LoginPage() {
                       credentialResponse: CredentialResponse
                     ) => {
                       if (credentialResponse.credential) {
+                        setIsGoogleLoading(true);
                         try {
                           await authClient.signIn.social({
                             provider: "google",
@@ -300,6 +316,7 @@ export default function LoginPage() {
                           router.push("/dashboard");
                         } catch (error) {
                           toast.error("Google Login failed.");
+                          setIsGoogleLoading(false);
                         }
                       }
                     }}

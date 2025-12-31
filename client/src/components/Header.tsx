@@ -6,7 +6,7 @@ import { Crown } from "lucide-react";
 
 import { useThemeStore } from "@/stores";
 import { useAuth } from "@/context";
-import { userAPI, projectAPI } from "@/lib";
+import { userAPI, projectAPI, stripeAPI } from "@/lib";
 import { UpdateUserRequest, ProjectInvitation } from "@/types";
 import {
   ConfirmationModal,
@@ -103,6 +103,19 @@ export default function Header() {
     }
   };
 
+  const handleManageSubscription = async () => {
+    try {
+      const response = await stripeAPI.createPortalSession();
+      if (response.url) {
+        window.location.href = response.url;
+      }
+    } catch (error: any) {
+      toast.error(
+        error.response?.data?.message || "Failed to open billing portal"
+      );
+    }
+  };
+
   return (
     <div>
       {/* Header */}
@@ -159,6 +172,10 @@ export default function Header() {
               }}
               onUpgrade={() => {
                 setShowSubscriptionModal(true);
+                setShowProfileMenu(false);
+              }}
+              onManageSubscription={() => {
+                handleManageSubscription();
                 setShowProfileMenu(false);
               }}
               isOpen={showProfileMenu}

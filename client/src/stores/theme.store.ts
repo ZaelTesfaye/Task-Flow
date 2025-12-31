@@ -20,13 +20,15 @@ const resolveInitialTheme = (): Theme => {
   const stored = window.localStorage.getItem(THEME_STORAGE_KEY);
   if (stored === "light" || stored === "dark") return stored;
 
-  try {
-    return window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "dark"
-      : "light";
-  } catch (error) {
-    return "light";
-  }
+  // try {
+  //   return window.matchMedia("(prefers-color-scheme: dark)").matches
+  //     ? "dark"
+  //     : "light";
+  // } catch (error) {
+  //   return "light";
+  // }
+
+  return "light";
 };
 
 const applyTheme = (value: Theme) => {

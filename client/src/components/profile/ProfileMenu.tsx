@@ -22,6 +22,7 @@ interface ProfileMenuProps {
   onDeleteAccount: () => void;
   onLogout: () => void;
   onUpgrade: () => void;
+  onManageSubscription: () => void;
   isOpen: boolean;
   onClose: () => void;
   invitationsCount?: number;
@@ -33,6 +34,7 @@ export default function ProfileMenu({
   onDeleteAccount,
   onLogout,
   onUpgrade,
+  onManageSubscription,
   isOpen,
   onClose,
   invitationsCount = 0,
@@ -76,13 +78,31 @@ export default function ProfileMenu({
     );
   };
 
+  // Check if user is premium
+  const isPremium =
+    !!user?.stripePriceId &&
+    !!user?.stripeCurrentPeriodEnd &&
+    new Date(user.stripeCurrentPeriodEnd) > new Date();
+
   const menuItems = [
-    {
-      label: "Upgrade to Premium",
-      icon: <CreditCard className="w-4 h-4" />,
-      onClick: onUpgrade,
-      style: "text-blue-600 dark:text-blue-400 font-medium",
-    },
+    // Show either Upgrade or Manage Subscription based on premium status
+    ...(isPremium
+      ? [
+          {
+            label: "Manage Subscription",
+            icon: <CreditCard className="w-4 h-4" />,
+            onClick: onManageSubscription,
+            style: "text-blue-600 dark:text-blue-400 font-medium",
+          },
+        ]
+      : [
+          {
+            label: "Upgrade to Premium",
+            icon: <CreditCard className="w-4 h-4" />,
+            onClick: onUpgrade,
+            style: "text-blue-600 dark:text-blue-400 font-medium",
+          },
+        ]),
     {
       label: "Edit Profile",
       icon: <Settings className="w-4 h-4" />,

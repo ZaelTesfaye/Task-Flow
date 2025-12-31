@@ -124,7 +124,7 @@ export const createCheckoutSession = async (
         });
 
         return {
-          url: `${config.frontEndUrl?.split(",")?.map((o) => o.trim())[0]}/dashboard?success=true`,
+          url: `${config.frontEndUrl?.split(",")?.map((o) => o.trim())[0]}/dashboard?success=true&session_id={CHECKOUT_SESSION_ID}`,
         };
       }
 
@@ -140,7 +140,7 @@ export const createCheckoutSession = async (
       },
     ],
     mode: "subscription",
-    success_url: `${config.frontEndUrl?.split(",")?.map((o) => o.trim())[0]}/dashboard?success=true`,
+    success_url: `${config.frontEndUrl?.split(",")?.map((o) => o.trim())[0]}/dashboard?success=true&session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${config.frontEndUrl?.split(",")?.map((o) => o.trim())[0]}/dashboard`,
     customer_email: email,
     metadata: {
@@ -277,4 +277,59 @@ export const handleInvoicePaid = async (invoice: Stripe.Invoice) => {
     data: updateData,
   });
   console.log("Subscription updated successfully");
+};
+
+export const verifySubscriptionStatus = async (
+  userId: string,
+  sessionId: string,
+) => {
+  // Retrieve the checkout session from Stripe
+  const session = await stripe.checkout.sessions.retrieve(sessionId);
+
+  // Verify the session belongs to this user
+  if (session.metadata?.userId !== userId) {
+    throw new APIError(
+      "Session does not belong to this user",
+      httpStatus.FORBIDDEN,
+    );
+  }
+
+  // Check if payment was successful
+  if (session.payment_status !== "paid") {
+    return {
+      isPremium: false,
+      status: "pending",
+      message: "Payment is still being processed",
+    };
+  }
+
+  // Fetch user from database
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      stripePriceId: true,
+      stripeCurrentPeriodEnd: true,
+      stripeSubscriptionId: true,
+    },
+  });
+
+  if (!user) {
+    throw new APIError("User not found", httpStatus.NOT_FOUND);
+  }
+
+  // Check if user has active subscription
+  const isPremium =
+    !!user.stripePriceId &&
+    !!user.stripeCurrentPeriodEnd &&
+    user.stripeCurrentPeriodEnd > new Date();
+
+  return {
+    isPremium,
+    status: isPremium ? "active" : "processing",
+    message: isPremium
+      ? "Subscription active"
+      : "Subscription is being activated",
+    priceId: user.stripePriceId,
+    subscriptionId: user.stripeSubscriptionId,
+  };
 };

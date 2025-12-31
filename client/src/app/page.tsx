@@ -62,7 +62,7 @@ export default function HomePage() {
   if (user) return null;
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 relative">
+    <div className="relative min-h-screen bg-linear-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <div className="absolute top-4 right-4">
         <ThemeToggle />
       </div>
@@ -126,15 +126,15 @@ export default function HomePage() {
 
         {/* Pricing Section */}
         <div className="mb-16">
-          <h2 className="text-3xl font-bold text-center mb-12">
+          <h2 className="mb-12 text-3xl font-bold text-center">
             Simple, Transparent Pricing
           </h2>
           <div className="grid gap-8 md:grid-cols-3">
             {/* Free Plan */}
-            <Card className="border-2 hover:border-blue-500 transition-colors">
+            <Card className="transition-colors border-2 hover:border-blue-500">
               <CardHeader>
                 <CardTitle className="text-2xl">Free</CardTitle>
-                <p className="text-4xl font-bold mt-4">
+                <p className="mt-4 text-4xl font-bold">
                   $0
                   <span className="text-sm font-normal text-gray-500">
                     /month
@@ -142,10 +142,14 @@ export default function HomePage() {
                 </p>
               </CardHeader>
               <CardContent>
-                <ul className="space-y-3 mb-6">
+                <ul className="mb-6 space-y-3">
                   <li className="flex items-center gap-2">
                     <CheckCircle className="w-5 h-5 text-green-500" />
                     <span>5 Projects</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span>3 Members per Project</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle className="w-5 h-5 text-green-500" />
@@ -167,24 +171,28 @@ export default function HomePage() {
             </Card>
 
             {/* Starter Plan */}
-            <Card className="border-2 border-blue-500 relative transform scale-105 shadow-xl">
-              <div className="absolute top-0 right-0 bg-blue-500 text-white px-3 py-1 rounded-bl-lg rounded-tr-lg text-sm font-medium">
+            <Card className="relative transform scale-105 border-2 border-blue-500 shadow-xl">
+              <div className="absolute top-0 right-0 px-3 py-1 text-sm font-medium text-white bg-blue-500 rounded-tr-lg rounded-bl-lg">
                 Popular
               </div>
               <CardHeader>
                 <CardTitle className="text-2xl">Starter</CardTitle>
-                <p className="text-4xl font-bold mt-4">
-                  $9
+                <p className="mt-4 text-4xl font-bold">
+                  $5
                   <span className="text-sm font-normal text-gray-500">
                     /month
                   </span>
                 </p>
               </CardHeader>
               <CardContent>
-                <ul className="space-y-3 mb-6">
+                <ul className="mb-6 space-y-3">
                   <li className="flex items-center gap-2">
                     <CheckCircle className="w-5 h-5 text-green-500" />
                     <span>10 Projects</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span>10 Members per Project</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle className="w-5 h-5 text-green-500" />
@@ -205,10 +213,10 @@ export default function HomePage() {
             </Card>
 
             {/* Pro Plan */}
-            <Card className="border-2 hover:border-blue-500 transition-colors">
+            <Card className="transition-colors border-2 hover:border-blue-500">
               <CardHeader>
                 <CardTitle className="text-2xl">Pro</CardTitle>
-                <p className="text-4xl font-bold mt-4">
+                <p className="mt-4 text-4xl font-bold">
                   $19
                   <span className="text-sm font-normal text-gray-500">
                     /month
@@ -216,10 +224,14 @@ export default function HomePage() {
                 </p>
               </CardHeader>
               <CardContent>
-                <ul className="space-y-3 mb-6">
+                <ul className="mb-6 space-y-3">
                   <li className="flex items-center gap-2">
                     <CheckCircle className="w-5 h-5 text-green-500" />
                     <span>Unlimited Projects</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span>Unlimited Members per Project</span>
                   </li>
                   <li className="flex items-center gap-2">
                     <CheckCircle className="w-5 h-5 text-green-500" />

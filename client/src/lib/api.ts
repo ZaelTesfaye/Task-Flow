@@ -242,4 +242,24 @@ export const stripeAPI = {
     api
       .post<{ url: string }>("/stripe/subscribe", { plan })
       .then((r) => r.data),
+
+  verifySubscriptionStatus: (
+    sessionId: string
+  ): Promise<{
+    isPremium: boolean;
+    status: string;
+    message: string;
+    priceId?: string;
+    subscriptionId?: string;
+  }> =>
+    api
+      .get("/stripe/verify-subscription", {
+        params: { sessionId },
+      })
+      .then((r) => r.data),
+
+  createPortalSession: (): Promise<{ url: string }> =>
+    api
+      .post<{ url: string }>("/stripe/create-portal-session")
+      .then((r) => r.data),
 };

@@ -80,3 +80,25 @@ export const createPortalSession = asyncWrapper(
     res.status(httpStatus.OK).json(result);
   },
 );
+
+export const verifySubscriptionStatus = asyncWrapper(
+  async (req: Request, res: Response) => {
+    const user = req.user;
+    const { sessionId } = req.query;
+
+    if (!user) {
+      throw new APIError("Unauthorized", httpStatus.UNAUTHORIZED);
+    }
+
+    if (!sessionId || typeof sessionId !== "string") {
+      throw new APIError("Session ID is required", httpStatus.BAD_REQUEST);
+    }
+
+    const result = await stripeServices.verifySubscriptionStatus(
+      user.id,
+      sessionId,
+    );
+
+    res.status(httpStatus.OK).json(result);
+  },
+);

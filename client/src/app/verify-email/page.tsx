@@ -5,10 +5,12 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { CheckCircle, XCircle, Loader2, Mail } from "lucide-react";
 import Link from "next/link";
+import { useAuth } from "@/context";
 
 function VerifyEmailContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { checkSession } = useAuth();
   const email = searchParams.get("email")?.trim() ?? "";
   const [code, setCode] = useState("");
   const [status, setStatus] = useState<
@@ -44,9 +46,10 @@ function VerifyEmailContent() {
         setErrorMessage(error.message || "Invalid verification code");
       } else {
         setStatus("success");
-        // Redirect to login after a short delay
+        // Update session and redirect to dashboard
+        await checkSession();
         setTimeout(() => {
-          router.push("/login");
+          router.push("/dashboard");
         }, 2000);
       }
     } catch (e) {

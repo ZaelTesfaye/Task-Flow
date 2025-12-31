@@ -82,3 +82,11 @@ export const updateMemberAccess = (
     },
   });
 };
+
+export const countProjectMembers = (projectId: string) => {
+  return prisma.projectMembers.count({
+    where: {
+      projectId,
+    },
+  });
+};

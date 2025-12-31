@@ -38,11 +38,15 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
         <div className="flex flex-col p-6 border rounded-xl dark:border-gray-700">
           <h3 className="mb-2 text-xl font-semibold">Starter</h3>
           <p className="mb-4 text-3xl font-bold">
-            $9<span className="text-sm font-normal text-gray-500">/month</span>
+            $5<span className="text-sm font-normal text-gray-500">/month</span>
           </p>
           <ul className="flex-1 mb-6 space-y-2">
             <li className="flex items-center gap-2">
               <Check className="w-4 h-4 text-green-500" /> 10 Projects
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="w-4 h-4 text-green-500" /> 10 Members per
+              Project
             </li>
             <li className="flex items-center gap-2">
               <Check className="w-4 h-4 text-green-500" /> Basic Support
@@ -65,11 +69,15 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
         <div className="flex flex-col p-6 border border-blue-200 rounded-xl bg-blue-50 dark:bg-blue-900/20 dark:border-blue-800">
           <h3 className="mb-2 text-xl font-semibold">Pro</h3>
           <p className="mb-4 text-3xl font-bold">
-            $19<span className="text-sm font-normal text-gray-500">/month</span>
+            $10<span className="text-sm font-normal text-gray-500">/month</span>
           </p>
           <ul className="flex-1 mb-6 space-y-2">
             <li className="flex items-center gap-2">
               <Check className="w-4 h-4 text-green-500" /> Unlimited Projects
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="w-4 h-4 text-green-500" /> Unlimited Members per
+              Project
             </li>
             <li className="flex items-center gap-2">
               <Check className="w-4 h-4 text-green-500" /> Priority Support

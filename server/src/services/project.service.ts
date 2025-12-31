@@ -96,6 +96,40 @@ export const addMember = async (
     throw new APIError("An invitation is already pending for this user", 409);
   }
 
+  // Check member limit based on project owner's subscription
+  const project = await projectModel.getProjectById(projectId);
+  if (!project) {
+    throw new APIError("Project not found", 404);
+  }
+
+  const projectOwner = await userModel.getUser(project.ownerId);
+  if (!projectOwner) {
+    throw new APIError("Project owner not found", 404);
+  }
+
+  const currentMemberCount = await memberModel.countProjectMembers(projectId);
+  let memberLimit = 3; // Free plan default
+
+  const isSubscribed =
+    projectOwner.stripePriceId &&
+    projectOwner.stripeCurrentPeriodEnd &&
+    projectOwner.stripeCurrentPeriodEnd > new Date();
+
+  if (isSubscribed) {
+    if (projectOwner.stripePriceId === config.stripe.starter.priceId) {
+      memberLimit = 10;
+    } else if (projectOwner.stripePriceId === config.stripe.pro.priceId) {
+      memberLimit = 1000; // Unlimited effectively
+    }
+  }
+
+  if (currentMemberCount >= memberLimit) {
+    throw new APIError(
+      `You have reached the member limit of ${memberLimit} for your current plan. Please upgrade to add more members.`,
+      403,
+    );
+  }
+
   return projectModel.createProjectInvitation(
     projectId,
     inviterId,
