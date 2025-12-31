@@ -36,8 +36,10 @@ export default function InvitationsPage() {
   };
 
   useEffect(() => {
+    // Invalidate the invitations cache when page loads to ensure fresh data
+    queryClient.invalidateQueries({ queryKey: ["user-invitations"] });
     loadInvitations();
-  }, []);
+  }, [queryClient]);
 
   const handleRespond = async (
     invitationId: string,
@@ -53,6 +55,8 @@ export default function InvitationsPage() {
       if (action === "accept") {
         await queryClient.invalidateQueries({ queryKey: ["user-projects"] });
       }
+      // Invalidate user invitations cache to update notification badge
+      await queryClient.invalidateQueries({ queryKey: ["user-invitations"] });
       loadInvitations();
     } catch (error: any) {
       toast.error(

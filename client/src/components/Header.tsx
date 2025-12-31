@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import toast from "react-hot-toast";
 import { Crown } from "lucide-react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { useAuth } from "@/context";
 import { userAPI, projectAPI, stripeAPI } from "@/lib";
@@ -18,53 +19,35 @@ export default function Header() {
   const { user, logout, updateUserData, loading } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+  const queryClient = useQueryClient();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [name, setName] = useState(user?.name || "");
-  const [invitationsCount, setInvitationsCount] = useState(0);
+
+  // Use React Query to fetch invitations count
+  const { data: invitationsData } = useQuery({
+    queryKey: ["user-invitations"],
+    queryFn: async () => {
+      const response = await projectAPI.getMyInvitations();
+      const pendingInvitations = response.data.filter(
+        (inv: ProjectInvitation) => inv.status === "pending"
+      );
+      return pendingInvitations.length;
+    },
+    enabled: !!user,
+    refetchOnWindowFocus: true,
+  });
+
+  const invitationsCount = invitationsData || 0;
 
   useEffect(() => {
     if (!user && !loading && pathname !== "/auth") {
       router.push("/login");
     }
   }, [user, loading, router, pathname]);
-
-  // Fetch invitations count
-  useEffect(() => {
-    const fetchInvitations = async () => {
-      if (!user) return;
-      try {
-        const response = await projectAPI.getMyInvitations();
-        const pendingInvitations = response.data.filter(
-          (inv: ProjectInvitation) => inv.status === "pending"
-        );
-        setInvitationsCount(pendingInvitations.length);
-      } catch (error) {
-        console.error("Failed to fetch invitations:", error);
-      }
-    };
-    fetchInvitations();
-  }, [user]);
-
-  // Added useEffect to fetch pending invitations count
-  useEffect(() => {
-    const fetchInvitations = async () => {
-      if (!user) return;
-      try {
-        const response = await projectAPI.getMyInvitations();
-        const pendingInvitations = response.data.filter(
-          (inv: ProjectInvitation) => inv.status === "pending"
-        );
-        setInvitationsCount(pendingInvitations.length);
-      } catch (error) {
-        console.error("Failed to fetch invitations:", error);
-      }
-    };
-    fetchInvitations();
-  }, [user]);
 
   if (loading) {
     return (
