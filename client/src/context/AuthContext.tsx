@@ -32,7 +32,7 @@ interface AuthContextType {
     password: string;
   }) => Promise<any>;
   logout: () => Promise<void>;
-  updateUserData: (data: { name?: string; email?: string }) => Promise<void>;
+  updateUserData: (data: { name?: string }) => Promise<void>;
   checkSession: () => Promise<void>;
 }
 

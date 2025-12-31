@@ -4,7 +4,6 @@ import { useRouter, usePathname } from "next/navigation";
 import toast from "react-hot-toast";
 import { Crown } from "lucide-react";
 
-import { useThemeStore } from "@/stores";
 import { useAuth } from "@/context";
 import { userAPI, projectAPI, stripeAPI } from "@/lib";
 import { UpdateUserRequest, ProjectInvitation } from "@/types";
@@ -25,7 +24,6 @@ export default function Header() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [name, setName] = useState(user?.name || "");
-  const [email, setEmail] = useState(user?.email || "");
   const [invitationsCount, setInvitationsCount] = useState(0);
 
   useEffect(() => {
@@ -83,7 +81,7 @@ export default function Header() {
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const data: UpdateUserRequest = { name, email };
+      const data: UpdateUserRequest = { name };
       const response = await userAPI.updateUser(data);
       updateUserData(response.data);
       toast.success("Profile updated successfully!");
@@ -158,7 +156,6 @@ export default function Header() {
               user={user}
               onEditProfile={() => {
                 setName(user.name || "");
-                setEmail(user.email || "");
                 setShowProfileModal(true);
                 setShowProfileMenu(false);
               }}
@@ -197,9 +194,7 @@ export default function Header() {
         isOpen={showProfileModal}
         onClose={() => setShowProfileModal(false)}
         name={name}
-        email={email}
         onNameChange={setName}
-        onEmailChange={setEmail}
         onSubmit={handleUpdateProfile}
       />
 
