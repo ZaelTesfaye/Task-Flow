@@ -82,7 +82,7 @@ export const updateProjectTask = async (
 export const removeTask = async (taskId: string, projectId: string) => {
   const task = await taskModel.findTaskById(taskId);
   if (!task) throw new Error("Task not found");
-  if (!task.Phase || task.Phase.projectId === projectId) {
+  if (!task.Phase || task.Phase.projectId !== projectId) {
     throw new Error("Task does not belong to the specified project");
   }
   return taskModel.removeTask(taskId);
