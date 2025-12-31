@@ -124,12 +124,16 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
               setFormData((prev) => ({ ...prev, assignee: e.target.value }))
             }
             required
-            className="w-full px-4 py-2 text-[hsl(var(--foreground))] bg-[hsl(var(--background))] border border-[hsl(var(--border))] rounded-lg outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-2.5 text-[hsl(var(--foreground))] bg-[hsl(var(--background))] border border-[hsl(var(--border))] rounded-lg outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
             <option value="">Select member...</option>
             {members.map((member) => (
-              <option key={member.userId} value={member.userId}>
-                {member.user.name} ({member.access})
+              <option
+                key={member.userId}
+                value={member.userId}
+                className="py-2"
+              >
+                {member.user.name} - {member.user.email}
               </option>
             ))}
           </select>
