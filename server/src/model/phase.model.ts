@@ -9,7 +9,10 @@ export const createPhase = (name: string, projectId: string) => {
   });
 };
 
-export const updatePhase = (phaseId: string, updates: { name?: string }) => {
+export const updatePhase = (
+  phaseId: string,
+  updates: { name?: string },
+) => {
   return prisma.phase.update({
     where: {
       id: phaseId,

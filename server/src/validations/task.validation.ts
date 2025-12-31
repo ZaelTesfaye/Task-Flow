@@ -18,7 +18,7 @@ export const createTaskSchema = {
   params: joi
     .object({
       projectId: joi.string().uuid().required(),
-      categoryId: joi.string().uuid().required(),
+      phaseId: joi.string().uuid().required(),
     })
     .required()
     .unknown(true),
@@ -30,7 +30,7 @@ export const updateTaskSchema = {
       title: joi.string().min(1).max(60).optional(),
       description: joi.string().min(1).max(255).optional(),
       status: joi.string().valid("active", "complete", "canceled").optional(),
-      categoryId: joi.string().uuid().optional(),
+      phaseId: joi.string().uuid().optional(),
     })
     .or("description", "status")
     .unknown(true),

@@ -4,7 +4,10 @@ export const createPhase = (name: string, projectId: string) => {
   return phaseModel.createPhase(name, projectId);
 };
 
-export const updatePhase = (phaseId: string, updates: { name?: string }) => {
+export const updatePhase = (
+  phaseId: string,
+  updates: { name?: string },
+) => {
   return phaseModel.updatePhase(phaseId, updates);
 };
 

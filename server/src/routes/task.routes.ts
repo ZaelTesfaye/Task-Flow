@@ -12,7 +12,7 @@ import { taskController } from "../controllers/index.js";
 const router: Router = express.Router();
 
 router.post(
-  "/:projectId/:categoryId",
+  "/:projectId/:phaseId",
   validatorMiddleware(createTaskSchema),
   taskController.createTask,
 );

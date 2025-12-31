@@ -10,17 +10,17 @@ import {
   useProjectData,
   useProjectModals,
   useProjectActions,
-  useCategoryActions,
+  usePhaseActions,
   useTaskActions,
   useMemberActions,
 } from "@/hooks";
 
 import {
   ProjectHeader,
-  CategoryCard,
+  PhaseCard,
   MembersPane,
   ProjectSettingsPane,
-  CreateCategoryModal,
+  CreatePhaseModal,
   CreateTaskModal,
   ConfirmationModal,
   RequestUpdateModal,
@@ -39,11 +39,11 @@ function ProjectBoard() {
   const projectData = useProjectData(projectId);
   const modals = useProjectModals();
   const projectActions = useProjectActions(projectId, projectData.refetch);
-  const categoryActions = useCategoryActions(projectId, projectData.refetch);
+  const phaseActions = usePhaseActions(projectId, projectData.refetch);
   const taskActions = useTaskActions(projectId, projectData.refetch);
   const memberActions = useMemberActions(projectId, projectData.refetch);
 
-  const { project, categories, members, invitations, loading, userRole } =
+  const { project, phases, members, invitations, loading, userRole } =
     projectData;
 
   const {
@@ -60,7 +60,7 @@ function ProjectBoard() {
   } = modals;
 
   const { updateProject, deleteProject } = projectActions;
-  const { createCategory, deleteCategory } = categoryActions;
+  const { createPhase, deletePhase } = phaseActions;
 
   const {
     createTask,
@@ -156,7 +156,7 @@ function ProjectBoard() {
 
     if (shouldOpenCategory && isOwnerOrAdmin) {
       hasAutoOpenedCategory.current = true;
-      openModal("showCategoryModal");
+      openModal("showPhaseModal");
       router.replace(`/project?id=${projectId}`);
     }
   }, [searchParams, projectId, openModal, loading, isOwnerOrAdmin, router]);
@@ -208,18 +208,18 @@ function ProjectBoard() {
               <div className="flex items-center justify-center py-16">
                 <div className="w-12 h-12 border-b-2 border-blue-600 rounded-full animate-spin"></div>
               </div>
-            ) : categories.length === 0 ? (
+            ) : phases.length === 0 ? (
               <div className="text-center py-16 bg-[hsl(var(--card))] rounded-lg border border-[hsl(var(--border))]">
                 <p className="text-[hsl(var(--muted-foreground))] mb-4">
-                  No categories yet
+                  No phases yet
                 </p>
                 {isOwnerOrAdmin && (
                   <button
-                    onClick={() => openModal("showCategoryModal")}
+                    onClick={() => openModal("showPhaseModal")}
                     className="inline-flex items-center gap-2 px-4 py-2 dark:text-white text-[hsl(var(--primary-foreground))] transition bg-blue-600 rounded-lg hover:cursor-pointer hover:bg-blue-700"
                   >
                     <Plus className="w-4 h-4" />
-                    Create Category
+                    Create Phase
                   </button>
                 )}
               </div>
@@ -227,33 +227,33 @@ function ProjectBoard() {
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
                   <h2 className="text-xl font-semibold text-[hsl(var(--foreground))]">
-                    Categories
+                    Phases
                   </h2>
                   {isOwnerOrAdmin && (
                     <button
-                      onClick={() => openModal("showCategoryModal")}
+                      onClick={() => openModal("showPhaseModal")}
                       className="dark:text-white flex items-center gap-2 px-4 py-2 text-sm text-[hsl(var(--primary-foreground))] transition bg-blue-600 rounded-lg hover:cursor-pointer hover:bg-blue-700"
                     >
                       <Plus className="w-4 h-4" />
-                      Add Category
+                      Add Phase
                     </button>
                   )}
                 </div>
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                  {categories.map((category) => (
-                    <CategoryCard
-                      key={category.id}
-                      category={category}
+                  {phases.map((phase) => (
+                    <PhaseCard
+                      key={phase.id}
+                      phase={phase}
                       userRole={userRole}
                       currentUserId={user?.id || ""}
-                      onCreateTask={(category) => {
-                        updateForm("selectedCategory", category);
+                      onCreateTask={(phase) => {
+                        updateForm("selectedPhase", phase);
                         openModal("showTaskModal");
                       }}
-                      onDeleteCategory={(categoryId, categoryName) => {
-                        updateForm("categoryToDelete", categoryId);
-                        updateForm("categoryName", categoryName);
-                        openModal("showDeleteCategoryModal");
+                      onDeletePhase={(phaseId, phaseName) => {
+                        updateForm("phaseToDelete", phaseId);
+                        updateForm("phaseName", phaseName);
+                        openModal("showDeletePhaseModal");
                       }}
                       onUpdateTaskStatus={updateTaskStatus}
                       onRequestUpdate={(taskId, description, status) => {
@@ -315,19 +315,19 @@ function ProjectBoard() {
         />
       </div>
       {/* Modals */}
-      <CreateCategoryModal
-        isOpen={modalStates.showCategoryModal}
-        onClose={() => closeModal("showCategoryModal")}
-        onSubmit={createCategory}
+      <CreatePhaseModal
+        isOpen={modalStates.showPhaseModal}
+        onClose={() => closeModal("showPhaseModal")}
+        onSubmit={createPhase}
       />
       <CreateTaskModal
         isOpen={modalStates.showTaskModal}
         onClose={() => closeModal("showTaskModal")}
-        selectedCategory={forms.selectedCategory}
+        selectedPhase={forms.selectedPhase}
         members={members}
         onSubmit={(data) => {
-          if (forms.selectedCategory) {
-            createTask(forms.selectedCategory.id, {
+          if (forms.selectedPhase) {
+            createTask(forms.selectedPhase.id, {
               title: data.title,
               description: data.description,
               assignedTo: data.assignee,
@@ -428,20 +428,20 @@ function ProjectBoard() {
       />
       {/* Delete Category Confirmation */}
       <ConfirmationModal
-        isOpen={modalStates.showDeleteCategoryModal}
-        title="Delete Category"
-        message={`Are you sure you want to delete the "${forms.categoryName}" category? This will also delete all tasks in this category. This action cannot be undone.`}
-        confirmText="Delete Category"
+        isOpen={modalStates.showDeletePhaseModal}
+        title="Delete Phase"
+        message={`Are you sure you want to delete the "${forms.phaseName}" phase? This will also delete all tasks in this phase. This action cannot be undone.`}
+        confirmText="Delete Phase"
         onConfirm={() => {
-          deleteCategory(forms.categoryToDelete);
-          closeModal("showDeleteCategoryModal");
-          resetForm("categoryToDelete");
-          resetForm("categoryName");
+          deletePhase(forms.phaseToDelete);
+          closeModal("showDeletePhaseModal");
+          resetForm("phaseToDelete");
+          resetForm("phaseName");
         }}
         onCancel={() => {
-          closeModal("showDeleteCategoryModal");
-          resetForm("categoryToDelete");
-          resetForm("categoryName");
+          closeModal("showDeletePhaseModal");
+          resetForm("phaseToDelete");
+          resetForm("phaseName");
         }}
         confirmButtonColor="red"
       />

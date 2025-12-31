@@ -46,7 +46,7 @@ model Project {
   owner     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 
-  categories  Category[]
+  phases      Phase[]
   members     ProjectMembers[]
   invitations ProjectInvitation[]
 
@@ -89,7 +89,7 @@ model ProjectInvitation {
   @@index([inviteeId, status])
 }
 
-model Category {
+model Phase {
   id        String   @id @default(uuid())
   name      String
   createdAt DateTime @default(now())
@@ -115,14 +115,14 @@ model Task {
   assignedBy     String
   assignedByUser User   @relation("assignedBy", fields: [assignedBy], references: [id], onDelete: Cascade)
 
-  categoryId String
-  Category   Category? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  phaseId String
+  Phase   Phase? @relation(fields: [phaseId], references: [id], onDelete: Cascade)
 
   pendingUpdates PendingUpdates[]
 
   @@index([assignedTo])
   @@index([assignedBy])
-  @@index([categoryId])
+  @@index([phaseId])
 }
 
 model PendingUpdates {

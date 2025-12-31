@@ -1,13 +1,13 @@
 import React from "react";
 import { Plus, Trash2, FolderOpen } from "lucide-react";
 import { TaskCard } from "@/components/task";
-import { CategoryWithTasks, TaskStatus, UserRole } from "@/types";
+import { PhaseWithTasks, TaskStatus, UserRole } from "@/types";
 
-export interface CategoryCardProps {
-  category: CategoryWithTasks;
+export interface PhaseCardProps {
+  phase: PhaseWithTasks;
   userRole: UserRole;
-  onCreateTask: (category: CategoryWithTasks) => void;
-  onDeleteCategory: (categoryId: string, categoryName: string) => void;
+  onCreateTask: (phase: PhaseWithTasks) => void;
+  onDeletePhase: (phaseId: string, phaseName: string) => void;
   onUpdateTaskStatus: (taskId: string, status: TaskStatus) => void;
   onRequestUpdate: (
     taskId: string,
@@ -20,11 +20,11 @@ export interface CategoryCardProps {
   currentUserId: string;
 }
 
-const CategoryCard: React.FC<CategoryCardProps> = ({
-  category,
+const PhaseCard: React.FC<PhaseCardProps> = ({
+  phase,
   userRole,
   onCreateTask,
-  onDeleteCategory,
+  onDeletePhase,
   onUpdateTaskStatus,
   onRequestUpdate,
   onEditTask,
@@ -42,23 +42,23 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
             <FolderOpen className="w-5 h-5 text-blue-600 dark:text-blue-400" />
           </div>
           <h3 className="text-lg font-semibold text-[hsl(var(--foreground))]">
-            {category.name}
+            {phase.name}
           </h3>
         </div>
         <div className="flex items-center gap-2">
           {isOwnerOrAdmin && (
             <>
               <button
-                onClick={() => onCreateTask(category)}
+                onClick={() => onCreateTask(phase)}
                 className="p-2 hover:bg-[hsl(var(--accent))] rounded-2xl transition duration-300 text-blue-600 dark:text-blue-400 hover:scale-150 hover:cursor-pointer"
                 title="Add Task"
               >
                 <Plus className="w-6 h-6" />
               </button>
               <button
-                onClick={() => onDeleteCategory(category.id, category.name)}
+                onClick={() => onDeletePhase(phase.id, phase.name)}
                 className="p-2 text-red-600 transition rounded-lg hover:scale-110 hover:cursor-pointer hover:bg-red-50 dark:hover:bg-red-900/30"
-                title="Delete Category"
+                title="Delete Phase"
               >
                 <Trash2 className="w-4 h-4" />
               </button>
@@ -69,23 +69,23 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
 
       <div className="mb-8">
         <div className="flex items-center justify-between text-sm opacity-80 text-[hsl(var(--muted-foreground))]">
-          <span>{category.tasks?.length || 0} tasks</span>
+          <span>{phase.tasks?.length || 0} tasks</span>
           <span className="text-xs">
-            {category.tasks?.filter((t) => t.status === "complete").length || 0}{" "}
+            {phase.tasks?.filter((t) => t.status === "complete").length || 0}{" "}
             completed
           </span>
         </div>
       </div>
 
       <div className="space-y-3">
-        {category.tasks?.length === 0 ? (
+        {phase.tasks?.length === 0 ? (
           <div className="py-8 text-center opacity-70">
             <p className="text-sm text-[hsl(var(--muted-foreground))]">
               No tasks yet
             </p>
             {isOwnerOrAdmin && (
               <button
-                onClick={() => onCreateTask(category)}
+                onClick={() => onCreateTask(phase)}
                 className="mt-2 text-sm font-medium text-blue-600 dark:text-blue-400 hover:cursor-pointer hover:text-blue-700 dark:hover:text-blue-300"
               >
                 Add first task
@@ -94,7 +94,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
           </div>
         ) : (
           <div className="space-y-2 overflow-y-auto max-h-96">
-            {category.tasks?.map((task) => (
+            {phase.tasks?.map((task) => (
               <TaskCard
                 key={task.id}
                 task={task}
@@ -114,4 +114,4 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
   );
 };
 
-export default CategoryCard;
+export default PhaseCard;

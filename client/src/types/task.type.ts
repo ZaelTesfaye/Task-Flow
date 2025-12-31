@@ -2,7 +2,7 @@ import { User, Project } from "./";
 
 export type TaskStatus = "active" | "complete" | "canceled";
 
-export interface Category {
+export interface Phase {
   id: string;
   name: string;
   projectId: string;
@@ -10,11 +10,11 @@ export interface Category {
   updatedAt: string;
 }
 
-export interface CreateCategoryRequest {
+export interface CreatePhaseRequest {
   name: string;
 }
 
-export interface UpdateCategoryRequest {
+export interface UpdatePhaseRequest {
   name?: string;
 }
 
@@ -24,7 +24,7 @@ export interface Task {
   description: string;
   status: "active" | "complete" | "canceled";
   assignedTo: string;
-  categoryId: string;
+  phaseId: string;
   projectId: string;
   createdAt: string;
   updatedAt: string;
@@ -42,15 +42,15 @@ export interface UpdateTaskRequest {
   title?: string;
   description?: string;
   status?: "active" | "complete" | "canceled";
-  categoryId?: string;
+  phaseId?: string;
 }
 
 export interface TasksResponse {
   project: Project;
-  categories: CategoryWithTasks[];
+  phases: PhaseWithTasks[];
 }
 
-export interface CategoryWithTasks extends Category {
+export interface PhaseWithTasks extends Phase {
   tasks: Task[];
 }
 

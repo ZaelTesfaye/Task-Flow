@@ -12,7 +12,7 @@ export const createTask = async (
   title: string,
   description: string,
   userId: string,
-  categoryId: string,
+  phaseId: string,
   assignedTo: string,
   projectId: string,
 ) => {
@@ -26,7 +26,7 @@ export const createTask = async (
     title,
     description,
     userId,
-    categoryId,
+    phaseId,
     assignedTo,
   );
 
@@ -72,7 +72,7 @@ export const updateProjectTask = async (
   const task = await taskModel.findTaskById(taskId);
   if (!task) throw new Error("Task not found");
 
-  if (task.Category?.projectId !== projectId) {
+  if (task.Phase?.projectId !== projectId) {
     throw new Error("Task does not belong to the specified project");
   }
 
@@ -82,7 +82,7 @@ export const updateProjectTask = async (
 export const removeTask = async (taskId: string, projectId: string) => {
   const task = await taskModel.findTaskById(taskId);
   if (!task) throw new Error("Task not found");
-  if (!task.Category || task.Category.projectId === projectId) {
+  if (!task.Phase || task.Phase.projectId === projectId) {
     throw new Error("Task does not belong to the specified project");
   }
   return taskModel.removeTask(taskId);
@@ -98,7 +98,7 @@ export const requestTaskUpdate = async (
 
   if (!task) throw new Error("Task not found");
 
-  if (!task.Category || task.Category?.projectId !== projectId) {
+  if (!task.Phase || task.Phase?.projectId !== projectId) {
     throw new Error("Task does not belong to the specified project");
   }
 
@@ -118,7 +118,7 @@ export const acceptPendingUpdate = async (
     throw new Error("Pending update not found");
   }
 
-  if (pendingUpdate.task.Category?.projectId !== projectId) {
+  if (pendingUpdate.task.Phase?.projectId !== projectId) {
     throw new Error("Pending update does not belong to the specified project");
   }
 
@@ -138,7 +138,7 @@ export const rejectPendingUpdate = async (
     throw new Error("Pending update not found");
   }
 
-  if (pendingUpdate.task.Category?.projectId !== projectId) {
+  if (pendingUpdate.task.Phase?.projectId !== projectId) {
     throw new Error("Pending update does not belong to the specified project");
   }
 

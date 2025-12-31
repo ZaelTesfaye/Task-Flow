@@ -5,13 +5,13 @@ export const createTask = async (
   title: string,
   description: string,
   assignedBy: string,
-  categoryId: string,
+  phaseId: string,
   assignedTo: string,
 ) => {
   return prisma.task.create({
     data: {
       title,
-      categoryId,
+      phaseId,
       description,
       assignedBy,
       assignedTo,
@@ -31,7 +31,7 @@ export const updateTask = async (taskId: string, updates: UpdateTaskDTO) => {
 export const findTaskById = async (taskId: string) => {
   return prisma.task.findUnique({
     where: { id: taskId },
-    include: { Category: true },
+    include: { Phase: true },
   });
 };
 
@@ -40,7 +40,7 @@ export const findPendingUpdateById = async (pendingUpdateId: string) => {
     where: { id: pendingUpdateId },
     include: {
       task: {
-        include: { Category: true },
+        include: { Phase: true },
       },
     },
   });

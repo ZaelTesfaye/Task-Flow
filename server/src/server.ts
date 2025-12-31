@@ -11,7 +11,7 @@ import config from "./config/config.js";
 import {
   taskRoutes,
   authRoutes,
-  categoryRoutes,
+  phaseRoutes,
   projectRoutes,
   userRoutes,
   adminRoutes,
@@ -62,7 +62,7 @@ app.use("/api/admin", authMiddleware, adminRoutes);
 app.use("/api/custom-auth", authRoutes);
 app.use("/api/task", authMiddleware, taskRoutes);
 app.use("/api/project", authMiddleware, projectRoutes);
-app.use("/api/category", authMiddleware, categoryRoutes);
+app.use("/api/phase", authMiddleware, phaseRoutes);
 app.use("/api/user", authMiddleware, userRoutes);
 app.use("/api/notification", authMiddleware, notificationRoutes);
 app.use("/api/stripe", stripeRoutes);

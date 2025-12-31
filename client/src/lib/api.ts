@@ -12,8 +12,8 @@ import {
   ProjectMember,
   AddMemberRequest,
   UpdateMemberRequest,
-  CreateCategoryRequest,
-  UpdateCategoryRequest,
+  CreatePhaseRequest,
+  UpdatePhaseRequest,
   CreateTaskRequest,
   UpdateTaskRequest,
   TasksResponse,
@@ -175,31 +175,29 @@ export const projectAPI = {
       .then((r) => r.data),
 };
 
-// Category endpoints
-export const categoryAPI = {
-  createCategory: (
+// Phase endpoints
+export const phaseAPI = {
+  createPhase: (
     projectId: string,
-    data: CreateCategoryRequest
+    data: CreatePhaseRequest
+  ): Promise<ApiResponse<any>> =>
+    api.post<ApiResponse<any>>(`/phase/${projectId}`, data).then((r) => r.data),
+
+  updatePhase: (
+    projectId: string,
+    phaseId: string,
+    data: UpdatePhaseRequest
   ): Promise<ApiResponse<any>> =>
     api
-      .post<ApiResponse<any>>(`/category/${projectId}`, data)
+      .patch<ApiResponse<any>>(`/phase/${projectId}/${phaseId}`, data)
       .then((r) => r.data),
 
-  updateCategory: (
+  removePhase: (
     projectId: string,
-    categoryId: string,
-    data: UpdateCategoryRequest
-  ): Promise<ApiResponse<any>> =>
-    api
-      .patch<ApiResponse<any>>(`/category/${projectId}/${categoryId}`, data)
-      .then((r) => r.data),
-
-  removeCategory: (
-    projectId: string,
-    categoryId: string
+    phaseId: string
   ): Promise<ApiResponse<void>> =>
     api
-      .delete<ApiResponse<void>>(`/category/${projectId}/${categoryId}`)
+      .delete<ApiResponse<void>>(`/phase/${projectId}/${phaseId}`)
       .then((r) => r.data),
 };
 
@@ -207,16 +205,16 @@ export const categoryAPI = {
 export const taskAPI = {
   createTask: (
     projectId: string,
-    categoryId: string,
+    phaseId: string,
     data: CreateTaskRequest
   ): Promise<ApiResponse<any>> =>
     api
-      .post<ApiResponse<any>>(`/task/${projectId}/${categoryId}`, data)
+      .post<ApiResponse<any>>(`/task/${projectId}/${phaseId}`, data)
       .then((r) => r.data),
 
-  getCategories: (projectId: string): Promise<ApiResponse<TasksResponse>> =>
+  getPhases: (projectId: string): Promise<ApiResponse<TasksResponse>> =>
     api
-      .get<ApiResponse<TasksResponse>>(`/category/${projectId}`)
+      .get<ApiResponse<TasksResponse>>(`/phase/${projectId}`)
       .then((r) => r.data),
 
   updateTask: (

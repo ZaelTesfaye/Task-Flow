@@ -26,7 +26,7 @@ export const INVITATION_STATUS_COLORS: Record<InvitationStatus, string> = {
 };
 
 export const DEFAULT_MODAL_STATE = {
-  showCategoryModal: false,
+  showPhaseModal: false,
   showTaskModal: false,
   showEditTaskModal: false,
   showMembersModal: false,
@@ -35,7 +35,7 @@ export const DEFAULT_MODAL_STATE = {
   showDeleteTaskModal: false,
   showUpdateTaskModal: false,
   showReviewUpdateModal: false,
-  showDeleteCategoryModal: false,
+  showDeletePhaseModal: false,
   showRemoveMemberModal: false,
   showLeaveProjectModal: false,
 };
@@ -43,7 +43,7 @@ export const DEFAULT_MODAL_STATE = {
 export const DEFAULT_FORM_STATE = {
   projectTitle: "",
   projectDescription: "",
-  categoryName: "",
+  phaseName: "",
   taskTitle: "",
   taskDescription: "",
   taskAssignee: "",
@@ -55,8 +55,8 @@ export const DEFAULT_FORM_STATE = {
   updateDescription: "",
   updateStatus: "active" as TaskStatus,
   memberFilter: "all" as MemberFilter,
-  selectedCategory: null as any,
-  categoryToDelete: null as any,
+  selectedPhase: null as any,
+  phaseToDelete: null as any,
   taskToDelete: null as any,
   memberToRemove: null as any,
   editingTask: null as any,

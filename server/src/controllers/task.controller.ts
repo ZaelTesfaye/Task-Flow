@@ -4,7 +4,7 @@ import httpStatus from "http-status";
 import { asyncWrapper, redis } from "../lib/index.js";
 import {
   taskServices,
-  categoryServices,
+  phaseServices,
   projectServices,
 } from "../services/index.js";
 import type {
@@ -16,10 +16,10 @@ import type {
 
 export const createTask: RequestHandler = asyncWrapper(
   async (
-    req: Request<{ projectId: string; categoryId: string }, {}, CreateTaskDTO>,
+    req: Request<{ projectId: string; phaseId: string }, {}, CreateTaskDTO>,
     res: Response,
   ) => {
-    const { projectId, categoryId } = req.params;
+    const { projectId, phaseId } = req.params;
     const { id: userId } = req.user!;
     const { title, description, assignedTo } = req.body;
 
@@ -33,10 +33,10 @@ export const createTask: RequestHandler = asyncWrapper(
       });
     }
 
-    const category = await categoryServices.getCategory(categoryId, projectId);
-    if (!category) {
+    const phase = await phaseServices.getPhase(phaseId, projectId);
+    if (!phase) {
       return res.status(httpStatus.FORBIDDEN).json({
-        message: "Category does not belong to the specified project",
+        message: "Phase does not belong to the specified project",
       });
     }
 
@@ -44,13 +44,13 @@ export const createTask: RequestHandler = asyncWrapper(
       title,
       description,
       userId,
-      categoryId,
+      phaseId,
       assignedTo,
       projectId,
     );
 
-    // Invalidate categories cache (which includes tasks)
-    await redis.del(`project:${projectId}:categories`);
+    // Invalidate phases cache (which includes tasks)
+    await redis.del(`project:${projectId}:phases`);
 
     res.json({
       message: "Task created successfully",
@@ -84,8 +84,8 @@ export const updateTask: RequestHandler = asyncWrapper(
       projectId,
     );
 
-    // Invalidate categories cache (which includes tasks)
-    await redis.del(`project:${projectId}:categories`);
+    // Invalidate phases cache (which includes tasks)
+    await redis.del(`project:${projectId}:phases`);
 
     res.json({
       message: "Task updated successfully",
@@ -114,8 +114,8 @@ export const removeTask: RequestHandler = asyncWrapper(
 
     await taskServices.removeTask(taskId, projectId);
 
-    // Invalidate categories cache (which includes tasks)
-    await redis.del(`project:${projectId}:categories`);
+    // Invalidate phases cache (which includes tasks)
+    await redis.del(`project:${projectId}:phases`);
 
     res.json({
       message: "Task removed successfully",
@@ -152,8 +152,8 @@ export const requestTaskUpdate: RequestHandler = asyncWrapper(
       updateData,
     );
 
-    // Invalidate categories cache (which includes tasks)
-    await redis.del(`project:${projectId}:categories`);
+    // Invalidate phases cache (which includes tasks)
+    await redis.del(`project:${projectId}:phases`);
 
     res.json({
       message: "Task update requested successfully",
@@ -189,8 +189,8 @@ export const acceptPendingUpdate: RequestHandler = asyncWrapper(
       projectId,
     );
 
-    // Invalidate categories cache (which includes tasks)
-    await redis.del(`project:${projectId}:categories`);
+    // Invalidate phases cache (which includes tasks)
+    await redis.del(`project:${projectId}:phases`);
 
     res.json({
       message: "Pending update accepted successfully",
@@ -222,8 +222,8 @@ export const rejectPendingUpdate: RequestHandler = asyncWrapper(
       projectId,
     );
 
-    // Invalidate categories cache (which includes tasks)
-    await redis.del(`project:${projectId}:categories`);
+    // Invalidate phases cache (which includes tasks)
+    await redis.del(`project:${projectId}:phases`);
 
     res.json({
       message: "Pending update rejected successfully",

@@ -2,7 +2,7 @@ export { default as taskRoutes } from "./task.routes.js";
 export { default as userRoutes } from "./user.routes.js";
 export { default as authRoutes } from "./auth.routes.js";
 export { default as projectRoutes } from "./project.routes.js";
-export { default as categoryRoutes } from "./category.routes.js";
+export { default as phaseRoutes } from "./phase.routes.js";
 export { default as adminRoutes } from "./admin.routes.js";
 export { default as superAdminRoutes } from "./super-admin.routes.js";
 export { default as stripeRoutes } from "./stripe.routes.js";

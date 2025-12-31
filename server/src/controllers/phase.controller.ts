@@ -38,7 +38,11 @@ export const createPhase = asyncWrapper(
 
 export const updatePhase = asyncWrapper(
   async (
-    req: Request<{ projectId: string; phaseId: string }, {}, UpdatePhaseDTO>,
+    req: Request<
+      { projectId: string; phaseId: string },
+      {},
+      UpdatePhaseDTO
+    >,
     res: Response,
   ) => {
     const { projectId, phaseId } = req.params;

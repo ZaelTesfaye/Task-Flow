@@ -1,4 +1,4 @@
-export * from "./category";
+export * from "./phase";
 export * from "./dashboard";
 export * from "./members";
 export * from "./modals";

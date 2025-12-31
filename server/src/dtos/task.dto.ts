@@ -8,7 +8,7 @@ export interface UpdateTaskDTO {
   title?: string;
   description?: string;
   status?: "active" | "complete" | "canceled";
-  categoryId?: string;
+  phaseId?: string;
 }
 
 export interface RequestTaskUpdateDTO {

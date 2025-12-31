@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { X } from "lucide-react";
 
 import { Modal } from "@/components/modals";
-import { CategoryWithTasks, ProjectMember } from "@/types";
+import { PhaseWithTasks, ProjectMember } from "@/types";
 
 export interface CreateTaskModalProps {
   isOpen: boolean;
@@ -12,7 +12,7 @@ export interface CreateTaskModalProps {
     description: string;
     assignee: string;
   }) => void;
-  selectedCategory: CategoryWithTasks | null;
+  selectedPhase: PhaseWithTasks | null;
   members: ProjectMember[];
   loading?: boolean;
 }
@@ -21,7 +21,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
   isOpen,
   onClose,
   onSubmit,
-  selectedCategory,
+  selectedPhase,
   members,
   loading = false,
 }) => {
@@ -72,12 +72,12 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
         </button>
       </div>
 
-      {selectedCategory && (
+      {selectedPhase && (
         <div className="p-3 mb-4 rounded-lg bg-blue-50 dark:bg-blue-900/20">
           <p className="text-sm text-blue-700 dark:text-blue-300">
             Creating task in:{" "}
             <span className="font-medium text-[hsl(var(--foreground))]">
-              {selectedCategory.name}
+              {selectedPhase.name}
             </span>
           </p>
         </div>

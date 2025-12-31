@@ -12,12 +12,12 @@ export const useProjectData = (projectId: string | string[] | undefined) => {
   const queryClient = useQueryClient();
 
   const {
-    data: categoriesData,
-    isLoading: categoriesLoading,
-    error: categoriesError,
+    data: phasesData,
+    isLoading: phasesLoading,
+    error: phasesError,
   } = useQuery({
-    queryKey: ["project", projectId, "categories"],
-    queryFn: () => taskAPI.getCategories(projectId as string),
+    queryKey: ["project", projectId, "phases"],
+    queryFn: () => taskAPI.getPhases(projectId as string),
     enabled: !!projectId && !!user,
     retry: false,
   });
@@ -50,11 +50,8 @@ export const useProjectData = (projectId: string | string[] | undefined) => {
     retry: false,
   });
 
-  if (categoriesError || membersError) {
-    console.error(
-      "Failed to fetch project data:",
-      categoriesError || membersError
-    );
+  if (phasesError || membersError) {
+    console.error("Failed to fetch project data:", phasesError || membersError);
     // Only redirect if it's a permission error or not found, but for now let's keep it simple
     // toast.error("Failed to fetch project data");
     // router.push("/dashboard");
@@ -65,11 +62,11 @@ export const useProjectData = (projectId: string | string[] | undefined) => {
   };
 
   return {
-    project: categoriesData?.data?.project || null,
-    categories: categoriesData?.data?.categories || [],
+    project: phasesData?.data?.project || null,
+    phases: phasesData?.data?.phases || [],
     members,
     invitations: invitationsData?.data || [],
-    loading: categoriesLoading || membersLoading || invitationsLoading,
+    loading: phasesLoading || membersLoading || invitationsLoading,
     userRole,
     refetch,
   };
