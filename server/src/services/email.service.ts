@@ -125,8 +125,12 @@ export const sendInvitationToRegisteredUser = async (
       subject: `${inviterName} invited you to join "${projectTitle}"`,
       html: getEmailTemplate(content),
     });
+    console.log(`✅ Invitation email sent successfully to ${inviteeEmail}`);
   } catch (error) {
-    console.error("Error sending invitation email to registered user:", error);
+    console.error(
+      "❌ Error sending invitation email to registered user:",
+      error,
+    );
     throw error;
   }
 };
@@ -168,9 +172,12 @@ export const sendInvitationToNonRegisteredUser = async (
       subject: `${inviterName} invited you to join "${projectTitle}" on TaskFlow`,
       html: getEmailTemplate(content),
     });
+    console.log(
+      `✅ Invitation email sent successfully to ${inviteeEmail} (new user)`,
+    );
   } catch (error) {
     console.error(
-      "Error sending invitation email to non-registered user:",
+      "❌ Error sending invitation email to non-registered user:",
       error,
     );
     throw error;
@@ -209,8 +216,9 @@ export const sendPasswordResetCode = async (
       subject: "Password Reset Code - TaskFlow",
       html: getEmailTemplate(content),
     });
+    console.log(`✅ Password reset email sent successfully to ${userEmail}`);
   } catch (error) {
-    console.error("Error sending password reset code email:", error);
+    console.error("❌ Error sending password reset code email:", error);
     throw error;
   }
 };
@@ -258,8 +266,11 @@ export const sendTaskAssignmentEmail = async (
       subject: `New Task Assigned: ${taskTitle}`,
       html: getEmailTemplate(content),
     });
+    console.log(
+      `✅ Task assignment email sent successfully to ${assigneeEmail}`,
+    );
   } catch (error) {
-    console.error("Error sending task assignment email:", error);
+    console.error("❌ Error sending task assignment email:", error);
     throw error;
   }
 };

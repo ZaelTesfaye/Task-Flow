@@ -1,8 +1,8 @@
 "use client";
 
-import { Folder, FolderOpen, Shield, Users, Bell } from "lucide-react";
+import { Folder, FolderOpen, Shield, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Card,
   CardContent,
@@ -40,6 +40,7 @@ const ProjectCard = ({
 }) => {
   console.log("ProjectCard role:", role);
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   // Fetch notification count for this project
   const { data: notificationData } = useQuery({
@@ -60,6 +61,10 @@ const ProjectCard = ({
     if (notificationCount > 0) {
       try {
         await notificationAPI.markProjectNotificationsAsRead(project.id);
+        // Invalidate the query to immediately update the UI
+        await queryClient.invalidateQueries({
+          queryKey: ["project-notifications", project.id],
+        });
       } catch (error) {
         console.error("Failed to mark notifications as read:", error);
       }
@@ -76,10 +81,9 @@ const ProjectCard = ({
       {/* Notification Badge */}
       {notificationCount > 0 && (
         <div className="absolute -top-2 -right-2 z-10">
-          <div className="relative flex items-center justify-center w-8 h-8 bg-red-500 rounded-full shadow-lg animate-pulse">
-            <Bell className="w-4 h-4 text-white" />
-            <span className="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-600 rounded-full border-2 border-white dark:border-gray-800">
-              {notificationCount > 9 ? "9+" : notificationCount}
+          <div className="flex items-center justify-center min-w-[24px] h-6 px-2 bg-red-500 rounded-full shadow-lg">
+            <span className="text-xs font-bold text-white">
+              {notificationCount > 99 ? "99+" : notificationCount}
             </span>
           </div>
         </div>

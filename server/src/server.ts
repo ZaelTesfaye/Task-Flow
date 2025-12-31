@@ -94,6 +94,16 @@ app.use(errorHandler);
 
 const server = app.listen(config.port, () => {
   logger.info(`Server running on port ${config.port}`);
+
+  // Verify email configuration
+  if (config.resendApiKey && config.resendApiKey.startsWith("re_")) {
+    logger.info("✅ Email service configured (Resend API key detected)");
+  } else {
+    logger.warn(
+      "⚠️ Email service NOT configured - Add RESEND_API_KEY to .env file",
+    );
+    logger.warn("   Get your API key from https://resend.com");
+  }
 });
 
 const exitHandler = (serverInstance: http.Server | undefined) => {
