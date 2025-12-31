@@ -120,7 +120,7 @@ export const sendInvitationToRegisteredUser = async (
 
   try {
     await email.emails.send({
-      from: "TaskFlow <onboarding@resend.dev>",
+      from: "TaskFlow <no-reply@info.task-flows.tech>",
       to: inviteeEmail,
       subject: `${inviterName} invited you to join "${projectTitle}"`,
       html: getEmailTemplate(content),
@@ -167,7 +167,7 @@ export const sendInvitationToNonRegisteredUser = async (
 
   try {
     await email.emails.send({
-      from: "TaskFlow <onboarding@resend.dev>",
+      from: "TaskFlow <no-reply@info.task-flows.tech>",
       to: inviteeEmail,
       subject: `${inviterName} invited you to join "${projectTitle}" on TaskFlow`,
       html: getEmailTemplate(content),
@@ -211,7 +211,7 @@ export const sendPasswordResetCode = async (
 
   try {
     await email.emails.send({
-      from: "TaskFlow <onboarding@resend.dev>",
+      from: "TaskFlow <no-reply@info.task-flows.tech>",
       to: userEmail,
       subject: "Password Reset Code - TaskFlow",
       html: getEmailTemplate(content),
@@ -261,7 +261,7 @@ export const sendTaskAssignmentEmail = async (
 
   try {
     await email.emails.send({
-      from: "TaskFlow <onboarding@resend.dev>",
+      from: "TaskFlow <no-reply@info.task-flows.tech>",
       to: assigneeEmail,
       subject: `New Task Assigned: ${taskTitle}`,
       html: getEmailTemplate(content),
