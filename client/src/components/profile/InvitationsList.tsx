@@ -1,5 +1,5 @@
 import { Check, XCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button, Spinner } from "@/components/ui";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui";
 import { INVITATION_STATUS_COLORS } from "@/constants";
 import type { ProjectInvitation } from "@/types";
@@ -52,20 +52,28 @@ export default function InvitationsList({
 
             <div className="flex gap-3">
               <Button
-                className="flex-1 hover:cursor-pointer hover:bg-transparent hover:text-green-400"
+                className="flex-1 hover:cursor-pointer hover:bg-transparent hover:text-green-400 flex items-center justify-center gap-2"
                 onClick={() => onRespond(invitation.id, "accept")}
                 disabled={invitationLoading}
               >
-                <Check className="w-4 h-4 mr-2" />
+                {invitationLoading ? (
+                  <Spinner />
+                ) : (
+                  <Check className="w-4 h-4 mr-2" />
+                )}
                 Accept
               </Button>
               <Button
                 variant="outline"
-                className="flex-1 hover:cursor-pointer hover:text-red-500 hover:bg-transparent"
+                className="flex-1 hover:cursor-pointer hover:text-red-500 hover:bg-transparent flex items-center justify-center gap-2"
                 onClick={() => onRespond(invitation.id, "decline")}
                 disabled={invitationLoading}
               >
-                <XCircle className="w-4 h-4 mr-2" />
+                {invitationLoading ? (
+                  <Spinner />
+                ) : (
+                  <XCircle className="w-4 h-4 mr-2" />
+                )}
                 <span>Decline</span>
               </Button>
             </div>

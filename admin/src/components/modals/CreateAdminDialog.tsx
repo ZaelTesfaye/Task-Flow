@@ -10,6 +10,7 @@ import {
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
+import { Spinner } from "../ui/spinner";
 
 interface CreateAdminDialogProps {
   isOpen: boolean;
@@ -21,6 +22,7 @@ interface CreateAdminDialogProps {
   adminPassword: string;
   setAdminPassword: (password: string) => void;
   onCreateAdmin: () => void;
+  loading?: boolean;
 }
 
 const CreateAdminDialog: React.FC<CreateAdminDialogProps> = ({
@@ -33,6 +35,7 @@ const CreateAdminDialog: React.FC<CreateAdminDialogProps> = ({
   adminPassword,
   setAdminPassword,
   onCreateAdmin,
+  loading = false,
 }) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -108,14 +111,23 @@ const CreateAdminDialog: React.FC<CreateAdminDialogProps> = ({
               onClose();
             }}
             variant="outline"
+            disabled={loading}
           >
             Cancel
           </Button>
           <Button
             onClick={onCreateAdmin}
-            className="text-white bg-green-600 hover:bg-green-700"
+            className="text-white bg-green-600 hover:bg-green-700 flex items-center gap-2"
+            disabled={loading}
           >
-            Create Admin
+            {loading ? (
+              <>
+                <Spinner className="text-white" />
+                <span>Creating...</span>
+              </>
+            ) : (
+              "Create Admin"
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>

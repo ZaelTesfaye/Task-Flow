@@ -1,5 +1,6 @@
 import React from "react";
 import { Modal } from "@/components/modals";
+import { Spinner } from "@/components/ui";
 
 interface RequestUpdateModalProps {
   isOpen: boolean;
@@ -9,6 +10,7 @@ interface RequestUpdateModalProps {
   updateStatus: string;
   onUpdateDescriptionChange: (value: string) => void;
   onUpdateStatusChange: (value: string) => void;
+  loading?: boolean;
 }
 
 const RequestUpdateModal: React.FC<RequestUpdateModalProps> = ({
@@ -19,6 +21,7 @@ const RequestUpdateModal: React.FC<RequestUpdateModalProps> = ({
   updateStatus,
   onUpdateDescriptionChange,
   onUpdateStatusChange,
+  loading = false,
 }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -57,15 +60,24 @@ const RequestUpdateModal: React.FC<RequestUpdateModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="hover:cursor-pointer duration-200 hover:bg-gray-500 flex-1 px-4 py-2 border border-[hsl(var(--border))] rounded-lg transition text-[hsl(var(--foreground))]"
+            disabled={loading}
+            className="hover:cursor-pointer duration-200 hover:bg-gray-500 flex-1 px-4 py-2 border border-[hsl(var(--border))] rounded-lg transition text-[hsl(var(--foreground))] disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="flex-1 px-4 py-2 text-[hsl(var(--primary-foreground))] transition bg-blue-600 rounded-lg hover:cursor-pointer hover:bg-blue-700"
+            disabled={loading || !updateDescription.trim()}
+            className="flex-1 px-4 py-2 text-[hsl(var(--primary-foreground))] transition bg-blue-600 rounded-lg hover:cursor-pointer hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            Request Update
+            {loading ? (
+              <>
+                <Spinner className="text-white" />
+                <span>Requesting...</span>
+              </>
+            ) : (
+              "Request Update"
+            )}
           </button>
         </div>
       </form>

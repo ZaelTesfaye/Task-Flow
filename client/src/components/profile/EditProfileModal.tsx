@@ -1,4 +1,5 @@
 import { Modal } from "@/components/modals";
+import { Spinner } from "@/components/ui";
 
 interface EditProfileModalProps {
   isOpen: boolean;
@@ -6,6 +7,7 @@ interface EditProfileModalProps {
   name: string;
   onNameChange: (name: string) => void;
   onSubmit: (e: React.FormEvent) => void;
+  loading?: boolean;
 }
 
 export default function EditProfileModal({
@@ -14,6 +16,7 @@ export default function EditProfileModal({
   name,
   onNameChange,
   onSubmit,
+  loading = false,
 }: EditProfileModalProps) {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -32,15 +35,24 @@ export default function EditProfileModal({
           <button
             type="button"
             onClick={onClose}
-            className="flex-1 px-4 py-2 border border-[hsl(var(--border))] rounded-lg hover:bg-[hsl(var(--accent))] transition hover:cursor-pointer"
+            disabled={loading}
+            className="flex-1 px-4 py-2 border border-[hsl(var(--border))] rounded-lg hover:bg-[hsl(var(--accent))] transition hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="flex-1 px-4 py-2 bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] rounded-lg hover:brightness-110 transition hover:cursor-pointer"
+            disabled={loading}
+            className="flex-1 px-4 py-2 bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] rounded-lg hover:brightness-110 transition hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            Save Changes
+            {loading ? (
+              <>
+                <Spinner className="text-white" />
+                <span>Saving...</span>
+              </>
+            ) : (
+              "Save Changes"
+            )}
           </button>
         </div>
       </form>

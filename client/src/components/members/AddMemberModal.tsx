@@ -1,5 +1,6 @@
 import React from "react";
 import { Modal } from "@/components/modals";
+import { Spinner } from "@/components/ui";
 
 interface AddMemberModalProps {
   isOpen: boolean;
@@ -7,6 +8,7 @@ interface AddMemberModalProps {
   forms: any;
   updateForm: (key: any, value: any) => void;
   addMember: (data: { email: string; access: "admin" | "member" }) => void;
+  loading?: boolean;
 }
 
 const AddMemberModal: React.FC<AddMemberModalProps> = ({
@@ -15,6 +17,7 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({
   forms,
   updateForm,
   addMember,
+  loading = false,
 }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,15 +69,24 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="hover:cursor-pointer flex-1 px-4 py-2 border border-[hsl(var(--border))] rounded-lg hover:bg-[hsl(var(--accent))] transition text-[hsl(var(--foreground))]"
+            disabled={loading}
+            className="hover:cursor-pointer flex-1 px-4 py-2 border border-[hsl(var(--border))] rounded-lg hover:bg-[hsl(var(--accent))] transition text-[hsl(var(--foreground))] disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="flex-1 px-4 py-2 text-[hsl(var(--primary-foreground))] transition bg-blue-600 rounded-lg hover:cursor-pointer hover:bg-blue-700"
+            disabled={loading}
+            className="flex-1 px-4 py-2 text-[hsl(var(--primary-foreground))] transition bg-blue-600 rounded-lg hover:cursor-pointer hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            Invite Member
+            {loading ? (
+              <>
+                <Spinner className="text-white" />
+                <span>Inviting...</span>
+              </>
+            ) : (
+              "Invite Member"
+            )}
           </button>
         </div>
       </form>

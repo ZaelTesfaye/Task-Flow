@@ -8,6 +8,7 @@ import {
   DialogFooter,
 } from "../ui/dialog";
 import { Button } from "../ui/button";
+import { Spinner } from "../ui/spinner";
 import type { AdminUser } from "../../types";
 
 interface DeleteUserDialogProps {
@@ -15,6 +16,7 @@ interface DeleteUserDialogProps {
   onClose: () => void;
   userToDelete: AdminUser | null;
   onConfirmDelete: () => void;
+  loading?: boolean;
 }
 
 const DeleteUserDialog: React.FC<DeleteUserDialogProps> = ({
@@ -22,6 +24,7 @@ const DeleteUserDialog: React.FC<DeleteUserDialogProps> = ({
   onClose,
   userToDelete,
   onConfirmDelete,
+  loading = false,
 }) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -47,11 +50,24 @@ const DeleteUserDialog: React.FC<DeleteUserDialogProps> = ({
               onClose();
             }}
             variant="outline"
+            disabled={loading}
           >
             Cancel
           </Button>
-          <Button onClick={onConfirmDelete} variant="destructive">
-            Delete User
+          <Button
+            onClick={onConfirmDelete}
+            variant="destructive"
+            disabled={loading}
+            className="flex items-center gap-2"
+          >
+            {loading ? (
+              <>
+                <Spinner className="text-white" />
+                <span>Deleting...</span>
+              </>
+            ) : (
+              "Delete User"
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>

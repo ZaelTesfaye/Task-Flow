@@ -10,6 +10,7 @@ import {
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
+import { Spinner } from "../ui/spinner";
 import type { AdminUser } from "../../types";
 
 interface ChangePasswordDialogProps {
@@ -19,6 +20,7 @@ interface ChangePasswordDialogProps {
   newPassword: string;
   setNewPassword: (password: string) => void;
   onUpdatePassword: () => void;
+  loading?: boolean;
 }
 
 const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({
@@ -28,6 +30,7 @@ const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({
   newPassword,
   setNewPassword,
   onUpdatePassword,
+  loading = false,
 }) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -71,14 +74,23 @@ const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({
               setNewPassword("");
             }}
             variant="outline"
+            disabled={loading}
           >
             Cancel
           </Button>
           <Button
             onClick={onUpdatePassword}
-            className="bg-blue-600 hover:bg-blue-700"
+            className="bg-blue-600 hover:bg-blue-700 flex items-center gap-2"
+            disabled={loading}
           >
-            Update Password
+            {loading ? (
+              <>
+                <Spinner className="text-white" />
+                <span>Updating...</span>
+              </>
+            ) : (
+              "Update Password"
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>

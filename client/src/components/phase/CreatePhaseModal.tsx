@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { X } from "lucide-react";
 import { Modal } from "@/components/modals";
+import { Spinner } from "@/components/ui";
 
 export interface CreatePhaseModalProps {
   isOpen: boolean;
@@ -75,9 +76,16 @@ const CreatePhaseModal: React.FC<CreatePhaseModalProps> = ({
           <button
             type="submit"
             disabled={loading || !phaseName.trim()}
-            className="flex-1 px-4 py-2 text-[hsl(var(--primary-foreground))] transition bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed hover:cursor-pointer"
+            className="flex-1 px-4 py-2 text-[hsl(var(--primary-foreground))] transition bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed hover:cursor-pointer flex items-center justify-center gap-2"
           >
-            {loading ? "Creating..." : "Create"}
+            {loading ? (
+              <>
+                <Spinner className="text-white" />
+                <span>Creating...</span>
+              </>
+            ) : (
+              "Create"
+            )}
           </button>
         </div>
       </form>

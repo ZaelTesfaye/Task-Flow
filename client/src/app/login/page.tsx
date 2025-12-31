@@ -467,15 +467,22 @@ export default function LoginPage() {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full py-3 dark:text-white font-semibold text-[hsl(var(--primary-foreground))] transition bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed hover:cursor-pointer"
+                  className="w-full py-3 dark:text-white font-semibold text-[hsl(var(--primary-foreground))] transition bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed hover:cursor-pointer flex items-center justify-center gap-2"
                 >
-                  {isLoading
-                    ? mode === "login"
-                      ? "Signing in..."
-                      : "Creating account..."
-                    : mode === "login"
-                      ? "Sign In"
-                      : "Create Account"}
+                  {isLoading ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      <span>
+                        {mode === "login"
+                          ? "Signing in..."
+                          : "Creating account..."}
+                      </span>
+                    </>
+                  ) : mode === "login" ? (
+                    "Sign In"
+                  ) : (
+                    "Create Account"
+                  )}
                 </button>
 
                 {/* Show Forgot Password button after 3 failed attempts */}

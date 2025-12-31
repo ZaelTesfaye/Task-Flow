@@ -1,5 +1,6 @@
 import React from "react";
 import { Modal } from "@/components/modals";
+import { Spinner } from "@/components/ui";
 import { DEFAULT_FORM_STATE } from "@/constants";
 import { TaskStatus } from "@/types";
 interface EditTaskModalProps {
@@ -15,6 +16,7 @@ interface EditTaskModalProps {
   ) => void;
   updateTaskStatus: (taskId: string, status: TaskStatus) => void;
   isOwnerOrAdmin: boolean;
+  loading?: boolean;
 }
 
 const EditTaskModal: React.FC<EditTaskModalProps> = ({
@@ -26,6 +28,7 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({
   updateTask,
   updateTaskStatus,
   isOwnerOrAdmin,
+  loading = false,
 }) => {
   const handleClose = () => {
     onClose();
@@ -105,15 +108,24 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({
           <button
             type="button"
             onClick={handleClose}
-            className="flex-1 px-4 py-2 border border-[hsl(var(--border))] rounded-lg hover:bg-[hsl(var(--accent))] transition text-[hsl(var(--foreground))] hover:cursor-pointer"
+            disabled={loading}
+            className="flex-1 px-4 py-2 border border-[hsl(var(--border))] rounded-lg hover:bg-[hsl(var(--accent))] transition text-[hsl(var(--foreground))] hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="flex-1 px-4 py-2 text-[hsl(var(--primary-foreground))] transition bg-blue-600 rounded-lg hover:bg-blue-700 hover:cursor-pointer"
+            disabled={loading}
+            className="flex-1 px-4 py-2 text-[hsl(var(--primary-foreground))] transition bg-blue-600 rounded-lg hover:bg-blue-700 hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            Update
+            {loading ? (
+              <>
+                <Spinner className="text-white" />
+                <span>Updating...</span>
+              </>
+            ) : (
+              "Update"
+            )}
           </button>
         </div>
       </form>

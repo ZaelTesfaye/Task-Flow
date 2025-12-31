@@ -1,5 +1,6 @@
 import React from "react";
 import { Modal } from "@/components/modals";
+import { Spinner } from "@/components/ui";
 import { TaskStatus } from "@/types";
 import toast from "react-hot-toast";
 
@@ -13,6 +14,7 @@ interface ReviewUpdateModalProps {
   ) => void;
   acceptPendingUpdate: (pendingUpdateId: string, newStatus: TaskStatus) => void;
   rejectPendingUpdate: (pendingUpdateId: string) => void;
+  loading?: boolean;
 }
 
 const ReviewUpdateModal: React.FC<ReviewUpdateModalProps> = ({
@@ -23,6 +25,7 @@ const ReviewUpdateModal: React.FC<ReviewUpdateModalProps> = ({
   resetForm,
   acceptPendingUpdate,
   rejectPendingUpdate,
+  loading = false,
 }) => {
   const handleClose = () => {
     onClose();
@@ -122,8 +125,8 @@ const ReviewUpdateModal: React.FC<ReviewUpdateModalProps> = ({
                     latestUpdate.newStatus === "complete"
                       ? "bg-emerald-50 text-emerald-800 dark:bg-green-900/30 dark:text-green-400"
                       : latestUpdate.newStatus === "canceled"
-                      ? "bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-400"
-                      : "bg-blue-50 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400"
+                        ? "bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-400"
+                        : "bg-blue-50 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400"
                   }`}
                 >
                   {latestUpdate.newStatus}
@@ -136,15 +139,31 @@ const ReviewUpdateModal: React.FC<ReviewUpdateModalProps> = ({
         <div className="flex justify-center gap-12 ">
           <button
             onClick={handleReject}
-            className="px-4 py-2 text-[hsl(var(--primary-foreground))] dark:text-white transition bg-red-600 rounded-lg hover:cursor-pointer hover:bg-red-700"
+            disabled={loading}
+            className="px-4 py-2 text-[hsl(var(--primary-foreground))] dark:text-white transition bg-red-600 rounded-lg hover:cursor-pointer hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            Reject Update
+            {loading ? (
+              <>
+                <Spinner className="text-white" />
+                <span>Rejecting...</span>
+              </>
+            ) : (
+              "Reject Update"
+            )}
           </button>
           <button
             onClick={handleApprove}
-            className="px-4 py-2 text-[hsl(var(--primary-foreground))] dark:text-white transition bg-green-600 rounded-lg hover:cursor-pointer hover:bg-green-700"
+            disabled={loading}
+            className="px-4 py-2 text-[hsl(var(--primary-foreground))] dark:text-white transition bg-green-600 rounded-lg hover:cursor-pointer hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            Approve Update
+            {loading ? (
+              <>
+                <Spinner className="text-white" />
+                <span>Approving...</span>
+              </>
+            ) : (
+              "Approve Update"
+            )}
           </button>
         </div>
       </div>

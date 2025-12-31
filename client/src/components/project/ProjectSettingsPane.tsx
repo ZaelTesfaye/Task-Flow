@@ -1,5 +1,6 @@
 import React from "react";
 import { X, Trash2 } from "lucide-react";
+import { Spinner } from "@/components/ui";
 
 export interface ProjectSettingsPaneProps {
   isOpen: boolean;
@@ -91,9 +92,16 @@ const ProjectSettingsPane: React.FC<ProjectSettingsPaneProps> = ({
           <button
             type="submit"
             disabled={isSaving}
-            className="w-full px-4 py-2 text-[hsl(var(--primary-foreground))] transition bg-blue-600 rounded-lg hover:cursor-pointer hover:bg-blue-700 disabled:opacity-70 disabled:cursor-not-allowed"
+            className="w-full px-4 py-2 text-[hsl(var(--primary-foreground))] transition bg-blue-600 rounded-lg hover:cursor-pointer hover:bg-blue-700 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            {isSaving ? "Saving..." : "Save Changes"}
+            {isSaving ? (
+              <>
+                <Spinner className="text-white" />
+                <span>Saving...</span>
+              </>
+            ) : (
+              "Save Changes"
+            )}
           </button>
           <button
             type="button"

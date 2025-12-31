@@ -10,6 +10,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  Spinner,
 } from "@/components/ui";
 
 interface CreateProjectModalProps {
@@ -20,6 +21,7 @@ interface CreateProjectModalProps {
   onTitleChange: (value: string) => void;
   onDescriptionChange: (value: string) => void;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  loading?: boolean;
 }
 
 const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
@@ -30,6 +32,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
   onTitleChange,
   onDescriptionChange,
   onSubmit,
+  loading = false,
 }) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -72,11 +75,23 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
               type="button"
               variant="outline"
               onClick={onClose}
+              disabled={loading}
             >
               Cancel
             </Button>
-            <Button type="submit" className="hover:cursor-pointer">
-              Create Project
+            <Button
+              type="submit"
+              className="hover:cursor-pointer flex items-center gap-2"
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <Spinner className="text-white" />
+                  <span>Creating...</span>
+                </>
+              ) : (
+                "Create Project"
+              )}
             </Button>
           </DialogFooter>
         </form>
