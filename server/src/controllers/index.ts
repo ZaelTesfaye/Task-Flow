@@ -4,3 +4,4 @@ export * as categoryController from "./category.controller.js";
 export * as projectController from "./project.controller.js";
 export * as taskController from "./task.controller.js";
 export * as userController from "./user.controller.js";
+export * as notificationController from "./notification.controller.js";

@@ -17,6 +17,7 @@ import {
   adminRoutes,
   superAdminRoutes,
   stripeRoutes,
+  notificationRoutes,
 } from "./routes/index.js";
 import {
   authMiddleware,
@@ -63,6 +64,7 @@ app.use("/api/task", authMiddleware, taskRoutes);
 app.use("/api/project", authMiddleware, projectRoutes);
 app.use("/api/category", authMiddleware, categoryRoutes);
 app.use("/api/user", authMiddleware, userRoutes);
+app.use("/api/notification", authMiddleware, notificationRoutes);
 app.use("/api/stripe", stripeRoutes);
 
 // ejs

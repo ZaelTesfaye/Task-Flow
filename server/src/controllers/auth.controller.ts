@@ -88,15 +88,12 @@ export const resetPassword = asyncWrapper(
   ) => {
     const { email, newPassword } = req.body;
     const data = await authServices.resetPassword(email, newPassword);
-    res
-      .cookie("auth", data.token, defaultCookieConfig)
-      .json({
-        message: data.message,
-        data: {
-          user: data.user,
-          token: data.token,
-        },
-      });
+    res.cookie("auth", data.token, defaultCookieConfig).json({
+      message: data.message,
+      data: {
+        user: data.user,
+        token: data.token,
+      },
+    });
   },
 );
-

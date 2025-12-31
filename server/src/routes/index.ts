@@ -6,4 +6,4 @@ export { default as categoryRoutes } from "./category.routes.js";
 export { default as adminRoutes } from "./admin.routes.js";
 export { default as superAdminRoutes } from "./super-admin.routes.js";
 export { default as stripeRoutes } from "./stripe.routes.js";
-
+export { default as notificationRoutes } from "./notification.routes.js";

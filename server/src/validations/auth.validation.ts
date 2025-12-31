@@ -50,4 +50,3 @@ export const resetPasswordSchema = {
     .required()
     .unknown(true),
 };
-

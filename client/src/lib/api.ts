@@ -46,19 +46,33 @@ export const authAPI = {
   logout: (): Promise<ApiResponse<void>> =>
     api.post<ApiResponse<void>>("/custom-auth/logout").then((r) => r.data),
 
-  requestPasswordReset: (email: string): Promise<ApiResponse<{ message: string }>> =>
+  requestPasswordReset: (
+    email: string
+  ): Promise<ApiResponse<{ message: string }>> =>
     api
-      .post<ApiResponse<{ message: string }>>("/custom-auth/forgot-password", { email })
+      .post<
+        ApiResponse<{ message: string }>
+      >("/custom-auth/forgot-password", { email })
       .then((r) => r.data),
 
-  verifyResetCode: (email: string, code: string): Promise<ApiResponse<{ message: string }>> =>
+  verifyResetCode: (
+    email: string,
+    code: string
+  ): Promise<ApiResponse<{ message: string }>> =>
     api
-      .post<ApiResponse<{ message: string }>>("/custom-auth/verify-reset-code", { email, code })
+      .post<
+        ApiResponse<{ message: string }>
+      >("/custom-auth/verify-reset-code", { email, code })
       .then((r) => r.data),
 
-  resetPassword: (email: string, newPassword: string): Promise<ApiResponse<AuthResponse>> =>
+  resetPassword: (
+    email: string,
+    newPassword: string
+  ): Promise<ApiResponse<AuthResponse>> =>
     api
-      .post<ApiResponse<AuthResponse>>("/custom-auth/reset-password", { email, newPassword })
+      .post<
+        ApiResponse<AuthResponse>
+      >("/custom-auth/reset-password", { email, newPassword })
       .then((r) => r.data),
 };
 
@@ -276,5 +290,66 @@ export const stripeAPI = {
   createPortalSession: (): Promise<{ url: string }> =>
     api
       .post<{ url: string }>("/stripe/create-portal-session")
+      .then((r) => r.data),
+};
+
+export const notificationAPI = {
+  getUnreadNotifications: (): Promise<
+    ApiResponse<
+      {
+        id: string;
+        type: string;
+        message: string;
+        isRead: boolean;
+        createdAt: string;
+        userId: string;
+        taskId: string | null;
+        projectId: string | null;
+      }[]
+    >
+  > =>
+    api
+      .get<
+        ApiResponse<
+          {
+            id: string;
+            type: string;
+            message: string;
+            isRead: boolean;
+            createdAt: string;
+            userId: string;
+            taskId: string | null;
+            projectId: string | null;
+          }[]
+        >
+      >("/notification/unread")
+      .then((r) => r.data),
+
+  getProjectNotificationCount: (
+    projectId: string
+  ): Promise<ApiResponse<{ count: number }>> =>
+    api
+      .get<
+        ApiResponse<{ count: number }>
+      >(`/notification/project/${projectId}/count`)
+      .then((r) => r.data),
+
+  markNotificationAsRead: (
+    notificationId: string
+  ): Promise<ApiResponse<void>> =>
+    api
+      .patch<ApiResponse<void>>(`/notification/${notificationId}/read`)
+      .then((r) => r.data),
+
+  markProjectNotificationsAsRead: (
+    projectId: string
+  ): Promise<ApiResponse<void>> =>
+    api
+      .patch<ApiResponse<void>>(`/notification/project/${projectId}/read`)
+      .then((r) => r.data),
+
+  deleteNotification: (notificationId: string): Promise<ApiResponse<void>> =>
+    api
+      .delete<ApiResponse<void>>(`/notification/${notificationId}`)
       .then((r) => r.data),
 };

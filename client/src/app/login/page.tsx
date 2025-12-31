@@ -44,7 +44,9 @@ export default function LoginPage() {
   // Forgot password states
   const [failedAttempts, setFailedAttempts] = useState(0);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
-  const [forgotPasswordStep, setForgotPasswordStep] = useState<"email" | "code" | "password">("email");
+  const [forgotPasswordStep, setForgotPasswordStep] = useState<
+    "email" | "code" | "password"
+  >("email");
   const [resetEmail, setResetEmail] = useState("");
   const [resetCode, setResetCode] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -128,7 +130,7 @@ export default function LoginPage() {
       if (mode === "login") {
         const newAttempts = failedAttempts + 1;
         setFailedAttempts(newAttempts);
-        
+
         if (newAttempts >= 3) {
           toast.error("Too many failed attempts. Please use Forgot Password.");
         } else {
@@ -192,7 +194,7 @@ export default function LoginPage() {
     try {
       await authAPI.resetPassword(resetEmail, newPassword);
       toast.success("Password reset successful! Logging you in...");
-      
+
       // Auto-login with the response data
       await checkSession();
       router.push("/dashboard");
@@ -242,8 +244,10 @@ export default function LoginPage() {
                   Reset Password
                 </h1>
                 <p className="mt-2 text-[hsl(var(--muted-foreground))]">
-                  {forgotPasswordStep === "email" && "Enter your email to receive a reset code"}
-                  {forgotPasswordStep === "code" && "Enter the 6-digit code sent to your email"}
+                  {forgotPasswordStep === "email" &&
+                    "Enter your email to receive a reset code"}
+                  {forgotPasswordStep === "code" &&
+                    "Enter the 6-digit code sent to your email"}
                   {forgotPasswordStep === "password" && "Set your new password"}
                 </p>
               </div>
@@ -282,7 +286,11 @@ export default function LoginPage() {
                       <input
                         type="text"
                         value={resetCode}
-                        onChange={(e) => setResetCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                        onChange={(e) =>
+                          setResetCode(
+                            e.target.value.replace(/\D/g, "").slice(0, 6)
+                          )
+                        }
                         className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition bg-[hsl(var(--background))] text-[hsl(var(--foreground))] border-[hsl(var(--border))] text-center text-2xl tracking-widest font-mono"
                         placeholder="000000"
                         maxLength={6}
@@ -329,7 +337,11 @@ export default function LoginPage() {
                     </div>
                     <button
                       onClick={handleResetPassword}
-                      disabled={isResetting || !newPassword || newPassword !== confirmPassword}
+                      disabled={
+                        isResetting ||
+                        !newPassword ||
+                        newPassword !== confirmPassword
+                      }
                       className="w-full py-3 font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {isResetting ? "Resetting..." : "Reset Password"}
@@ -374,129 +386,133 @@ export default function LoginPage() {
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-6">
-            {mode === "register" && (
-              <div>
-                <label
-                  htmlFor="name"
-                  className="block mb-2 text-sm font-medium text-[hsl(var(--foreground))]"
-                >
-                  Full Name
-                </label>
-                <input
-                  id="name"
-                  type="text"
-                  value={formData.name || ""}
-                  onChange={(e) => handleInputChange("name", e.target.value)}
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition bg-[hsl(var(--background))] text-[hsl(var(--foreground))] border-[hsl(var(--border))] ${
-                    errors.name ? "border-red-500" : ""
-                  }`}
-                  placeholder="John Doe"
-                />
-                {errors.name && (
-                  <p className="mt-1 text-sm text-red-600 dark:text-red-400">
-                    {errors.name}
-                  </p>
-                )}
-              </div>
-            )}
-
-            <div>
-              <label
-                htmlFor="email"
-                className="block mb-2 text-sm font-medium text-[hsl(var(--foreground))]"
-              >
-                Email Address
-              </label>
-              <input
-                id="email"
-                type="email"
-                value={formData.email}
-                onChange={(e) => handleInputChange("email", e.target.value)}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition bg-[hsl(var(--background))] text-[hsl(var(--foreground))] border-[hsl(var(--border))] ${
-                  errors.email ? "border-red-500" : ""
-                }`}
-                placeholder="john@example.com"
-              />
-              {errors.email && (
-                <p className="mt-1 text-sm text-red-600 dark:text-red-400">
-                  {errors.email}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label
-                htmlFor="password"
-                className="block mb-2 text-sm font-medium text-[hsl(var(--foreground))]"
-              >
-                Password
-              </label>
-              <input
-                id="password"
-                type="password"
-                value={formData.password}
-                onChange={(e) => handleInputChange("password", e.target.value)}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition bg-[hsl(var(--background))] text-[hsl(var(--foreground))] border-[hsl(var(--border))] ${
-                  errors.password ? "border-red-500" : ""
-                }`}
-                placeholder="••••••••"
-              />
-              {errors.password && (
-                <p className="mt-1 text-sm text-red-600 dark:text-red-400">
-                  {errors.password}
-                </p>
-              )}
-            </div>
-
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full py-3 dark:text-white font-semibold text-[hsl(var(--primary-foreground))] transition bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed hover:cursor-pointer"
-            >
-              {isLoading
-                ? mode === "login"
-                  ? "Signing in..."
-                  : "Creating account..."
-                : mode === "login"
-                  ? "Sign In"
-                  : "Create Account"}
-            </button>
-
-            {/* Show Forgot Password button after 3 failed attempts */}
-            {mode === "login" && failedAttempts >= 3 && (
-              <button
-                type="button"
-                onClick={() => {
-                  setShowForgotPassword(true);
-                  setResetEmail(formData.email);
-                }}
-                className="w-full py-2 text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 flex items-center justify-center gap-2"
-              >
-                <Mail className="w-4 h-4" />
-                Forgot Password?
-              </button>
-            )}
-
-            <div className="flex justify-center w-full mt-4">
-              {/* Custom styled container with Google's button as overlay */}
-              <div
-                className={`relative w-full group ${isGoogleLoaded ? "cursor-pointer" : "cursor-not-allowed"}`}
-              >
-                {/* Loading Overlay */}
-                {isGoogleLoading && (
-                  <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/80 dark:bg-neutral-800/80 rounded-lg backdrop-blur-sm">
-                    <div className="flex flex-col items-center gap-2">
-                      <div className="w-6 h-6 border-2 border-blue-600 rounded-full border-t-transparent animate-spin"></div>
-                      <span className="text-sm text-gray-700 dark:text-gray-200">
-                        Signing in...
-                      </span>
-                    </div>
+                {mode === "register" && (
+                  <div>
+                    <label
+                      htmlFor="name"
+                      className="block mb-2 text-sm font-medium text-[hsl(var(--foreground))]"
+                    >
+                      Full Name
+                    </label>
+                    <input
+                      id="name"
+                      type="text"
+                      value={formData.name || ""}
+                      onChange={(e) =>
+                        handleInputChange("name", e.target.value)
+                      }
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition bg-[hsl(var(--background))] text-[hsl(var(--foreground))] border-[hsl(var(--border))] ${
+                        errors.name ? "border-red-500" : ""
+                      }`}
+                      placeholder="John Doe"
+                    />
+                    {errors.name && (
+                      <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                        {errors.name}
+                      </p>
+                    )}
                   </div>
                 )}
 
-                {/* Custom visual button (underneath) */}
-                <div
-                  className={`
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="block mb-2 text-sm font-medium text-[hsl(var(--foreground))]"
+                  >
+                    Email Address
+                  </label>
+                  <input
+                    id="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => handleInputChange("email", e.target.value)}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition bg-[hsl(var(--background))] text-[hsl(var(--foreground))] border-[hsl(var(--border))] ${
+                      errors.email ? "border-red-500" : ""
+                    }`}
+                    placeholder="john@example.com"
+                  />
+                  {errors.email && (
+                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                      {errors.email}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="password"
+                    className="block mb-2 text-sm font-medium text-[hsl(var(--foreground))]"
+                  >
+                    Password
+                  </label>
+                  <input
+                    id="password"
+                    type="password"
+                    value={formData.password}
+                    onChange={(e) =>
+                      handleInputChange("password", e.target.value)
+                    }
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition bg-[hsl(var(--background))] text-[hsl(var(--foreground))] border-[hsl(var(--border))] ${
+                      errors.password ? "border-red-500" : ""
+                    }`}
+                    placeholder="••••••••"
+                  />
+                  {errors.password && (
+                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                      {errors.password}
+                    </p>
+                  )}
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full py-3 dark:text-white font-semibold text-[hsl(var(--primary-foreground))] transition bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed hover:cursor-pointer"
+                >
+                  {isLoading
+                    ? mode === "login"
+                      ? "Signing in..."
+                      : "Creating account..."
+                    : mode === "login"
+                      ? "Sign In"
+                      : "Create Account"}
+                </button>
+
+                {/* Show Forgot Password button after 3 failed attempts */}
+                {mode === "login" && failedAttempts >= 3 && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowForgotPassword(true);
+                      setResetEmail(formData.email);
+                    }}
+                    className="w-full py-2 text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 flex items-center justify-center gap-2"
+                  >
+                    <Mail className="w-4 h-4" />
+                    Forgot Password?
+                  </button>
+                )}
+
+                <div className="flex justify-center w-full mt-4">
+                  {/* Custom styled container with Google's button as overlay */}
+                  <div
+                    className={`relative w-full group ${isGoogleLoaded ? "cursor-pointer" : "cursor-not-allowed"}`}
+                  >
+                    {/* Loading Overlay */}
+                    {isGoogleLoading && (
+                      <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/80 dark:bg-neutral-800/80 rounded-lg backdrop-blur-sm">
+                        <div className="flex flex-col items-center gap-2">
+                          <div className="w-6 h-6 border-2 border-blue-600 rounded-full border-t-transparent animate-spin"></div>
+                          <span className="text-sm text-gray-700 dark:text-gray-200">
+                            Signing in...
+                          </span>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Custom visual button (underneath) */}
+                    <div
+                      className={`
                     flex items-center justify-center w-full px-4 py-3 
                     font-medium transition-all duration-200 ease-in-out
                     bg-white dark:bg-neutral-800 
@@ -505,69 +521,69 @@ export default function LoginPage() {
                     ${isGoogleLoaded ? "group-hover:shadow-md group-hover:bg-gray-50 dark:group-hover:bg-neutral-700 group-hover:border-gray-300 dark:group-hover:border-neutral-600" : "opacity-50"}
                     pointer-events-none
                   `}
-                >
-                  <img
-                    src="https://www.svgrepo.com/show/475656/google-color.svg"
-                    alt="Google"
-                    className="w-5 h-5 mr-3"
-                  />
-                  <span className="text-gray-700 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-white">
-                    Sign in with Google
-                  </span>
-                </div>
+                    >
+                      <img
+                        src="https://www.svgrepo.com/show/475656/google-color.svg"
+                        alt="Google"
+                        className="w-5 h-5 mr-3"
+                      />
+                      <span className="text-gray-700 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-white">
+                        Sign in with Google
+                      </span>
+                    </div>
 
-                {/* Google's actual button (transparent overlay on top - clickable) */}
-                <div
-                  ref={googleButtonRef}
-                  className={`absolute inset-0 flex items-center justify-center overflow-hidden rounded-lg [&_iframe]:!w-full [&_iframe]:!h-full [&_div]:!w-full [&_div]:!h-full ${!isGoogleLoaded ? "pointer-events-none" : ""}`}
-                  style={{ opacity: 0.01 }}
-                >
-                  <GoogleLogin
-                    onSuccess={async (
-                      credentialResponse: CredentialResponse
-                    ) => {
-                      if (credentialResponse.credential) {
-                        setIsGoogleLoading(true);
-                        try {
-                          await authClient.signIn.social({
-                            provider: "google",
-                            idToken: {
-                              token: credentialResponse.credential,
-                            },
-                          });
-                          await checkSession();
-                          toast.success("Login successful!");
-                          router.push("/dashboard");
-                        } catch (error) {
-                          toast.error("Google Login failed.");
-                          setIsGoogleLoading(false);
-                        }
-                      }
-                    }}
-                    onError={() => {
-                      toast.error("Google Login Failed");
-                    }}
-                    useOneTap
-                    auto_select
-                    theme={theme === "dark" ? "filled_black" : "outline"}
-                    size="large"
-                    width={400}
-                  />
+                    {/* Google's actual button (transparent overlay on top - clickable) */}
+                    <div
+                      ref={googleButtonRef}
+                      className={`absolute inset-0 flex items-center justify-center overflow-hidden rounded-lg [&_iframe]:!w-full [&_iframe]:!h-full [&_div]:!w-full [&_div]:!h-full ${!isGoogleLoaded ? "pointer-events-none" : ""}`}
+                      style={{ opacity: 0.01 }}
+                    >
+                      <GoogleLogin
+                        onSuccess={async (
+                          credentialResponse: CredentialResponse
+                        ) => {
+                          if (credentialResponse.credential) {
+                            setIsGoogleLoading(true);
+                            try {
+                              await authClient.signIn.social({
+                                provider: "google",
+                                idToken: {
+                                  token: credentialResponse.credential,
+                                },
+                              });
+                              await checkSession();
+                              toast.success("Login successful!");
+                              router.push("/dashboard");
+                            } catch (error) {
+                              toast.error("Google Login failed.");
+                              setIsGoogleLoading(false);
+                            }
+                          }
+                        }}
+                        onError={() => {
+                          toast.error("Google Login Failed");
+                        }}
+                        useOneTap
+                        auto_select
+                        theme={theme === "dark" ? "filled_black" : "outline"}
+                        size="large"
+                        width={400}
+                      />
+                    </div>
+                  </div>
                 </div>
+              </form>
+
+              <div className="mt-6 text-center">
+                <button
+                  onClick={toggleLoginMode}
+                  className="font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:cursor-pointer"
+                >
+                  {mode === "login"
+                    ? "Don't have an account? Sign up"
+                    : "Already have an account? Sign in"}
+                </button>
               </div>
-            </div>
-          </form>
-
-          <div className="mt-6 text-center">
-            <button
-              onClick={toggleLoginMode}
-              className="font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:cursor-pointer"
-            >
-              {mode === "login"
-                ? "Don't have an account? Sign up"
-                : "Already have an account? Sign in"}
-            </button>
-          </div>
             </>
           )}
         </div>

@@ -175,4 +175,3 @@ export const resetPassword = async (email: string, newPassword: string) => {
     message: "Password reset successfully",
   };
 };
-

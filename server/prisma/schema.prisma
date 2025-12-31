@@ -32,6 +32,8 @@ model User {
   stripePriceId          String?
   stripeCurrentPeriodEnd DateTime?
 
+  notifications Notification[]
+
   @@map("user")
 }
 
@@ -186,4 +188,22 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  type      String   @default("task_assigned") // task_assigned, task_updated, task_completed
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  taskId    String?
+  projectId String?
+
+  @@index([userId, isRead])
+  @@index([userId, projectId, isRead])
+  @@map("notification")
 }

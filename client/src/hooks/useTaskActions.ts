@@ -21,6 +21,10 @@ export const useTaskActions = (
       await queryClient.invalidateQueries({
         queryKey: ["project", projectId, "categories"],
       });
+      // Invalidate notification count for this project
+      await queryClient.invalidateQueries({
+        queryKey: ["project-notifications", projectId],
+      });
       refetch();
     },
     [projectId, refetch, queryClient]

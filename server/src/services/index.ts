@@ -6,3 +6,4 @@ export * as taskServices from "./task.service.js";
 export * as userServices from "./user.service.js";
 export * as stripeServices from "./stripe.service.js";
 export * as emailServices from "./email.service.js";
+export * as notificationServices from "./notification.service.js";
