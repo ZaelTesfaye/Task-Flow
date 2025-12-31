@@ -13,13 +13,13 @@ export const useTaskActions = (
 
   const createTask = useCallback(
     async (
-      categoryId: string,
+      phaseId: string,
       data: { title: string; description: string; assignedTo: string }
     ) => {
-      await taskAPI.createTask(projectId as string, categoryId, data);
+      await taskAPI.createTask(projectId as string, phaseId, data);
       toast.success("Task created!");
       await queryClient.invalidateQueries({
-        queryKey: ["project", projectId, "categories"],
+        queryKey: ["project", projectId, "phases"],
       });
       // Invalidate notification count for this project
       await queryClient.invalidateQueries({
@@ -35,7 +35,7 @@ export const useTaskActions = (
       await taskAPI.updateTask(projectId as string, taskId, data);
       toast.success("Task updated!");
       await queryClient.invalidateQueries({
-        queryKey: ["project", projectId, "categories"],
+        queryKey: ["project", projectId, "phases"],
       });
       refetch();
     },
@@ -47,7 +47,7 @@ export const useTaskActions = (
       await taskAPI.removeTask(projectId as string, taskId);
       toast.success("Task deleted!");
       await queryClient.invalidateQueries({
-        queryKey: ["project", projectId, "categories"],
+        queryKey: ["project", projectId, "phases"],
       });
       refetch();
     },
@@ -59,7 +59,7 @@ export const useTaskActions = (
       await taskAPI.updateTask(projectId as string, taskId, { status });
       toast.success("Task status updated!");
       await queryClient.invalidateQueries({
-        queryKey: ["project", projectId, "categories"],
+        queryKey: ["project", projectId, "phases"],
       });
       refetch();
     },
@@ -78,7 +78,7 @@ export const useTaskActions = (
       });
       toast.success("Update request submitted!");
       await queryClient.invalidateQueries({
-        queryKey: ["project", projectId, "categories"],
+        queryKey: ["project", projectId, "phases"],
       });
       refetch();
     },
@@ -92,7 +92,7 @@ export const useTaskActions = (
       });
       toast.success("Update approved!");
       await queryClient.invalidateQueries({
-        queryKey: ["project", projectId, "categories"],
+        queryKey: ["project", projectId, "phases"],
       });
       refetch();
     },
@@ -104,7 +104,7 @@ export const useTaskActions = (
       await taskAPI.rejectPendingUpdate(projectId as string, pendingUpdateId);
       toast.success("Update rejected!");
       await queryClient.invalidateQueries({
-        queryKey: ["project", projectId, "categories"],
+        queryKey: ["project", projectId, "phases"],
       });
       refetch();
     },
