@@ -155,7 +155,7 @@ export default function LoginPage() {
       await authAPI.requestPasswordReset(resetEmail);
       toast.success("Reset code sent to your email!");
       setForgotPasswordStep("code");
-    } catch {
+    } catch (error: any) {
       toast.error(error.response?.data?.message || "Failed to send reset code");
     } finally {
       setIsResetting(false);

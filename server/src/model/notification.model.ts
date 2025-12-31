@@ -12,8 +12,8 @@ export const createNotification = async (
       userId,
       type,
       message,
-      taskId,
-      projectId,
+      taskId: taskId || null,
+      projectId: projectId || null,
     },
   });
 };
