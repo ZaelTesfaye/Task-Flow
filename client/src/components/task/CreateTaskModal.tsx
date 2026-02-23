@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { X } from "lucide-react";
 
 import { Modal } from "@/components/modals";
@@ -26,18 +26,24 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
   members,
   loading = false,
 }) => {
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    assignee: "",
-  });
+  const initialFormData = useMemo(
+    () => ({
+      title: "",
+      description: "",
+      assignee: members.length > 0 ? members[0].userId : "",
+    }),
+    [members],
+  );
 
-  // Set default assignee to first member when modal opens or members change
+  const [formData, setFormData] = useState(initialFormData);
+
+  // Reset form when modal opens
   useEffect(() => {
-    if (isOpen && members.length > 0 && !formData.assignee) {
-      setFormData((prev) => ({ ...prev, assignee: members[0].userId }));
+    if (isOpen) {
+      setFormData(initialFormData);
     }
-  }, [isOpen, members]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,7 +62,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
       });
       setFormData({ title: "", description: "", assignee: "" });
       onClose();
-    } catch (error) {
+    } catch {
       // Error is handled by the parent component
     }
   };

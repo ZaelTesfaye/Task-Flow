@@ -5,7 +5,6 @@ import toast from "react-hot-toast";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { projectAPI, stripeAPI } from "@/lib";
-import type { Project } from "@/types";
 import { useAuth } from "@/context";
 import {
   ProjectNavigation,
@@ -13,23 +12,13 @@ import {
   ProjectsGridSection,
 } from "@/components";
 
-interface ProjectGroups {
-  owner: Project[];
-  admin: Project[];
-  member: Project[];
-}
-
 export default function Dashboard() {
   const { user, loading: authLoading, checkSession } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();
 
-  const {
-    data: projectsData,
-    isLoading: projectsLoading,
-    refetch: fetchProjects,
-  } = useQuery({
+  const { data: projectsData, isLoading: projectsLoading } = useQuery({
     queryKey: ["user-projects"],
     queryFn: () => projectAPI.getUserProjects(),
     enabled: !!user && !authLoading,
@@ -61,7 +50,7 @@ export default function Dashboard() {
           if (result.isPremium && result.status === "active") {
             // Success - subscription is active
             await checkSession(); // Refresh user data
-            toast.success("🎉 Subscription activated successfully!");
+            toast.success("Subscription activated successfully!");
             // Remove query params from URL
             router.replace("/dashboard");
             return true;
@@ -69,7 +58,7 @@ export default function Dashboard() {
             // Timeout after 5 minutes
             toast.error(
               "Subscription verification timed out. Please contact support at support@task-flows.tech if you were charged.",
-              { duration: 10000 }
+              { duration: 10000 },
             );
             router.replace("/dashboard");
             return true;
@@ -80,7 +69,7 @@ export default function Dashboard() {
           if (attempts >= maxAttempts) {
             toast.error(
               "Failed to verify subscription. Please contact support@task-flows.tech",
-              { duration: 10000 }
+              { duration: 10000 },
             );
             router.replace("/dashboard");
             return true;

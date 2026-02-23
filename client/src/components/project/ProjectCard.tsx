@@ -12,7 +12,6 @@ import {
 } from "../ui";
 import { ROLE_BADGE_COLORS } from "@/constants";
 import { notificationAPI } from "@/lib/api";
-import { useEffect } from "react";
 
 export interface ProjectProps {
   id: string;
@@ -80,7 +79,7 @@ const ProjectCard = ({
     >
       {/* Notification Badge */}
       {notificationCount > 0 && (
-        <div className="absolute -top-2 -right-2 z-10">
+        <div className="absolute z-10 -top-2 -right-2">
           <div className="flex items-center justify-center min-w-[24px] h-6 px-2 bg-red-500 rounded-full shadow-lg">
             <span className="text-xs font-bold text-white">
               {notificationCount > 99 ? "99+" : notificationCount}

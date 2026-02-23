@@ -1,5 +1,4 @@
 import React from "react";
-import { useRouter } from "next/navigation";
 import { Trash2 } from "lucide-react";
 
 import { Modal } from "@/components/modals";
@@ -19,7 +18,7 @@ interface MembersModalProps {
   onRemoveMember: (userId: string, memberName: string) => void;
   updateForm: (key: any, value: any) => void;
   openModal: (
-    key: keyof typeof import("@/constants/project").DEFAULT_MODAL_STATE
+    key: keyof typeof import("@/constants/project").DEFAULT_MODAL_STATE,
   ) => void;
 }
 
@@ -29,13 +28,10 @@ const MembersModal: React.FC<MembersModalProps> = ({
   members,
   project,
   userRole,
-  onAddMember,
   onUpdateMemberAccess,
   updateForm,
   openModal,
 }) => {
-  const router = useRouter();
-
   return (
     <Modal isOpen={isOpen} onClose={onClose} className="max-w-2xl">
       <div className="flex items-center justify-between mb-6">
@@ -72,7 +68,7 @@ const MembersModal: React.FC<MembersModalProps> = ({
                   onChange={(e) =>
                     onUpdateMemberAccess(
                       member.userId,
-                      e.target.value as "admin" | "member"
+                      e.target.value as "admin" | "member",
                     )
                   }
                   className="px-3 py-1 border border-[hsl(var(--input))] rounded-lg text-sm outline-none bg-[hsl(var(--card))] text-[hsl(var(--foreground))]"

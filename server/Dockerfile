@@ -1,4 +1,4 @@
-# ------------------------ Build Stage ------------------------
+# Build Stage
 FROM node:20-slim AS build
 
 RUN addgroup --system app && adduser --system --ingroup app app
@@ -16,7 +16,7 @@ ENV NODE_TLS_REJECT_UNAUTHORIZED=0
 RUN npx prisma generate
 RUN npm run build
 
-# ---------------------- Runtime Stage ----------------------
+# Runtime Stage
 FROM node:20-slim AS runtime
 
 RUN apt-get update && apt-get install -y curl gosu && rm -rf /var/lib/apt/lists/*

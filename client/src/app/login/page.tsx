@@ -1,5 +1,5 @@
 "use client";
-
+import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 import { LogIn, UserPlus, Mail, KeyRound } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -115,10 +115,10 @@ export default function LoginPage() {
       if (mode === "register") {
         await register(formData as RegisterFormData);
         toast.success(
-          "Registration successful! Please check your email for the verification code."
+          "Registration successful! Please check your email for the verification code.",
         );
         router.push(
-          `/verify-email?email=${encodeURIComponent(formData.email.trim())}`
+          `/verify-email?email=${encodeURIComponent(formData.email.trim())}`,
         );
       } else {
         await login(formData as LoginFormData);
@@ -126,7 +126,7 @@ export default function LoginPage() {
         setFailedAttempts(0); // Reset on success
         router.push("/dashboard");
       }
-    } catch (error: any) {
+    } catch {
       if (mode === "login") {
         const newAttempts = failedAttempts + 1;
         setFailedAttempts(newAttempts);
@@ -288,7 +288,7 @@ export default function LoginPage() {
                         value={resetCode}
                         onChange={(e) =>
                           setResetCode(
-                            e.target.value.replace(/\D/g, "").slice(0, 6)
+                            e.target.value.replace(/\D/g, "").slice(0, 6),
                           )
                         }
                         className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition bg-[hsl(var(--background))] text-[hsl(var(--foreground))] border-[hsl(var(--border))] text-center text-2xl tracking-widest font-mono"
@@ -471,7 +471,7 @@ export default function LoginPage() {
                 >
                   {isLoading ? (
                     <>
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      <div className="w-5 h-5 border-2 border-white rounded-full border-t-transparent animate-spin"></div>
                       <span>
                         {mode === "login"
                           ? "Signing in..."
@@ -493,7 +493,7 @@ export default function LoginPage() {
                       setShowForgotPassword(true);
                       setResetEmail(formData.email);
                     }}
-                    className="w-full py-2 text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 flex items-center justify-center gap-2"
+                    className="flex items-center justify-center w-full gap-2 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
                   >
                     <Mail className="w-4 h-4" />
                     Forgot Password?
@@ -507,7 +507,7 @@ export default function LoginPage() {
                   >
                     {/* Loading Overlay */}
                     {isGoogleLoading && (
-                      <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/80 dark:bg-neutral-800/80 rounded-lg backdrop-blur-sm">
+                      <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-white/80 dark:bg-neutral-800/80 backdrop-blur-sm">
                         <div className="flex flex-col items-center gap-2">
                           <div className="w-6 h-6 border-2 border-blue-600 rounded-full border-t-transparent animate-spin"></div>
                           <span className="text-sm text-gray-700 dark:text-gray-200">
@@ -529,7 +529,7 @@ export default function LoginPage() {
                     pointer-events-none
                   `}
                     >
-                      <img
+                      <Image
                         src="https://www.svgrepo.com/show/475656/google-color.svg"
                         alt="Google"
                         className="w-5 h-5 mr-3"
@@ -547,7 +547,7 @@ export default function LoginPage() {
                     >
                       <GoogleLogin
                         onSuccess={async (
-                          credentialResponse: CredentialResponse
+                          credentialResponse: CredentialResponse,
                         ) => {
                           if (credentialResponse.credential) {
                             setIsGoogleLoading(true);
@@ -561,7 +561,7 @@ export default function LoginPage() {
                               await checkSession();
                               toast.success("Login successful!");
                               router.push("/dashboard");
-                            } catch (error) {
+                            } catch {
                               toast.error("Google Login failed.");
                               setIsGoogleLoading(false);
                             }

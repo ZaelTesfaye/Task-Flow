@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import toast from "react-hot-toast";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import { useAuth } from "@/context";
 import { userAPI, projectAPI, stripeAPI } from "@/lib";
@@ -18,7 +18,6 @@ export default function Header() {
   const { user, logout, updateUserData, loading } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
-  const queryClient = useQueryClient();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
@@ -32,7 +31,7 @@ export default function Header() {
     queryFn: async () => {
       const response = await projectAPI.getMyInvitations();
       const pendingInvitations = response.data.filter(
-        (inv: ProjectInvitation) => inv.status === "pending"
+        (inv: ProjectInvitation) => inv.status === "pending",
       );
       return pendingInvitations.length;
     },
@@ -91,7 +90,7 @@ export default function Header() {
       }
     } catch (error: any) {
       toast.error(
-        error.response?.data?.message || "Failed to open billing portal"
+        error.response?.data?.message || "Failed to open billing portal",
       );
     }
   };

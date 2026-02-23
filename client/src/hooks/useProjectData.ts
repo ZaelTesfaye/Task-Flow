@@ -1,5 +1,3 @@
-import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { projectAPI, taskAPI } from "@/lib";
@@ -8,7 +6,6 @@ import { ProjectMember } from "@/types";
 
 export const useProjectData = (projectId: string | string[] | undefined) => {
   const { user } = useAuth();
-  const router = useRouter();
   const queryClient = useQueryClient();
 
   const {
@@ -35,7 +32,7 @@ export const useProjectData = (projectId: string | string[] | undefined) => {
 
   const members = membersData?.data || [];
   const currentMember = members.find(
-    (m: ProjectMember) => m.userId === user?.id
+    (m: ProjectMember) => m.userId === user?.id,
   );
   const userRole = (currentMember?.access || "member") as
     | "owner"

@@ -10,7 +10,7 @@ interface ReviewUpdateModalProps {
   task: any;
   forms: any;
   resetForm: (
-    key: keyof typeof import("@/constants/project").DEFAULT_FORM_STATE
+    key: keyof typeof import("@/constants/project").DEFAULT_FORM_STATE,
   ) => void;
   acceptPendingUpdate: (pendingUpdateId: string, newStatus: TaskStatus) => void;
   rejectPendingUpdate: (pendingUpdateId: string) => void;
@@ -20,7 +20,6 @@ interface ReviewUpdateModalProps {
 const ReviewUpdateModal: React.FC<ReviewUpdateModalProps> = ({
   isOpen,
   onClose,
-  task,
   forms,
   resetForm,
   acceptPendingUpdate,
@@ -52,7 +51,7 @@ const ReviewUpdateModal: React.FC<ReviewUpdateModalProps> = ({
     const latestUpdate = pendingUpdates[pendingUpdates.length - 1];
     acceptPendingUpdate(
       latestUpdate.id,
-      latestUpdate.newStatus as "active" | "complete" | "canceled"
+      latestUpdate.newStatus as "active" | "complete" | "canceled",
     );
     handleClose();
   };

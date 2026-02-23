@@ -16,10 +16,10 @@ const api = axios.create({
 export const adminAPI = {
   getAllUsers: async (
     page: number = 1,
-    limit: number = 10
+    limit: number = 10,
   ): Promise<AdminUser[]> => {
     const response = await api.get<AdminUser[]>(
-      `/api/admin/user/${page}/${limit}`
+      `/api/admin/user/${page}/${limit}`,
     );
     return response.data;
   },
@@ -32,7 +32,7 @@ export const adminAPI = {
   // Update user password
   updateUserPassword: async (
     userId: string,
-    newPassword: string
+    newPassword: string,
   ): Promise<void> => {
     await api.patch("/api/admin/user", { userId, password: newPassword });
   },
@@ -40,7 +40,7 @@ export const adminAPI = {
   // Login using custom auth
   login: async (
     email: string,
-    password: string
+    password: string,
   ): Promise<{ token: string; user: AdminUser }> => {
     const response = await api.post("/api/custom-auth/login", {
       email,
@@ -58,7 +58,7 @@ export const adminAPI = {
   createAdmin: async (
     username: string,
     name: string,
-    password: string
+    password: string,
   ): Promise<void> => {
     await api.post("/api/super-admin/create-admin", {
       username,

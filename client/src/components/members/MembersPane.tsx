@@ -49,7 +49,7 @@ const MembersPane: React.FC<MembersPaneProps> = ({
     try {
       await onRefresh();
       toast.success("Members list refreshed!");
-    } catch (error) {
+    } catch {
       toast.error("Failed to refresh members");
     } finally {
       setIsRefreshing(false);
