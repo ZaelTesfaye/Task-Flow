@@ -10,8 +10,8 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui";
-import { ROLE_BADGE_COLORS } from "@/constants";
-import { notificationAPI } from "@/lib/api";
+import { notificationAPI } from "@/services";
+import type { ApiResponse } from "@/types";
 
 export interface ProjectProps {
   id: string;
@@ -44,7 +44,10 @@ const ProjectCard = ({
   // Fetch notification count for this project
   const { data: notificationData } = useQuery({
     queryKey: ["project-notifications", project.id],
-    queryFn: () => notificationAPI.getProjectNotificationCount(project.id),
+    queryFn: () =>
+      notificationAPI.get<ApiResponse<{ count: number }>>(
+        `project/${project.id}/count`,
+      ),
     refetchInterval: 30000, // Refetch every 30 seconds
     refetchOnWindowFocus: true,
   });
@@ -52,14 +55,19 @@ const ProjectCard = ({
   const notificationCount = notificationData?.data?.count || 0;
 
   const badgeClasses =
-    ROLE_BADGE_COLORS[role as keyof typeof ROLE_BADGE_COLORS] ||
-    "bg-gray-100 text-gray-900 border border-gray-300 dark:bg-gray-800 dark:text-gray-100";
+    role === "owner"
+      ? "badge-role-owner"
+      : role === "admin"
+        ? "badge-role-admin"
+        : role === "member"
+          ? "badge-role-member"
+          : "bg-gray-100 text-gray-900 border border-gray-300 dark:bg-gray-800 dark:text-gray-100";
 
   const handleCardClick = async () => {
     // Mark project notifications as read when navigating to project
     if (notificationCount > 0) {
       try {
-        await notificationAPI.markProjectNotificationsAsRead(project.id);
+        await notificationAPI.patch(undefined, `project/${project.id}/read`);
         // Invalidate the query to immediately update the UI
         await queryClient.invalidateQueries({
           queryKey: ["project-notifications", project.id],

@@ -4,7 +4,7 @@ import { CheckCircle, Users, BarChart3 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-import { useAuth } from "@/context";
+import { useAuthContext } from "@/context";
 import {
   Button,
   Card,
@@ -42,7 +42,7 @@ const features = [
 ];
 
 export default function HomePage() {
-  const { user, loading } = useAuth();
+  const { user, loading } = useAuthContext();
   const router = useRouter();
 
   useEffect(() => {

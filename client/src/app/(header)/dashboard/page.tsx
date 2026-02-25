@@ -5,7 +5,9 @@ import toast from "react-hot-toast";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { projectAPI, stripeAPI } from "@/lib";
-import { useAuth } from "@/context";
+import type { UserProjectsResponse, ApiResponse, Project } from "@/types";
+import { useAuthContext } from "@/context";
+import { useAuthActions } from "@/hooks";
 import {
   ProjectNavigation,
   CreateProjectModal,
@@ -13,14 +15,15 @@ import {
 } from "@/components";
 
 export default function Dashboard() {
-  const { user, loading: authLoading, checkSession } = useAuth();
+  const { user, loading: authLoading } = useAuthContext();
+  const { checkSession } = useAuthActions();
   const router = useRouter();
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();
 
   const { data: projectsData, isLoading: projectsLoading } = useQuery({
     queryKey: ["user-projects"],
-    queryFn: () => projectAPI.getUserProjects(),
+    queryFn: () => projectAPI.get<ApiResponse<UserProjectsResponse>>(),
     enabled: !!user && !authLoading,
   });
 
@@ -45,7 +48,13 @@ export default function Dashboard() {
 
       const verifySubscription = async () => {
         try {
-          const result = await stripeAPI.verifySubscriptionStatus(sessionId);
+          const result = await stripeAPI.get<{
+            isPremium: boolean;
+            status: string;
+            message: string;
+            priceId?: string;
+            subscriptionId?: string;
+          }>("verify-subscription", { params: { sessionId } });
 
           if (result.isPremium && result.status === "active") {
             // Success - subscription is active
@@ -68,7 +77,7 @@ export default function Dashboard() {
           console.error("Subscription verification error:", error);
           if (attempts >= maxAttempts) {
             toast.error(
-              "Failed to verify subscription. Please contact support@task-flows.tech",
+              "Failed to verify subscription. Please try again after a while. If issues persist, contact support@task-flows.tech",
               { duration: 10000 },
             );
             router.replace("/dashboard");
@@ -90,7 +99,7 @@ export default function Dashboard() {
         }
       }, pollInterval);
 
-      // Initial verification
+      // Initial verification (Set interfval starts after the inrval time)
       verifySubscription().then((done) => {
         if (done) {
           clearInterval(interval);
@@ -104,15 +113,17 @@ export default function Dashboard() {
         toast.dismiss(loadingToast);
       };
     }
-  }, [searchParams, user, checkSession, router]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, user, router]);
 
   const handleCreateProject = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const createdProject = await projectAPI.createProject({
-        title,
-        description,
-      });
+      const response = await projectAPI.post<{
+        message: string;
+        data: Project;
+      }>({ title, description });
+      const createdProject = response.data;
       toast.success("Project created successfully!");
       setShowCreateModal(false);
       setTitle("");

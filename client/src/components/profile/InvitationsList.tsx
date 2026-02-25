@@ -1,7 +1,6 @@
 import { Check, XCircle } from "lucide-react";
 import { Button, Spinner } from "@/components/ui";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui";
-import { INVITATION_STATUS_COLORS } from "@/constants";
 import type { ProjectInvitation } from "@/types";
 
 interface InvitationsListProps {
@@ -35,7 +34,13 @@ export default function InvitationsList({
             </div>
             <span
               className={`${
-                INVITATION_STATUS_COLORS[invitation.status]
+                invitation.status === "pending"
+                  ? "badge-invitation-pending"
+                  : invitation.status === "accepted"
+                    ? "badge-invitation-accepted"
+                    : invitation.status === "declined"
+                      ? "badge-invitation-declined"
+                      : "badge-invitation-expired"
               } capitalize px-3 py-1 rounded-full text-xs font-semibold`}
             >
               {invitation.status}

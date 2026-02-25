@@ -6,7 +6,7 @@ import { RefreshCw, Clock } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { projectAPI } from "@/lib";
-import type { ProjectInvitation } from "@/types";
+import type { ProjectInvitation, ApiResponse } from "@/types";
 import {
   Button,
   Card,
@@ -25,7 +25,8 @@ export default function InvitationsPage() {
   const loadInvitations = async () => {
     try {
       setLoading(true);
-      const response = await projectAPI.getMyInvitations();
+      const response =
+        await projectAPI.get<ApiResponse<ProjectInvitation[]>>("invitations");
       setInvitations(response.data || []);
     } catch (error) {
       console.error("Failed to load invitations", error);
@@ -45,13 +46,13 @@ export default function InvitationsPage() {
 
   const handleRespond = async (
     invitationId: string,
-    action: "accept" | "decline"
+    action: "accept" | "decline",
   ) => {
     try {
       setInvitationLoading(true);
-      await projectAPI.respondToInvitation(invitationId, { action });
+      await projectAPI.patch({ action }, `invitations/${invitationId}`);
       toast.success(
-        action === "accept" ? "Invitation accepted!" : "Invitation declined."
+        action === "accept" ? "Invitation accepted!" : "Invitation declined.",
       );
       // Invalidate projects cache when accepting an invitation
       if (action === "accept") {
@@ -62,7 +63,7 @@ export default function InvitationsPage() {
       loadInvitations();
     } catch (error: any) {
       toast.error(
-        error?.response?.data?.message || "Invitation response failed"
+        error?.response?.data?.message || "Invitation response failed",
       );
     } finally {
       setInvitationLoading(false);

@@ -6,6 +6,8 @@ import {
   useEffect,
   useState,
   ReactNode,
+  Dispatch,
+  SetStateAction,
 } from "react";
 import { authClient } from "@/lib/auth-client";
 import { userAPI } from "@/lib";
@@ -24,16 +26,9 @@ interface User {
 
 interface AuthContextType {
   user: User | null;
+  setUser: Dispatch<SetStateAction<User | null>>;
   loading: boolean;
-  login: (data: { email: string; password: string }) => Promise<void>;
-  register: (data: {
-    name: string;
-    email: string;
-    password: string;
-  }) => Promise<any>;
-  logout: () => Promise<void>;
-  updateUserData: (data: { name?: string }) => Promise<void>;
-  checkSession: () => Promise<void>;
+  setLoading: Dispatch<SetStateAction<boolean>>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -42,100 +37,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const checkSession = async () => {
-    try {
-      const { data } = await authClient.getSession();
-      if (data?.user) {
-        try {
-          const fullUser = await userAPI.getMe();
-          setUser(fullUser);
-        } catch (err) {
-          console.error("Failed to fetch full user profile:", err);
-          setUser(data.user);
-        }
-      } else {
-        setUser(null);
-      }
-    } catch (error) {
-      console.error("Session check failed:", error);
-      setUser(null);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  // Initial session check mount
   useEffect(() => {
-    checkSession();
-  }, []);
-
-  const login = async (data: { email: string; password: string }) => {
-    try {
-      const { data: result } = await authClient.signIn.email({
-        email: data.email,
-        password: data.password,
-      });
-
-      if (result?.user) {
-        setUser(result.user);
-      } else {
-        throw new Error("Login failed");
+    const initSession = async () => {
+      try {
+        const { data } = await authClient.getSession();
+        if (data?.user) {
+          try {
+            const fullUser = await userAPI.get("me");
+            setUser(fullUser);
+          } catch (err) {
+            console.error("Failed to fetch full user profile:", err);
+            setUser(data.user);
+          }
+        } else {
+          setUser(null);
+        }
+      } catch (error) {
+        console.error("Session check failed:", error);
+        setUser(null);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      throw error;
-    }
-  };
+    };
 
-  const register = async (data: {
-    name: string;
-    email: string;
-    password: string;
-  }) => {
-    try {
-      const { data: result } = await authClient.signUp.email({
-        email: data.email,
-        password: data.password,
-        name: data.name,
-      });
-
-      // Send verification email
-      await authClient.sendVerificationEmail({ email: data.email });
-
-      // With email verification, user is created but not signed in until verified
-      // Don't set user here; instead, return success and let component handle message
-      return result;
-    } catch (error) {
-      console.error("Registration error:", error);
-      throw error;
-    }
-  };
-
-  const logout = async () => {
-    try {
-      await authClient.signOut();
-      setUser(null);
-    } catch (error) {
-      console.error("Logout error:", error);
-      throw error;
-    }
-  };
-
-  const updateUserData = async (data: { name?: string; email?: string }) => {
-    // For now, use the old API, but in future, use Better Auth if available
-    // Since Better Auth doesn't have update user, we keep the old API
-    // But to update the state, we can merge the data
-    setUser((prev) => (prev ? { ...prev, ...data } : null));
-  };
+    initSession();
+  }, []);
 
   return (
     <AuthContext.Provider
       value={{
         user,
+        setUser,
         loading,
-        login,
-        register,
-        logout,
-        updateUserData,
-        checkSession,
+        setLoading,
       }}
     >
       {children}
@@ -143,10 +78,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export function useAuth() {
+export function useAuthContext() {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    throw new Error("useAuthContext must be used within an AuthProvider");
   }
   return context;
 }

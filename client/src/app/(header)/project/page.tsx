@@ -5,14 +5,14 @@ import { useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 import { Plus } from "lucide-react";
 
-import { useAuth } from "@/context";
+import { useAuthContext } from "@/context";
 import {
   useProjectData,
   useProjectModals,
-  useProjectActions,
-  usePhaseActions,
-  useTaskActions,
-  useMemberActions,
+  useProjectMutations,
+  usePhaseMutations,
+  useTaskMutations,
+  useMemberMutations,
 } from "@/hooks";
 
 import {
@@ -34,17 +34,10 @@ function ProjectBoard() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const projectId = searchParams.get("id") as string;
-  const { user } = useAuth();
+  const { user } = useAuthContext();
 
-  const projectData = useProjectData(projectId);
-  const modals = useProjectModals();
-  const projectActions = useProjectActions(projectId, projectData.refetch);
-  const phaseActions = usePhaseActions(projectId, projectData.refetch);
-  const taskActions = useTaskActions(projectId, projectData.refetch);
-  const memberActions = useMemberActions(projectId, projectData.refetch);
-
-  const { project, phases, members, invitations, loading, userRole } =
-    projectData;
+  const { project, phases, members, invitations, loading, userRole, refetch } =
+    useProjectData(projectId);
 
   const {
     isMembersPaneOpen,
@@ -57,11 +50,10 @@ function ProjectBoard() {
     closeModal,
     updateForm,
     resetForm,
-  } = modals;
+  } = useProjectModals();
 
-  const { updateProject, deleteProject } = projectActions;
-  const { createPhase, deletePhase } = phaseActions;
-
+  const { updateProject, deleteProject } = useProjectMutations(projectId);
+  const { createPhase, deletePhase } = usePhaseMutations(projectId);
   const {
     createTask,
     updateTask,
@@ -70,10 +62,9 @@ function ProjectBoard() {
     requestTaskUpdate,
     acceptPendingUpdate,
     rejectPendingUpdate,
-  } = taskActions;
-
+  } = useTaskMutations(projectId);
   const { addMember, removeMember, updateMemberAccess, leaveProject } =
-    memberActions;
+    useMemberMutations(projectId);
 
   const isOwnerOrAdmin = userRole === "owner" || userRole === "admin";
   const [isSavingSettings, setIsSavingSettings] = useState(false);
@@ -169,7 +160,7 @@ function ProjectBoard() {
       await requestTaskUpdate(
         forms.taskToDelete,
         forms.updateDescription,
-        forms.updateStatus
+        forms.updateStatus,
       );
       closeModal("showUpdateTaskModal");
       resetForm("updateDescription");
@@ -297,7 +288,7 @@ function ProjectBoard() {
           onAddMember={() => openModal("showAddMemberModal")}
           onViewAllMembers={() => openModal("showMembersModal")}
           onManageInvitations={() => router.push("/invitations")}
-          onRefresh={projectData.refetch}
+          onRefresh={refetch}
         />
 
         <ProjectSettingsPane
@@ -341,9 +332,10 @@ function ProjectBoard() {
         title="Delete Project"
         message="Are you sure? This cannot be undone."
         confirmText="Delete"
-        onConfirm={() => {
-          deleteProject();
+        onConfirm={async () => {
+          await deleteProject();
           closeModal("showDeleteProjectModal");
+          router.push("/dashboard");
         }}
         onCancel={() => closeModal("showDeleteProjectModal")}
         confirmButtonColor="red"
@@ -412,7 +404,7 @@ function ProjectBoard() {
         onUpdateStatusChange={(value) =>
           updateForm(
             "updateStatus",
-            value as "active" | "complete" | "canceled"
+            value as "active" | "complete" | "canceled",
           )
         }
       />

@@ -1,11 +1,16 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { projectAPI, taskAPI } from "@/lib";
-import { useAuth } from "@/context";
-import { ProjectMember } from "@/types";
+import { projectAPI, phaseAPI } from "@/lib";
+import { useAuthContext } from "@/context";
+import type {
+  ProjectMember,
+  ApiResponse,
+  TasksResponse,
+  ProjectInvitation,
+} from "@/types";
 
 export const useProjectData = (projectId: string | string[] | undefined) => {
-  const { user } = useAuth();
+  const { user } = useAuthContext();
   const queryClient = useQueryClient();
 
   const {
@@ -14,7 +19,8 @@ export const useProjectData = (projectId: string | string[] | undefined) => {
     error: phasesError,
   } = useQuery({
     queryKey: ["project", projectId, "phases"],
-    queryFn: () => taskAPI.getPhases(projectId as string),
+    queryFn: () =>
+      phaseAPI.get<ApiResponse<TasksResponse>>(projectId as string),
     enabled: !!projectId && !!user,
     retry: false,
   });
@@ -25,7 +31,10 @@ export const useProjectData = (projectId: string | string[] | undefined) => {
     error: membersError,
   } = useQuery({
     queryKey: ["project", projectId, "members"],
-    queryFn: () => projectAPI.getProjectMembers(projectId as string),
+    queryFn: () =>
+      projectAPI.get<ApiResponse<ProjectMember[]>>(
+        `member/${projectId as string}`,
+      ),
     enabled: !!projectId && !!user,
     retry: false,
   });
@@ -41,7 +50,10 @@ export const useProjectData = (projectId: string | string[] | undefined) => {
 
   const { data: invitationsData, isLoading: invitationsLoading } = useQuery({
     queryKey: ["project", projectId, "invitations"],
-    queryFn: () => projectAPI.getProjectInvitations(projectId as string),
+    queryFn: () =>
+      projectAPI.get<ApiResponse<ProjectInvitation[]>>(
+        `member/${projectId as string}/invitations`,
+      ),
     enabled:
       !!projectId && !!user && (userRole === "owner" || userRole === "admin"),
     retry: false,

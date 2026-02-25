@@ -20,6 +20,7 @@ const resolveInitialTheme = (): Theme => {
   const stored = window.localStorage.getItem(THEME_STORAGE_KEY);
   if (stored === "light" || stored === "dark") return stored;
 
+  // Set to system default theme
   // try {
   //   return window.matchMedia("(prefers-color-scheme: dark)").matches
   //     ? "dark"
@@ -54,7 +55,7 @@ const applyTheme = (value: Theme) => {
 
 export const useThemeStore = create<ThemeState>()((set, get) => {
   return {
-    theme: "light", // Default to light to avoid hydration mismatch, will be updated by initializeTheme
+    theme: "light",
 
     toggleTheme: () => {
       const state = get();

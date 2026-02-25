@@ -6,7 +6,8 @@ import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import toast from "react-hot-toast";
 
-import { useAuth } from "@/context";
+import { useAuthContext } from "@/context";
+import { useAuthActions } from "@/hooks";
 import { useThemeStore } from "@/stores";
 import { LoginRequestSchema, RegisterRequestSchema } from "@/validation";
 import type { LoginFormData, RegisterFormData } from "@/types";
@@ -25,7 +26,8 @@ type AuthFormData = {
 };
 
 export default function LoginPage() {
-  const { login, register, user, checkSession } = useAuth();
+  const { user } = useAuthContext();
+  const { login, register, checkSession } = useAuthActions();
   const router = useRouter();
   const { theme } = useThemeStore();
 
@@ -52,6 +54,7 @@ export default function LoginPage() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isResetting, setIsResetting] = useState(false);
+  const maxFailedAttempts = 3;
 
   useEffect(() => {
     // logged in
@@ -60,7 +63,7 @@ export default function LoginPage() {
     }
   }, [user, router]);
 
-  // Detect when Google button iframe is loaded
+  // Detect when google button iframe is loaded
   useEffect(() => {
     const checkGoogleLoaded = () => {
       if (googleButtonRef.current) {
@@ -73,17 +76,24 @@ export default function LoginPage() {
       return false;
     };
 
-    // Check immediately
     if (checkGoogleLoaded()) return;
 
-    // Poll for iframe appearance
-    const interval = setInterval(() => {
+    // Use MutationObserver to detect DOM changes instead of polling
+    const observer = new MutationObserver(() => {
       if (checkGoogleLoaded()) {
-        clearInterval(interval);
+        observer.disconnect();
       }
-    }, 100);
+    });
 
-    return () => clearInterval(interval);
+    if (googleButtonRef.current) {
+      observer.observe(googleButtonRef.current, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+      });
+    }
+
+    return () => observer.disconnect();
   }, []);
 
   const validateForm = (): boolean => {
@@ -130,12 +140,6 @@ export default function LoginPage() {
       if (mode === "login") {
         const newAttempts = failedAttempts + 1;
         setFailedAttempts(newAttempts);
-
-        if (newAttempts >= 3) {
-          toast.error("Too many failed attempts. Please use Forgot Password.");
-        } else {
-          toast.error(`Login failed. ${3 - newAttempts} attempts remaining.`);
-        }
       } else {
         toast.error("Registration failed.");
       }
@@ -152,7 +156,7 @@ export default function LoginPage() {
 
     setIsResetting(true);
     try {
-      await authAPI.requestPasswordReset(resetEmail);
+      await authAPI.post({ email: resetEmail }, "forgot-password");
       toast.success("Reset code sent to your email!");
       setForgotPasswordStep("code");
     } catch (error: any) {
@@ -170,7 +174,10 @@ export default function LoginPage() {
 
     setIsResetting(true);
     try {
-      await authAPI.verifyResetCode(resetEmail, resetCode);
+      await authAPI.post(
+        { email: resetEmail, code: resetCode },
+        "verify-reset-code",
+      );
       toast.success("Code verified! Set your new password.");
       setForgotPasswordStep("password");
     } catch (error: any) {
@@ -192,7 +199,7 @@ export default function LoginPage() {
 
     setIsResetting(true);
     try {
-      await authAPI.resetPassword(resetEmail, newPassword);
+      await authAPI.post({ email: resetEmail, newPassword }, "reset-password");
       toast.success("Password reset successful! Logging you in...");
 
       // Auto-login with the response data
@@ -233,7 +240,7 @@ export default function LoginPage() {
         </div>
 
         <div className="w-full max-w-md p-8 bg-[hsl(var(--card))] shadow-xl border border-[hsl(var(--border))] rounded-2xl">
-          {/* Show Forgot Password UI if triggered */}
+          {/* Forgot Password Ui */}
           {showForgotPassword ? (
             <div>
               <div className="mb-8 text-center">
@@ -486,7 +493,7 @@ export default function LoginPage() {
                 </button>
 
                 {/* Show Forgot Password button after 3 failed attempts */}
-                {mode === "login" && failedAttempts >= 3 && (
+                {mode === "login" && failedAttempts >= maxFailedAttempts && (
                   <button
                     type="button"
                     onClick={() => {
@@ -533,6 +540,8 @@ export default function LoginPage() {
                         src="https://www.svgrepo.com/show/475656/google-color.svg"
                         alt="Google"
                         className="w-5 h-5 mr-3"
+                        width={20}
+                        height={20}
                       />
                       <span className="text-gray-700 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-white">
                         Sign in with Google

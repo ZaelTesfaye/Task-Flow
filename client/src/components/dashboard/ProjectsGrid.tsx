@@ -2,7 +2,6 @@ import React from "react";
 import { Shield, Users } from "lucide-react";
 import type { Project } from "@/types/index";
 import { ProjectCard, CreateProjectCard } from "@/components/project";
-import { ROLE_BADGE_COLORS } from "@/constants";
 
 interface ProjectGroups {
   owner: Project[];
@@ -71,8 +70,8 @@ const ProjectsGridSection: React.FC<ProjectsGridSectionProps> = ({
                 const role = projects.owner.find((p) => p.id === project.id)
                   ? "owner"
                   : projects.admin.find((p) => p.id === project.id)
-                  ? "admin"
-                  : "member";
+                    ? "admin"
+                    : "member";
                 return (
                   <ProjectCard key={project.id} project={project} role={role} />
                 );
@@ -97,33 +96,37 @@ const ProjectsGridSection: React.FC<ProjectsGridSectionProps> = ({
               {activeView === "owner"
                 ? "Own Projects"
                 : activeView === "admin"
-                ? "Admin Projects"
-                : "Member Projects"}
+                  ? "Admin Projects"
+                  : "Member Projects"}
             </h2>
             <span
               className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                ROLE_BADGE_COLORS[activeView as keyof typeof ROLE_BADGE_COLORS]
+                activeView === "owner"
+                  ? "badge-role-owner"
+                  : activeView === "admin"
+                    ? "badge-role-admin"
+                    : "badge-role-member"
               }`}
             >
               {activeView === "owner"
                 ? projects.owner.length
                 : activeView === "admin"
-                ? projects.admin.length
-                : projects.member.length}
+                  ? projects.admin.length
+                  : projects.member.length}
             </span>
           </div>
 
           {(activeView === "owner"
             ? projects.owner.length
             : activeView === "admin"
-            ? projects.admin.length
-            : projects.member.length) > 0 ? (
+              ? projects.admin.length
+              : projects.member.length) > 0 ? (
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
               {(activeView === "owner"
                 ? projects.owner
                 : activeView === "admin"
-                ? projects.admin
-                : projects.member
+                  ? projects.admin
+                  : projects.member
               ).map((project) => (
                 <ProjectCard
                   key={project.id}
@@ -141,7 +144,7 @@ const ProjectsGridSection: React.FC<ProjectsGridSectionProps> = ({
             <div className="py-12 text-center">
               {(() => {
                 const content = emptySectionContent.find(
-                  (c) => c.view === activeView
+                  (c) => c.view === activeView,
                 );
 
                 if (!content) return null;

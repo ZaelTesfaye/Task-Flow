@@ -4,7 +4,6 @@ import { Trash2 } from "lucide-react";
 import { Modal } from "@/components/modals";
 import { ProjectMember, ProjectInvitation, Project } from "@/types";
 import { UserRole } from "@/types";
-import { ROLE_BADGE_COLORS } from "@/constants/project";
 
 interface MembersModalProps {
   isOpen: boolean;
@@ -79,8 +78,12 @@ const MembersModal: React.FC<MembersModalProps> = ({
               ) : (
                 <span
                   className={`px-3 py-1 ${
-                    ROLE_BADGE_COLORS[member.access]
-                  } rounded-full text-sm capitalize flex items-center gap-1`}
+                    member.access === "owner"
+                      ? "badge-role-owner"
+                      : member.access === "admin"
+                        ? "badge-role-admin"
+                        : "badge-role-member"
+                  } rounded-full text-sm capWitalize flex items-center gap-1`}
                 >
                   {member.access}
                 </span>

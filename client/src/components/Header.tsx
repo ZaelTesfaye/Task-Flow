@@ -4,9 +4,14 @@ import { useRouter, usePathname } from "next/navigation";
 import toast from "react-hot-toast";
 import { useQuery } from "@tanstack/react-query";
 
-import { useAuth } from "@/context";
+import { useAuthContext } from "@/context";
+import { useAuthActions } from "@/hooks";
 import { userAPI, projectAPI, stripeAPI } from "@/lib";
-import { UpdateUserRequest, ProjectInvitation } from "@/types";
+import type {
+  UpdateUserRequest,
+  ProjectInvitation,
+  ApiResponse,
+} from "@/types";
 import {
   ConfirmationModal,
   ProfileMenu,
@@ -15,7 +20,8 @@ import {
 } from "./";
 
 export default function Header() {
-  const { user, logout, updateUserData, loading } = useAuth();
+  const { user, loading } = useAuthContext();
+  const { logout, updateUserData } = useAuthActions();
   const router = useRouter();
   const pathname = usePathname();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -29,7 +35,8 @@ export default function Header() {
   const { data: invitationsData } = useQuery({
     queryKey: ["user-invitations"],
     queryFn: async () => {
-      const response = await projectAPI.getMyInvitations();
+      const response =
+        await projectAPI.get<ApiResponse<ProjectInvitation[]>>("invitations");
       const pendingInvitations = response.data.filter(
         (inv: ProjectInvitation) => inv.status === "pending",
       );
@@ -63,7 +70,7 @@ export default function Header() {
     e.preventDefault();
     try {
       const data: UpdateUserRequest = { name };
-      const response = await userAPI.updateUser(data);
+      const response = await userAPI.patch<ApiResponse<any>>(data);
       updateUserData(response.data);
       toast.success("Profile updated successfully!");
       setShowProfileModal(false);
@@ -74,7 +81,7 @@ export default function Header() {
 
   const handleDeleteAccount = async () => {
     try {
-      await userAPI.deleteUser();
+      await userAPI.delete();
       toast.success("Account deleted successfully");
       logout();
     } catch (error: any) {
@@ -84,7 +91,10 @@ export default function Header() {
 
   const handleManageSubscription = async () => {
     try {
-      const response = await stripeAPI.createPortalSession();
+      const response = await stripeAPI.post<{ url: string }>(
+        undefined,
+        "create-portal-session",
+      );
       if (response.url) {
         window.location.href = response.url;
       }

@@ -24,11 +24,6 @@ export interface MembersPaneProps {
   onClose: () => void;
 }
 
-import {
-  ROLE_BADGE_COLORS,
-  INVITATION_STATUS_COLORS,
-} from "@/constants/project";
-
 const MembersPane: React.FC<MembersPaneProps> = ({
   members,
   project,
@@ -142,7 +137,11 @@ const MembersPane: React.FC<MembersPaneProps> = ({
               <div className="flex items-center gap-2">
                 <span
                   className={`px-2 py-1 rounded-full text-xs capitalize flex items-center gap-1 ${
-                    ROLE_BADGE_COLORS[member.access]
+                    member.access === "owner"
+                      ? "badge-role-owner"
+                      : member.access === "admin"
+                        ? "badge-role-admin"
+                        : "badge-role-member"
                   }`}
                 >
                   {member.access}
@@ -194,7 +193,13 @@ const MembersPane: React.FC<MembersPaneProps> = ({
                       </span>
                       <span
                         className={`${
-                          INVITATION_STATUS_COLORS[invitation.status]
+                          invitation.status === "pending"
+                            ? "badge-invitation-pending"
+                            : invitation.status === "accepted"
+                              ? "badge-invitation-accepted"
+                              : invitation.status === "declined"
+                                ? "badge-invitation-declined"
+                                : "badge-invitation-expired"
                         } px-2 py-0.5 rounded-full capitalize`}
                       >
                         {invitation.status}

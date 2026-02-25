@@ -5,12 +5,12 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { CheckCircle, XCircle, Loader2, Mail } from "lucide-react";
 import Link from "next/link";
-import { useAuth } from "@/context";
+import { useAuthActions } from "@/hooks";
 
 function VerifyEmailContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { checkSession } = useAuth();
+  const { checkSession } = useAuthActions();
   const email = searchParams.get("email")?.trim() ?? "";
   const [code, setCode] = useState("");
   const [status, setStatus] = useState<

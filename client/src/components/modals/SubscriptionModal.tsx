@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Modal from "./Modal";
 import { Check, Loader2 } from "lucide-react";
-import { stripeAPI } from "@/lib/api";
+import { stripeAPI } from "@/services";
 import toast from "react-hot-toast";
 
 interface SubscriptionModalProps {
@@ -18,7 +18,10 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
   const handleSubscribe = async (plan: string) => {
     try {
       setLoading(true);
-      const response = await stripeAPI.createCheckoutSession(plan);
+      const response = await stripeAPI.post<{ url: string }>(
+        { plan },
+        "subscribe",
+      );
       if (response.url) {
         window.location.href = response.url;
       }
