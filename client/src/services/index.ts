@@ -1,8 +1,8 @@
-export { default as APIClient } from "./client";
-export { default as authAPI } from "./auth";
-export { default as userAPI } from "./user";
-export { default as projectAPI } from "./project";
-export { default as phaseAPI } from "./phase";
-export { default as taskAPI } from "./task";
-export { default as stripeAPI } from "./stripe";
-export { default as notificationAPI } from "./notification";
+export { default as APIClient } from "./client.service";
+export { default as authAPI } from "./auth.service";
+export { default as userAPI } from "./user.service";
+export { default as projectAPI } from "./project.service";
+export { default as phaseAPI } from "./phase.service";
+export { default as taskAPI } from "./task.service";
+export { default as stripeAPI } from "./stripe.service";
+export { default as notificationAPI } from "./notification.service";

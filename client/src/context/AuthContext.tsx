@@ -44,7 +44,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const { data } = await authClient.getSession();
         if (data?.user) {
           try {
-            const fullUser = await userAPI.get("me");
+            const fullUser = await userAPI.get<User>("me");
             setUser(fullUser);
           } catch (err) {
             console.error("Failed to fetch full user profile:", err);

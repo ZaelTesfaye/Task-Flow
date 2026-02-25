@@ -1,4 +1,4 @@
-import APIClient from "./client";
+import APIClient from "./client.service";
 
 const userAPI = new APIClient("/user");
 
