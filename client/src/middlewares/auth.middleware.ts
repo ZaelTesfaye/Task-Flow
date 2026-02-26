@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const loginRoutes = ["/login", "/verify-email"];
+const publicRoutes = ["/", "/login", "/verify-email"];
 const protectedRoutes = ["/dashboard", "/project", "/invitations"];
 
 export function authMiddleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
   const needsAuthCheck =
-    loginRoutes.includes(pathname) ||
+    publicRoutes.includes(pathname) ||
     protectedRoutes.some((route) => pathname.startsWith(route));
 
   if (!needsAuthCheck) {
@@ -19,7 +19,7 @@ export function authMiddleware(request: NextRequest) {
     request.headers.get("authorization");
 
   // On login/verify routes and authenticated → redirect to dashboard
-  if (loginRoutes.includes(pathname) && isAuthenticated) {
+  if (publicRoutes.includes(pathname) && isAuthenticated) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
