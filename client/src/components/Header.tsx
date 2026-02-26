@@ -2,16 +2,14 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import toast from "react-hot-toast";
-import { useQuery } from "@tanstack/react-query";
 
 import { useAuthContext } from "@/context";
-import { useAuthActions } from "@/hooks";
-import { userAPI, projectAPI, stripeAPI } from "@/lib";
-import type {
-  UpdateUserRequest,
-  ProjectInvitation,
-  ApiResponse,
-} from "@/types";
+import {
+  useAuthActions,
+  useInvitationsCount,
+  useProfileActions,
+} from "@/hooks";
+import type { UpdateUserRequest } from "@/types";
 import {
   ConfirmationModal,
   ProfileMenu,
@@ -21,7 +19,10 @@ import {
 
 export default function Header() {
   const { user, loading } = useAuthContext();
-  const { logout, updateUserData } = useAuthActions();
+  const { logout } = useAuthActions();
+  const { handleUpdateProfile, handleDeleteAccount, handleManageSubscription } =
+    useProfileActions();
+  const invitationsCount = useInvitationsCount();
   const router = useRouter();
   const pathname = usePathname();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -30,23 +31,6 @@ export default function Header() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [name, setName] = useState(user?.name || "");
-
-  // Use React Query to fetch invitations count
-  const { data: invitationsData } = useQuery({
-    queryKey: ["user-invitations"],
-    queryFn: async () => {
-      const response =
-        await projectAPI.get<ApiResponse<ProjectInvitation[]>>("invitations");
-      const pendingInvitations = response.data.filter(
-        (inv: ProjectInvitation) => inv.status === "pending",
-      );
-      return pendingInvitations.length;
-    },
-    enabled: !!user,
-    refetchOnWindowFocus: true,
-  });
-
-  const invitationsCount = invitationsData || 0;
 
   useEffect(() => {
     if (!user && !loading && pathname !== "/auth") {
@@ -66,42 +50,14 @@ export default function Header() {
     return null;
   }
 
-  const handleUpdateProfile = async (e: React.FormEvent) => {
+  const onUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const data: UpdateUserRequest = { name };
-      const response = await userAPI.patch<ApiResponse<any>>(data);
-      updateUserData(response.data);
-      toast.success("Profile updated successfully!");
+      await handleUpdateProfile(data);
       setShowProfileModal(false);
     } catch (error: any) {
       toast.error(error.response?.data?.message || "Failed to update profile");
-    }
-  };
-
-  const handleDeleteAccount = async () => {
-    try {
-      await userAPI.delete();
-      toast.success("Account deleted successfully");
-      logout();
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Failed to delete account");
-    }
-  };
-
-  const handleManageSubscription = async () => {
-    try {
-      const response = await stripeAPI.post<{ url: string }>(
-        undefined,
-        "create-portal-session",
-      );
-      if (response.url) {
-        window.location.href = response.url;
-      }
-    } catch (error: any) {
-      toast.error(
-        error.response?.data?.message || "Failed to open billing portal",
-      );
     }
   };
 
@@ -183,7 +139,7 @@ export default function Header() {
         onClose={() => setShowProfileModal(false)}
         name={name}
         onNameChange={setName}
-        onSubmit={handleUpdateProfile}
+        onSubmit={onUpdateProfile}
       />
 
       {/* Delete Account Modal */}

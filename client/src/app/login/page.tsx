@@ -7,7 +7,7 @@ import { authClient } from "@/lib/auth-client";
 import toast from "react-hot-toast";
 
 import { useAuthContext } from "@/context";
-import { useAuthActions } from "@/hooks";
+import { useAuthActions, usePasswordReset } from "@/hooks";
 import { useThemeStore } from "@/stores";
 import { LoginRequestSchema, RegisterRequestSchema } from "@/validation";
 import type { LoginFormData, RegisterFormData } from "@/types";
@@ -17,7 +17,6 @@ import {
   CredentialResponse,
 } from "@react-oauth/google";
 import { ThemeToggle } from "@/components/ui";
-import { authAPI } from "@/lib";
 
 type AuthFormData = {
   name?: string;
@@ -30,6 +29,23 @@ export default function LoginPage() {
   const { login, register, checkSession } = useAuthActions();
   const router = useRouter();
   const { theme } = useThemeStore();
+
+  const {
+    forgotPasswordStep,
+    resetEmail,
+    setResetEmail,
+    resetCode,
+    setResetCode,
+    newPassword,
+    setNewPassword,
+    confirmPassword,
+    setConfirmPassword,
+    isResetting,
+    handleForgotPassword,
+    handleVerifyCode,
+    handleResetPassword,
+    resetForgotPasswordState,
+  } = usePasswordReset();
 
   const [mode, setMode] = useState<"login" | "register">("login");
   const [formData, setFormData] = useState<AuthFormData>({
@@ -46,14 +62,6 @@ export default function LoginPage() {
   // Forgot password states
   const [failedAttempts, setFailedAttempts] = useState(0);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
-  const [forgotPasswordStep, setForgotPasswordStep] = useState<
-    "email" | "code" | "password"
-  >("email");
-  const [resetEmail, setResetEmail] = useState("");
-  const [resetCode, setResetCode] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [isResetting, setIsResetting] = useState(false);
   const maxFailedAttempts = 3;
 
   useEffect(() => {
@@ -148,67 +156,18 @@ export default function LoginPage() {
     }
   };
 
-  const handleForgotPassword = async () => {
-    if (!resetEmail || !resetEmail.includes("@")) {
-      toast.error("Please enter a valid email address");
-      return;
-    }
-
-    setIsResetting(true);
-    try {
-      await authAPI.post({ email: resetEmail }, "forgot-password");
-      toast.success("Reset code sent to your email!");
-      setForgotPasswordStep("code");
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Failed to send reset code");
-    } finally {
-      setIsResetting(false);
-    }
+  const handleForgotPasswordClick = async () => {
+    await handleForgotPassword();
   };
 
-  const handleVerifyCode = async () => {
-    if (resetCode.length !== 6) {
-      toast.error("Please enter the 6-digit code");
-      return;
-    }
-
-    setIsResetting(true);
-    try {
-      await authAPI.post(
-        { email: resetEmail, code: resetCode },
-        "verify-reset-code",
-      );
-      toast.success("Code verified! Set your new password.");
-      setForgotPasswordStep("password");
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Invalid or expired code");
-    } finally {
-      setIsResetting(false);
-    }
+  const handleVerifyCodeClick = async () => {
+    await handleVerifyCode();
   };
 
-  const handleResetPassword = async () => {
-    if (newPassword.length < 6) {
-      toast.error("Password must be at least 6 characters");
-      return;
-    }
-    if (newPassword !== confirmPassword) {
-      toast.error("Passwords do not match");
-      return;
-    }
-
-    setIsResetting(true);
-    try {
-      await authAPI.post({ email: resetEmail, newPassword }, "reset-password");
-      toast.success("Password reset successful! Logging you in...");
-
-      // Auto-login with the response data
-      await checkSession();
+  const handleResetPasswordClick = async () => {
+    const success = await handleResetPassword();
+    if (success) {
       router.push("/dashboard");
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Failed to reset password");
-    } finally {
-      setIsResetting(false);
     }
   };
 
@@ -229,6 +188,7 @@ export default function LoginPage() {
     });
     setFailedAttempts(0);
     setShowForgotPassword(false);
+    resetForgotPasswordState();
   };
 
   return (
@@ -275,7 +235,7 @@ export default function LoginPage() {
                       />
                     </div>
                     <button
-                      onClick={handleForgotPassword}
+                      onClick={handleForgotPasswordClick}
                       disabled={isResetting}
                       className="w-full py-3 font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
@@ -307,7 +267,7 @@ export default function LoginPage() {
                       </p>
                     </div>
                     <button
-                      onClick={handleVerifyCode}
+                      onClick={handleVerifyCodeClick}
                       disabled={isResetting || resetCode.length !== 6}
                       className="w-full py-3 font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
@@ -343,7 +303,7 @@ export default function LoginPage() {
                       />
                     </div>
                     <button
-                      onClick={handleResetPassword}
+                      onClick={handleResetPasswordClick}
                       disabled={
                         isResetting ||
                         !newPassword ||
@@ -359,11 +319,7 @@ export default function LoginPage() {
                 <button
                   onClick={() => {
                     setShowForgotPassword(false);
-                    setForgotPasswordStep("email");
-                    setResetEmail("");
-                    setResetCode("");
-                    setNewPassword("");
-                    setConfirmPassword("");
+                    resetForgotPasswordState();
                   }}
                   className="w-full py-2 text-sm text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))]"
                 >

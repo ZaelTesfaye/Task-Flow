@@ -1,13 +1,8 @@
 "use client";
-import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
 import toast from "react-hot-toast";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { projectAPI, stripeAPI } from "@/lib";
-import type { UserProjectsResponse, ApiResponse, Project } from "@/types";
-import { useAuthContext } from "@/context";
-import { useAuthActions } from "@/hooks";
+import { useUserProjects, useSubscriptionVerification } from "@/hooks";
 import {
   ProjectNavigation,
   CreateProjectModal,
@@ -15,19 +10,9 @@ import {
 } from "@/components";
 
 export default function Dashboard() {
-  const { user, loading: authLoading } = useAuthContext();
-  const { checkSession } = useAuthActions();
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const queryClient = useQueryClient();
-
-  const { data: projectsData, isLoading: projectsLoading } = useQuery({
-    queryKey: ["user-projects"],
-    queryFn: () => projectAPI.get<ApiResponse<UserProjectsResponse>>(),
-    enabled: !!user && !authLoading,
-  });
-
-  const projects = projectsData?.data || { owner: [], admin: [], member: [] };
+  const { projects, projectsLoading, authLoading, createProject } =
+    useUserProjects();
+  useSubscriptionVerification();
 
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [title, setTitle] = useState("");
@@ -36,104 +21,13 @@ export default function Dashboard() {
     "all" | "owner" | "admin" | "member"
   >("all");
 
-  // Handle subscription verification
-  useEffect(() => {
-    const sessionId = searchParams.get("session_id");
-    const success = searchParams.get("success");
-
-    if (success === "true" && sessionId && user) {
-      let attempts = 0;
-      const maxAttempts = 60; // 5 minutes with 5 second intervals
-      const pollInterval = 5000; // 5 seconds
-
-      const verifySubscription = async () => {
-        try {
-          const result = await stripeAPI.get<{
-            isPremium: boolean;
-            status: string;
-            message: string;
-            priceId?: string;
-            subscriptionId?: string;
-          }>("verify-subscription", { params: { sessionId } });
-
-          if (result.isPremium && result.status === "active") {
-            // Success - subscription is active
-            await checkSession(); // Refresh user data
-            toast.success("Subscription activated successfully!");
-            // Remove query params from URL
-            router.replace("/dashboard");
-            return true;
-          } else if (attempts >= maxAttempts) {
-            // Timeout after 5 minutes
-            toast.error(
-              "Subscription verification timed out. Please contact support at support@task-flows.tech if you were charged.",
-              { duration: 10000 },
-            );
-            router.replace("/dashboard");
-            return true;
-          }
-          return false;
-        } catch (error) {
-          console.error("Subscription verification error:", error);
-          if (attempts >= maxAttempts) {
-            toast.error(
-              "Failed to verify subscription. Please try again after a while. If issues persist, contact support@task-flows.tech",
-              { duration: 10000 },
-            );
-            router.replace("/dashboard");
-            return true;
-          }
-          return false;
-        }
-      };
-
-      // Show loading toast
-      const loadingToast = toast.loading("Verifying your subscription...");
-
-      const interval = setInterval(async () => {
-        attempts++;
-        const done = await verifySubscription();
-        if (done) {
-          clearInterval(interval);
-          toast.dismiss(loadingToast);
-        }
-      }, pollInterval);
-
-      // Initial verification (Set interfval starts after the inrval time)
-      verifySubscription().then((done) => {
-        if (done) {
-          clearInterval(interval);
-          toast.dismiss(loadingToast);
-        }
-      });
-
-      // Cleanup
-      return () => {
-        clearInterval(interval);
-        toast.dismiss(loadingToast);
-      };
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams, user, router]);
-
   const handleCreateProject = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await projectAPI.post<{
-        message: string;
-        data: Project;
-      }>({ title, description });
-      const createdProject = response.data;
-      toast.success("Project created successfully!");
+      await createProject(title, description);
       setShowCreateModal(false);
       setTitle("");
       setDescription("");
-      // Invalidate and refetch projects list
-      await queryClient.invalidateQueries({ queryKey: ["user-projects"] });
-      if (createdProject?.id) {
-        router.push(`/project?id=${createdProject.id}&createCategory=1`);
-        return;
-      }
     } catch (error: any) {
       toast.error(error.response?.data?.message || "Failed to create project");
     }

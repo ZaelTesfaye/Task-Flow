@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import Modal from "./Modal";
 import { Check, Loader2 } from "lucide-react";
-import { stripeAPI } from "@/services";
-import toast from "react-hot-toast";
+import { useSubscription } from "@/hooks";
 
 interface SubscriptionModalProps {
   isOpen: boolean;
@@ -13,25 +12,7 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
   isOpen,
   onClose,
 }) => {
-  const [loading, setLoading] = useState(false);
-
-  const handleSubscribe = async (plan: string) => {
-    try {
-      setLoading(true);
-      const response = await stripeAPI.post<{ url: string }>(
-        { plan },
-        "subscribe",
-      );
-      if (response.url) {
-        window.location.href = response.url;
-      }
-    } catch (error) {
-      console.error("Failed to create checkout session:", error);
-      toast.error("Failed to start subscription process");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { subscribe, loading } = useSubscription();
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} className="max-w-[36rem]">
@@ -57,7 +38,7 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
             </li>
           </ul>
           <button
-            onClick={() => handleSubscribe("starter")}
+            onClick={() => subscribe("starter")}
             disabled={loading}
             className="flex items-center justify-center w-full py-2 text-white transition-colors bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
@@ -94,7 +75,7 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
             </li>
           </ul>
           <button
-            onClick={() => handleSubscribe("pro")}
+            onClick={() => subscribe("pro")}
             disabled={loading}
             className="flex items-center justify-center w-full py-2 text-white transition-colors bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >

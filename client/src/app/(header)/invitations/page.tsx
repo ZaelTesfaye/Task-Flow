@@ -1,12 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
 import { RefreshCw, Clock } from "lucide-react";
-import { useQueryClient } from "@tanstack/react-query";
 
-import { projectAPI } from "@/lib";
-import type { ProjectInvitation, ApiResponse } from "@/types";
+import { useInvitations } from "@/hooks";
 import {
   Button,
   Card,
@@ -17,58 +13,13 @@ import {
 import { InvitationsList } from "@/components/profile";
 
 export default function InvitationsPage() {
-  const [invitations, setInvitations] = useState<ProjectInvitation[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [invitationLoading, setInvitationLoading] = useState<boolean>(false);
-  const queryClient = useQueryClient();
-
-  const loadInvitations = async () => {
-    try {
-      setLoading(true);
-      const response =
-        await projectAPI.get<ApiResponse<ProjectInvitation[]>>("invitations");
-      setInvitations(response.data || []);
-    } catch (error) {
-      console.error("Failed to load invitations", error);
-      toast.error("Failed to load invitations");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    // Invalidate the invitations cache when page loads to ensure fresh data
-    queryClient.invalidateQueries({ queryKey: ["user-invitations"] });
-    // Refetch the user invitations query to update the notification icon immediately
-    queryClient.refetchQueries({ queryKey: ["user-invitations"] });
-    loadInvitations();
-  }, [queryClient]);
-
-  const handleRespond = async (
-    invitationId: string,
-    action: "accept" | "decline",
-  ) => {
-    try {
-      setInvitationLoading(true);
-      await projectAPI.patch({ action }, `invitations/${invitationId}`);
-      toast.success(
-        action === "accept" ? "Invitation accepted!" : "Invitation declined.",
-      );
-      // Invalidate projects cache when accepting an invitation
-      if (action === "accept") {
-        await queryClient.invalidateQueries({ queryKey: ["user-projects"] });
-      }
-      // Invalidate user invitations cache to update notification badge
-      await queryClient.invalidateQueries({ queryKey: ["user-invitations"] });
-      loadInvitations();
-    } catch (error: any) {
-      toast.error(
-        error?.response?.data?.message || "Invitation response failed",
-      );
-    } finally {
-      setInvitationLoading(false);
-    }
-  };
+  const {
+    invitations,
+    loading,
+    invitationLoading,
+    loadInvitations,
+    handleRespond,
+  } = useInvitations();
 
   return (
     <div className="max-w-4xl px-6 py-10 mx-auto">

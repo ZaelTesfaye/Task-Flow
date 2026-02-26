@@ -2,7 +2,6 @@
 
 import { Folder, FolderOpen, Shield, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Card,
   CardContent,
@@ -10,8 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui";
-import { notificationAPI } from "@/services";
-import type { ApiResponse } from "@/types";
+import { useProjectNotifications } from "@/hooks";
 
 export interface ProjectProps {
   id: string;
@@ -39,20 +37,8 @@ const ProjectCard = ({
 }) => {
   console.log("ProjectCard role:", role);
   const router = useRouter();
-  const queryClient = useQueryClient();
-
-  // Fetch notification count for this project
-  const { data: notificationData } = useQuery({
-    queryKey: ["project-notifications", project.id],
-    queryFn: () =>
-      notificationAPI.get<ApiResponse<{ count: number }>>(
-        `project/${project.id}/count`,
-      ),
-    refetchInterval: 30000, // Refetch every 30 seconds
-    refetchOnWindowFocus: true,
-  });
-
-  const notificationCount = notificationData?.data?.count || 0;
+  const { notificationCount, markProjectNotificationsAsRead } =
+    useProjectNotifications(project.id);
 
   const badgeClasses =
     role === "owner"
@@ -64,18 +50,7 @@ const ProjectCard = ({
           : "bg-gray-100 text-gray-900 border border-gray-300 dark:bg-gray-800 dark:text-gray-100";
 
   const handleCardClick = async () => {
-    // Mark project notifications as read when navigating to project
-    if (notificationCount > 0) {
-      try {
-        await notificationAPI.patch(undefined, `project/${project.id}/read`);
-        // Invalidate the query to immediately update the UI
-        await queryClient.invalidateQueries({
-          queryKey: ["project-notifications", project.id],
-        });
-      } catch (error) {
-        console.error("Failed to mark notifications as read:", error);
-      }
-    }
+    await markProjectNotificationsAsRead();
     router.push(`/project?id=${project.id}`);
   };
 
