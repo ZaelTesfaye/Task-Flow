@@ -28,7 +28,7 @@ export interface TaskCardProps {
   onRequestUpdate: (
     taskId: string,
     description: string,
-    status: TaskStatus
+    status: TaskStatus,
   ) => void;
   onEdit: (task: any) => void;
   onDelete: (task: any) => void;

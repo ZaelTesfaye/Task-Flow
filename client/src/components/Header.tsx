@@ -15,7 +15,7 @@ import {
   ProfileMenu,
   EditProfileModal,
   SubscriptionModal,
-} from "./";
+} from "@/components";
 
 export default function Header() {
   const { user, loading } = useAuthContext();

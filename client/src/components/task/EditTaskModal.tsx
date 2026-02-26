@@ -1,6 +1,5 @@
 import React from "react";
-import { Modal } from "@/components/modals";
-import { Spinner } from "@/components/ui";
+import { Modal, Spinner } from "@/components";
 import { DEFAULT_FORM_STATE } from "@/constants";
 import { TaskStatus } from "@/types";
 interface EditTaskModalProps {
@@ -12,7 +11,7 @@ interface EditTaskModalProps {
   resetForm: (key: keyof typeof DEFAULT_FORM_STATE) => void;
   updateTask: (
     taskId: string,
-    data: { title: string; description: string }
+    data: { title: string; description: string },
   ) => void;
   updateTaskStatus: (taskId: string, status: TaskStatus) => void;
   isOwnerOrAdmin: boolean;
@@ -93,7 +92,7 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({
               onChange={(e) =>
                 updateForm(
                   "editTaskStatus",
-                  e.target.value as "active" | "complete" | "canceled"
+                  e.target.value as "active" | "complete" | "canceled",
                 )
               }
               className="w-full px-4 py-2 border border-[hsl(var(--input))] rounded-lg focus:ring-2 focus:ring-[hsl(var(--ring))] focus:border-transparent outline-none bg-[hsl(var(--card))] text-[hsl(var(--foreground))]"

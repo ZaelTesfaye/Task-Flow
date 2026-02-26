@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { X } from "lucide-react";
 
-import { Modal } from "@/components/modals";
-import { Spinner } from "@/components/ui";
+import { Modal, Spinner } from "@/components";
 import { PhaseWithTasks, ProjectMember } from "@/types";
 
 export interface CreateTaskModalProps {

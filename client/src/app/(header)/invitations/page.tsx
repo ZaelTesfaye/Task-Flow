@@ -9,8 +9,8 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-} from "@/components/ui";
-import { InvitationsList } from "@/components/profile";
+  InvitationsList,
+} from "@/components";
 
 export default function InvitationsPage() {
   const {

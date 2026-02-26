@@ -12,7 +12,7 @@ import {
   CreditCard,
 } from "lucide-react";
 import { useThemeStore } from "@/stores";
-import { Switch } from "@/components/ui";
+import { Switch } from "@/components";
 import { User } from "@/types";
 
 interface ProfileMenuProps {

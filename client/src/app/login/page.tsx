@@ -16,7 +16,7 @@ import {
   GoogleLogin,
   CredentialResponse,
 } from "@react-oauth/google";
-import { ThemeToggle } from "@/components/ui";
+import { ThemeToggle } from "@/components";
 
 type AuthFormData = {
   name?: string;

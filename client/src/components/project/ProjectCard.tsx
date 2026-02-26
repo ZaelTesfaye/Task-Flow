@@ -8,7 +8,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../ui";
+} from "@/components";
 import { useProjectNotifications } from "@/hooks";
 
 export interface ProjectProps {

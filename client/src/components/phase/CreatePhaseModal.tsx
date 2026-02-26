@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { X } from "lucide-react";
-import { Modal } from "@/components/modals";
-import { Spinner } from "@/components/ui";
+import { Modal } from "@/components";
+import { Spinner } from "@/components";
 
 export interface CreatePhaseModalProps {
   isOpen: boolean;

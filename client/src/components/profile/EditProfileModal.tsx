@@ -1,5 +1,4 @@
-import { Modal } from "@/components/modals";
-import { Spinner } from "@/components/ui";
+import { Modal, Spinner } from "@/components";
 
 interface EditProfileModalProps {
   isOpen: boolean;

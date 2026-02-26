@@ -11,7 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
   Spinner,
-} from "@/components/ui";
+} from "@/components";
 
 interface CreateProjectModalProps {
   isOpen: boolean;

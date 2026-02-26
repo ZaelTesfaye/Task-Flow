@@ -1,6 +1,5 @@
 import React from "react";
-import { Modal } from "@/components/modals";
-import { Spinner } from "@/components/ui";
+import { Modal, Spinner } from "@/components";
 import { TaskStatus } from "@/types";
 import toast from "react-hot-toast";
 

@@ -1,6 +1,6 @@
 import React from "react";
 import { X, Trash2 } from "lucide-react";
-import { Spinner } from "@/components/ui";
+import { Spinner } from "@/components";
 
 export interface ProjectSettingsPaneProps {
   isOpen: boolean;

@@ -12,7 +12,7 @@ import {
   CardHeader,
   CardTitle,
   ThemeToggle,
-} from "@/components/ui";
+} from "@/components";
 
 const features = [
   {

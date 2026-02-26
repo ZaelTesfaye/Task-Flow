@@ -1,7 +1,7 @@
 import React from "react";
 import { Shield, Users } from "lucide-react";
 import type { Project } from "@/types/index";
-import { ProjectCard, CreateProjectCard } from "@/components/project";
+import { ProjectCard, CreateProjectCard } from "@/components";
 
 interface ProjectGroups {
   owner: Project[];

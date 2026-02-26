@@ -1,6 +1,12 @@
 import { Check, XCircle } from "lucide-react";
-import { Button, Spinner } from "@/components/ui";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui";
+import {
+  Button,
+  Spinner,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components";
 import type { ProjectInvitation } from "@/types";
 
 interface InvitationsListProps {
@@ -57,7 +63,7 @@ export default function InvitationsList({
 
             <div className="flex gap-3">
               <Button
-                className="flex-1 hover:cursor-pointer hover:bg-transparent hover:text-green-400 flex items-center justify-center gap-2"
+                className="flex items-center justify-center flex-1 gap-2 hover:cursor-pointer hover:bg-transparent hover:text-green-400"
                 onClick={() => onRespond(invitation.id, "accept")}
                 disabled={invitationLoading}
               >
@@ -70,7 +76,7 @@ export default function InvitationsList({
               </Button>
               <Button
                 variant="outline"
-                className="flex-1 hover:cursor-pointer hover:text-red-500 hover:bg-transparent flex items-center justify-center gap-2"
+                className="flex items-center justify-center flex-1 gap-2 hover:cursor-pointer hover:text-red-500 hover:bg-transparent"
                 onClick={() => onRespond(invitation.id, "decline")}
                 disabled={invitationLoading}
               >

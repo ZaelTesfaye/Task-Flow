@@ -1,6 +1,6 @@
 import React from "react";
 import { Plus, Trash2, FolderOpen } from "lucide-react";
-import { TaskCard } from "@/components/task";
+import { TaskCard } from "@/components";
 import { PhaseWithTasks, TaskStatus, UserRole } from "@/types";
 
 export interface PhaseCardProps {
@@ -12,7 +12,7 @@ export interface PhaseCardProps {
   onRequestUpdate: (
     taskId: string,
     description: string,
-    status: TaskStatus
+    status: TaskStatus,
   ) => void;
   onEditTask: (task: any) => void;
   onDeleteTask: (taskId: string) => void;

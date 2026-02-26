@@ -3,7 +3,7 @@
 import "@/globals.css";
 import { Inter } from "next/font/google";
 import { AuthProvider } from "@/context";
-import { QueryProvider } from "@/components/providers";
+import { QueryProvider } from "@/components";
 import { Toaster } from "react-hot-toast";
 import { useThemeStore } from "@/stores";
 import { useEffect } from "react";

@@ -1,9 +1,9 @@
 import React from "react";
 import { X, User, FolderKanban, FileText, AlignLeft } from "lucide-react";
 
-import { Modal } from "@/components/modals";
+import { Modal } from "@/components";
 import { Task, TaskStatus } from "@/types";
-import { TASK_STATUS_COLORS } from "./TaskCard";
+import { TASK_STATUS_COLORS } from "../task/TaskCard";
 
 export interface TaskDetailsModalProps {
   isOpen: boolean;
