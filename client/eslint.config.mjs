@@ -8,7 +8,8 @@ const eslintConfig = defineConfig([
   {
     rules: {
       "@typescript-eslint/no-explicit-any": "off",
-      // "no-console": "warn",
+      "no-console": process.env.NODE_ENV === "production" ? "error" : "warn",
+      semi: ["error", "always"],
     },
   },
   globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts"]),

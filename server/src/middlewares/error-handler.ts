@@ -1,21 +1,15 @@
 import httpStatus from "http-status";
 import { Prisma } from "@prisma/client";
-import type { Request, Response, NextFunction } from "express";
+import type { Request, Response } from "express";
 
 import { logger } from "../lib/index.js";
 import { APIError } from "../utils/index.js";
 
-const errorHandler = (
-  error: Error | APIError | Prisma.PrismaClientKnownRequestError,
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+const errorHandler = (error: Error | APIError | Prisma.PrismaClientKnownRequestError, req: Request, res: Response) => {
   logger.debug(error.message, error);
 
   if (error instanceof APIError) {
-    if (error.statusCode === httpStatus.INTERNAL_SERVER_ERROR)
-      logger.error(error.message, error);
+    if (error.statusCode === httpStatus.INTERNAL_SERVER_ERROR) logger.error(error.message, error);
 
     return res.status(error.statusCode).json({
       message: error.message,
