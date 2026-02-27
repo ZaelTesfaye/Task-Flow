@@ -1,14 +1,7 @@
-import axios, { type AxiosRequestConfig } from "axios";
+import { AxiosRequestConfig } from "axios";
+import httpClient from "./http-client";
 
-const httpClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api",
-  withCredentials: true,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-class APIClient {
+export class APIClient {
   endpoint: string;
 
   constructor(endpoint: string) {
@@ -31,4 +24,10 @@ class APIClient {
     httpClient.delete<T>(this.url(subPath)).then((r) => r.data);
 }
 
-export default APIClient;
+export const authApiClient = new APIClient("/custom-auth");
+export const userApiClient = new APIClient("/user");
+export const projectApiClient = new APIClient("/project");
+export const phaseApiClient = new APIClient("/phase");
+export const taskApiClient = new APIClient("/task");
+export const paymentApiClient = new APIClient("/stripe");
+export const notificationApiClient = new APIClient("/notification");
