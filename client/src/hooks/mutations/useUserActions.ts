@@ -2,7 +2,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { userApiClient } from "@/lib";
 
-export const useUserMutations = () => {
+export const useUserActions = () => {
   const queryClient = useQueryClient();
 
   const updateProfile = async (data: {

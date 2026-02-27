@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components";
-import { useProjectNotifications } from "@/hooks";
+import { useProjectNotifications, useNotificationMutations } from "@/hooks";
 
 export interface ProjectProps {
   id: string;
@@ -37,8 +37,10 @@ const ProjectCard = ({
 }) => {
   console.log("ProjectCard role:", role);
   const router = useRouter();
-  const { notificationCount, markProjectNotificationsAsRead } =
-    useProjectNotifications(project.id);
+  const { notificationCount } = useProjectNotifications(project.id);
+  const { markProjectNotificationsAsRead } = useNotificationMutations(
+    project.id,
+  );
 
   const badgeClasses =
     role === "owner"

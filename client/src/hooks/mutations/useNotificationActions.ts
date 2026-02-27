@@ -2,7 +2,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { notificationApiClient } from "@/lib";
 
-export const useNotificationMutations = () => {
+export const useNotificationActions = (projectId?: string) => {
   const queryClient = useQueryClient();
 
   const markAsRead = async (notificationId: string) => {
@@ -27,10 +27,19 @@ export const useNotificationMutations = () => {
     await queryClient.invalidateQueries({ queryKey: ["notifications"] });
   };
 
+  const markProjectNotificationsAsRead = async () => {
+    if (!projectId) return;
+    await notificationApiClient.patch(undefined, `project/${projectId}/read`);
+    await queryClient.invalidateQueries({
+      queryKey: ["project-notifications", projectId],
+    });
+  };
+
   return {
     markAsRead,
     markAllAsRead,
     deleteNotification,
     deleteAllNotifications,
+    markProjectNotificationsAsRead,
   };
 };

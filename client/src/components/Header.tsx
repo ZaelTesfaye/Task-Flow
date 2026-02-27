@@ -20,8 +20,11 @@ import {
 export default function Header() {
   const { user, loading } = useAuthContext();
   const { logout } = useAuthActions();
-  const { handleUpdateProfile, handleDeleteAccount, handleManageSubscription } =
-    useProfileActions();
+  const {
+    updateProfile: handleUpdateProfile,
+    deleteAccount: handleDeleteAccount,
+    manageSubscription: handleManageSubscription,
+  } = useProfileActions();
   const invitationsCount = useInvitationsCount();
   const router = useRouter();
   const pathname = usePathname();

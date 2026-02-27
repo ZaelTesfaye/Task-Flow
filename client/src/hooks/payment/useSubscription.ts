@@ -26,3 +26,6 @@ export const useSubscription = () => {
 
   return { subscribe, loading };
 };
+
+// Domain - Task, Project, User, Subscrition
+// Type - Multations, Query, Ui

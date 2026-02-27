@@ -1,19 +1,19 @@
 import toast from "react-hot-toast";
 
 import { userApiClient, paymentApiClient } from "@/lib";
-import { useAuthActions } from "./useAuthActions";
+import { useAuthActions } from "../auth/useAuthActions";
 import type { UpdateUserRequest, ApiResponse } from "@/types";
 
 export const useProfileActions = () => {
   const { updateUserData, logout } = useAuthActions();
 
-  const handleUpdateProfile = async (data: UpdateUserRequest) => {
+  const updateProfile = async (data: UpdateUserRequest) => {
     const response = await userApiClient.patch<ApiResponse<any>>(data);
     updateUserData(response.data);
     toast.success("Profile updated successfully!");
   };
 
-  const handleDeleteAccount = async () => {
+  const deleteAccount = async () => {
     try {
       await userApiClient.delete();
       toast.success("Account deleted successfully");
@@ -23,7 +23,7 @@ export const useProfileActions = () => {
     }
   };
 
-  const handleManageSubscription = async () => {
+  const manageSubscription = async () => {
     try {
       const response = await paymentApiClient.post<{ url: string }>(
         undefined,
@@ -40,8 +40,8 @@ export const useProfileActions = () => {
   };
 
   return {
-    handleUpdateProfile,
-    handleDeleteAccount,
-    handleManageSubscription,
+    updateProfile,
+    deleteAccount,
+    manageSubscription,
   };
 };

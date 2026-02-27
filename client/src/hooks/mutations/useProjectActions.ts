@@ -1,8 +1,9 @@
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { projectApiClient } from "@/lib";
+import type { Project } from "@/types";
 
-export const useProjectMutations = (projectId: string) => {
+export const useProjectActions = (projectId: string) => {
   const queryClient = useQueryClient();
 
   const updateProject = async (data: {
@@ -22,7 +23,17 @@ export const useProjectMutations = (projectId: string) => {
     await queryClient.invalidateQueries({ queryKey: ["user-projects"] });
   };
 
+  const createProject = async (title: string, description: string) => {
+    const response = await projectApiClient.post<{
+      message: string;
+      data: Project;
+    }>({ title, description });
+    await queryClient.invalidateQueries({ queryKey: ["user-projects"] });
+    return response.data;
+  };
+
   return {
+    createProject,
     updateProject,
     deleteProject,
   };

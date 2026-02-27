@@ -3,7 +3,7 @@ import toast from "react-hot-toast";
 import { taskApiClient } from "@/lib";
 import type { TaskStatus } from "@/types";
 
-export const useTaskMutations = (projectId: string) => {
+export const useTaskActions = (projectId: string) => {
   const queryClient = useQueryClient();
 
   const createTask = async (

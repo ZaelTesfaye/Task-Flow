@@ -2,7 +2,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 
 import { authApiClient } from "@/lib";
-import { useAuthActions } from "./useAuthActions";
+import { useAuthActions } from "../auth/useAuthActions";
 
 type ForgotPasswordStep = "email" | "code" | "password";
 

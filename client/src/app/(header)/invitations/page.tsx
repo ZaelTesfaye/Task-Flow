@@ -1,8 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import { RefreshCw, Clock } from "lucide-react";
+import toast from "react-hot-toast";
 
-import { useInvitations } from "@/hooks";
+import { useInvitations, useInvitationActions } from "@/hooks";
 import {
   Button,
   Card,
@@ -13,13 +15,29 @@ import {
 } from "@/components";
 
 export default function InvitationsPage() {
-  const {
-    invitations,
-    loading,
-    invitationLoading,
-    loadInvitations,
-    handleRespond,
-  } = useInvitations();
+  const { invitations, loading, loadInvitations } = useInvitations();
+  const { respondToInvitation } = useInvitationActions();
+  const [invitationLoading, setInvitationLoading] = useState(false);
+
+  const handleRespond = async (
+    invitationId: string,
+    action: "accept" | "decline",
+  ) => {
+    try {
+      setInvitationLoading(true);
+      await respondToInvitation(invitationId, action);
+      toast.success(
+        action === "accept" ? "Invitation accepted!" : "Invitation declined.",
+      );
+      loadInvitations();
+    } catch (error: any) {
+      toast.error(
+        error?.response?.data?.message || "Invitation response failed",
+      );
+    } finally {
+      setInvitationLoading(false);
+    }
+  };
 
   return (
     <div className="max-w-4xl px-6 py-10 mx-auto">

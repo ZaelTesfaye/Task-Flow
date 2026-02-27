@@ -1,8 +1,13 @@
 "use client";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
-import { useUserProjects, useSubscriptionVerification } from "@/hooks";
+import {
+  useUserProjects,
+  useSubscriptionVerification,
+  useProjectMutations,
+} from "@/hooks";
 import {
   ProjectNavigation,
   CreateProjectModal,
@@ -10,9 +15,10 @@ import {
 } from "@/components";
 
 export default function Dashboard() {
-  const { projects, projectsLoading, authLoading, createProject } =
-    useUserProjects();
+  const { projects, projectsLoading, authLoading } = useUserProjects();
   useSubscriptionVerification();
+  const { createProject } = useProjectMutations("");
+  const router = useRouter();
 
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [title, setTitle] = useState("");
@@ -24,10 +30,14 @@ export default function Dashboard() {
   const handleCreateProject = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await createProject(title, description);
+      const createdProject = await createProject(title, description);
+      toast.success("Project created successfully!");
       setShowCreateModal(false);
       setTitle("");
       setDescription("");
+      if (createdProject?.id) {
+        router.push(`/project?id=${createdProject.id}&createCategory=1`);
+      }
     } catch (error: any) {
       toast.error(error.response?.data?.message || "Failed to create project");
     }

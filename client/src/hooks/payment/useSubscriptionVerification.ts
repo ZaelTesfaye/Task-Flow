@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 
 import { paymentApiClient } from "@/lib";
 import { useAuthContext } from "@/context";
-import { useAuthActions } from "./useAuthActions";
+import { useAuthActions } from "../auth/useAuthActions";
 
 export const useSubscriptionVerification = () => {
   const { user } = useAuthContext();

@@ -2,7 +2,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { phaseApiClient } from "@/lib";
 
-export const usePhaseMutations = (projectId: string) => {
+export const usePhaseActions = (projectId: string) => {
   const queryClient = useQueryClient();
 
   const createPhase = async (name: string) => {

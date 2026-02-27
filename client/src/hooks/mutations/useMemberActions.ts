@@ -2,7 +2,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { projectApiClient } from "@/lib";
 
-export const useMemberMutations = (projectId: string) => {
+export const useMemberActions = (projectId: string) => {
   const queryClient = useQueryClient();
 
   const addMember = async (data: {
