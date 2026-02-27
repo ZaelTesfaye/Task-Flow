@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
-import { projectAPI } from "@/lib";
+import { projectClient } from "@/lib";
 import { useAuthContext } from "@/context";
 import type { ProjectInvitation, ApiResponse } from "@/types";
 
@@ -14,7 +14,9 @@ export const useInvitationsCount = () => {
     queryKey: ["user-invitations"],
     queryFn: async () => {
       const response =
-        await projectAPI.get<ApiResponse<ProjectInvitation[]>>("invitations");
+        await projectClient.get<ApiResponse<ProjectInvitation[]>>(
+          "invitations",
+        );
       const pendingInvitations = response.data.filter(
         (inv: ProjectInvitation) => inv.status === "pending",
       );
@@ -38,7 +40,9 @@ export const useInvitations = () => {
     try {
       setLoading(true);
       const response =
-        await projectAPI.get<ApiResponse<ProjectInvitation[]>>("invitations");
+        await projectClient.get<ApiResponse<ProjectInvitation[]>>(
+          "invitations",
+        );
       setInvitations(response.data || []);
     } catch (error) {
       console.error("Failed to load invitations", error);
@@ -60,7 +64,7 @@ export const useInvitations = () => {
   ) => {
     try {
       setInvitationLoading(true);
-      await projectAPI.patch({ action }, `invitations/${invitationId}`);
+      await projectClient.patch({ action }, `invitations/${invitationId}`);
       toast.success(
         action === "accept" ? "Invitation accepted!" : "Invitation declined.",
       );

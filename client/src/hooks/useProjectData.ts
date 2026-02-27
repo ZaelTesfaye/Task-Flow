@@ -1,6 +1,6 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { projectAPI, phaseAPI } from "@/lib";
+import { projectClient, phaseClient } from "@/lib";
 import { useAuthContext } from "@/context";
 import type {
   ProjectMember,
@@ -20,7 +20,7 @@ export const useProjectData = (projectId: string | string[] | undefined) => {
   } = useQuery({
     queryKey: ["project", projectId, "phases"],
     queryFn: () =>
-      phaseAPI.get<ApiResponse<TasksResponse>>(projectId as string),
+      phaseClient.get<ApiResponse<TasksResponse>>(projectId as string),
     enabled: !!projectId && !!user,
     retry: false,
   });
@@ -32,7 +32,7 @@ export const useProjectData = (projectId: string | string[] | undefined) => {
   } = useQuery({
     queryKey: ["project", projectId, "members"],
     queryFn: () =>
-      projectAPI.get<ApiResponse<ProjectMember[]>>(
+      projectClient.get<ApiResponse<ProjectMember[]>>(
         `member/${projectId as string}`,
       ),
     enabled: !!projectId && !!user,
@@ -51,7 +51,7 @@ export const useProjectData = (projectId: string | string[] | undefined) => {
   const { data: invitationsData, isLoading: invitationsLoading } = useQuery({
     queryKey: ["project", projectId, "invitations"],
     queryFn: () =>
-      projectAPI.get<ApiResponse<ProjectInvitation[]>>(
+      projectClient.get<ApiResponse<ProjectInvitation[]>>(
         `member/${projectId as string}/invitations`,
       ),
     enabled:

@@ -2,7 +2,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
-import { projectAPI } from "@/lib";
+import { projectClient } from "@/lib";
 import { useAuthContext } from "@/context";
 import type { UserProjectsResponse, ApiResponse, Project } from "@/types";
 
@@ -13,14 +13,14 @@ export const useUserProjects = () => {
 
   const { data: projectsData, isLoading: projectsLoading } = useQuery({
     queryKey: ["user-projects"],
-    queryFn: () => projectAPI.get<ApiResponse<UserProjectsResponse>>(),
+    queryFn: () => projectClient.get<ApiResponse<UserProjectsResponse>>(),
     enabled: !!user && !authLoading,
   });
 
   const projects = projectsData?.data || { owner: [], admin: [], member: [] };
 
   const createProject = async (title: string, description: string) => {
-    const response = await projectAPI.post<{
+    const response = await projectClient.post<{
       message: string;
       data: Project;
     }>({ title, description });

@@ -1,12 +1,12 @@
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { phaseAPI } from "@/lib";
+import { phaseClient } from "@/lib";
 
 export const usePhaseMutations = (projectId: string) => {
   const queryClient = useQueryClient();
 
   const createPhase = async (name: string) => {
-    await phaseAPI.post({ name }, projectId);
+    await phaseClient.post({ name }, projectId);
     toast.success("Phase created!");
     await queryClient.invalidateQueries({
       queryKey: ["project", projectId],
@@ -14,7 +14,7 @@ export const usePhaseMutations = (projectId: string) => {
   };
 
   const deletePhase = async (phaseId: string) => {
-    await phaseAPI.delete(`${projectId}/${phaseId}`);
+    await phaseClient.delete(`${projectId}/${phaseId}`);
     toast.success("Phase deleted!");
     await queryClient.invalidateQueries({
       queryKey: ["project", projectId],

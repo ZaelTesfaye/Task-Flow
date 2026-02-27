@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 
-import { stripeAPI } from "@/lib";
+import { stripeClient } from "@/lib";
 import { useAuthContext } from "@/context";
 import { useAuthActions } from "./useAuthActions";
 
@@ -23,7 +23,7 @@ export const useSubscriptionVerification = () => {
 
       const verifySubscription = async () => {
         try {
-          const result = await stripeAPI.get<{
+          const result = await stripeClient.get<{
             isPremium: boolean;
             status: string;
             message: string;

@@ -1,6 +1,6 @@
 import toast from "react-hot-toast";
 
-import { userAPI, stripeAPI } from "@/lib";
+import { userClient, stripeClient } from "@/lib";
 import { useAuthActions } from "./useAuthActions";
 import type { UpdateUserRequest, ApiResponse } from "@/types";
 
@@ -8,14 +8,14 @@ export const useProfileActions = () => {
   const { updateUserData, logout } = useAuthActions();
 
   const handleUpdateProfile = async (data: UpdateUserRequest) => {
-    const response = await userAPI.patch<ApiResponse<any>>(data);
+    const response = await userClient.patch<ApiResponse<any>>(data);
     updateUserData(response.data);
     toast.success("Profile updated successfully!");
   };
 
   const handleDeleteAccount = async () => {
     try {
-      await userAPI.delete();
+      await userClient.delete();
       toast.success("Account deleted successfully");
       logout();
     } catch (error: any) {
@@ -25,7 +25,7 @@ export const useProfileActions = () => {
 
   const handleManageSubscription = async () => {
     try {
-      const response = await stripeAPI.post<{ url: string }>(
+      const response = await stripeClient.post<{ url: string }>(
         undefined,
         "create-portal-session",
       );
