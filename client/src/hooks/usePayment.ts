@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { stripeClient } from "@/lib";
+import { paymentApiClient } from "@/lib";
 
 interface CheckoutResponse {
   sessionId: string;
@@ -17,7 +17,7 @@ export const usePayment = () => {
     priceId: string;
     projectId?: string;
   }) => {
-    const response = await stripeClient.post<CheckoutResponse>(
+    const response = await paymentApiClient.post<CheckoutResponse>(
       data,
       "checkout",
     );
@@ -28,7 +28,7 @@ export const usePayment = () => {
   };
 
   const createBillingPortalSession = async () => {
-    const response = await stripeClient.post<BillingPortalResponse>(
+    const response = await paymentApiClient.post<BillingPortalResponse>(
       {},
       "billing-portal",
     );
@@ -39,13 +39,13 @@ export const usePayment = () => {
   };
 
   const updateSubscription = async (data: { priceId: string }) => {
-    await stripeClient.patch(data, "subscription");
+    await paymentApiClient.patch(data, "subscription");
     toast.success("Subscription updated!");
     await queryClient.invalidateQueries({ queryKey: ["user-subscription"] });
   };
 
   const cancelSubscription = async () => {
-    await stripeClient.delete("subscription");
+    await paymentApiClient.delete("subscription");
     toast.success("Subscription cancelled!");
     await queryClient.invalidateQueries({ queryKey: ["user-subscription"] });
   };

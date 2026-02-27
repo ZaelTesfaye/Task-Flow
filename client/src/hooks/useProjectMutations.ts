@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { projectClient } from "@/lib";
+import { projectApiClient } from "@/lib";
 
 export const useProjectMutations = (projectId: string) => {
   const queryClient = useQueryClient();
@@ -9,7 +9,7 @@ export const useProjectMutations = (projectId: string) => {
     title: string;
     description: string;
   }) => {
-    await projectClient.patch(data, projectId);
+    await projectApiClient.patch(data, projectId);
     toast.success("Project updated!");
     await queryClient.invalidateQueries({
       queryKey: ["project", projectId],
@@ -17,7 +17,7 @@ export const useProjectMutations = (projectId: string) => {
   };
 
   const deleteProject = async () => {
-    await projectClient.delete(projectId);
+    await projectApiClient.delete(projectId);
     toast.success("Project deleted!");
     await queryClient.invalidateQueries({ queryKey: ["user-projects"] });
   };

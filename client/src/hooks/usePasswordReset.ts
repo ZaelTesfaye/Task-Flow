@@ -1,7 +1,7 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 
-import { authAPI } from "@/lib";
+import { authApiClient } from "@/lib";
 import { useAuthActions } from "./useAuthActions";
 
 type ForgotPasswordStep = "email" | "code" | "password";
@@ -25,7 +25,7 @@ export const usePasswordReset = () => {
 
     setIsResetting(true);
     try {
-      await authAPI.post({ email: resetEmail }, "forgot-password");
+      await authApiClient.post({ email: resetEmail }, "forgot-password");
       toast.success("Reset code sent to your email!");
       setForgotPasswordStep("code");
     } catch (error: any) {
@@ -43,7 +43,7 @@ export const usePasswordReset = () => {
 
     setIsResetting(true);
     try {
-      await authAPI.post(
+      await authApiClient.post(
         { email: resetEmail, code: resetCode },
         "verify-reset-code",
       );
@@ -68,7 +68,10 @@ export const usePasswordReset = () => {
 
     setIsResetting(true);
     try {
-      await authAPI.post({ email: resetEmail, newPassword }, "reset-password");
+      await authApiClient.post(
+        { email: resetEmail, newPassword },
+        "reset-password",
+      );
       toast.success("Password reset successful! Logging you in...");
       await checkSession();
       return true;

@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { notificationClient } from "@/lib";
+import { notificationApiClient } from "@/lib";
 import type { ApiResponse } from "@/types";
 
 export const useProjectNotifications = (projectId: string) => {
@@ -8,7 +8,7 @@ export const useProjectNotifications = (projectId: string) => {
   const { data: notificationData } = useQuery({
     queryKey: ["project-notifications", projectId],
     queryFn: () =>
-      notificationClient.get<ApiResponse<{ count: number }>>(
+      notificationApiClient.get<ApiResponse<{ count: number }>>(
         `project/${projectId}/count`,
       ),
     refetchInterval: 30000,
@@ -20,7 +20,10 @@ export const useProjectNotifications = (projectId: string) => {
   const markProjectNotificationsAsRead = async () => {
     if (notificationCount > 0) {
       try {
-        await notificationClient.patch(undefined, `project/${projectId}/read`);
+        await notificationApiClient.patch(
+          undefined,
+          `project/${projectId}/read`,
+        );
         await queryClient.invalidateQueries({
           queryKey: ["project-notifications", projectId],
         });

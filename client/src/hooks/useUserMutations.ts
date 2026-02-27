@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { userClient } from "@/lib";
+import { userApiClient } from "@/lib";
 
 export const useUserMutations = () => {
   const queryClient = useQueryClient();
@@ -10,19 +10,19 @@ export const useUserMutations = () => {
     email?: string;
     image?: string;
   }) => {
-    await userClient.patch(data);
+    await userApiClient.patch(data);
     toast.success("Profile updated!");
     await queryClient.invalidateQueries({ queryKey: ["user-profile"] });
   };
 
   const updateSettings = async (settings: Record<string, any>) => {
-    await userClient.patch({ settings }, "settings");
+    await userApiClient.patch({ settings }, "settings");
     toast.success("Settings updated!");
     await queryClient.invalidateQueries({ queryKey: ["user-settings"] });
   };
 
   const deleteAccount = async () => {
-    await userClient.delete("");
+    await userApiClient.delete("");
     toast.success("Account deleted!");
     await queryClient.invalidateQueries({ queryKey: ["user-profile"] });
   };

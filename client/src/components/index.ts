@@ -1,6 +1,6 @@
 export * from "./phase";
 export * from "./project";
-export * from "./members";
+export * from "./project-members";
 export * from "./modals";
 export * from "./profile";
 export * from "./task";

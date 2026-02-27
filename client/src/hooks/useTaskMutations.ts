@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { taskClient } from "@/lib";
+import { taskApiClient } from "@/lib";
 import type { TaskStatus } from "@/types";
 
 export const useTaskMutations = (projectId: string) => {
@@ -10,7 +10,7 @@ export const useTaskMutations = (projectId: string) => {
     phaseId: string,
     data: { title: string; description: string; assignedTo: string },
   ) => {
-    await taskClient.post(data, `${projectId}/${phaseId}`);
+    await taskApiClient.post(data, `${projectId}/${phaseId}`);
     toast.success("Task created!");
     await queryClient.invalidateQueries({
       queryKey: ["project", projectId],
@@ -24,7 +24,7 @@ export const useTaskMutations = (projectId: string) => {
     taskId: string,
     data: { title: string; description: string },
   ) => {
-    await taskClient.patch(data, `${projectId}/${taskId}`);
+    await taskApiClient.patch(data, `${projectId}/${taskId}`);
     toast.success("Task updated!");
     await queryClient.invalidateQueries({
       queryKey: ["project", projectId],
@@ -32,7 +32,7 @@ export const useTaskMutations = (projectId: string) => {
   };
 
   const deleteTask = async (taskId: string) => {
-    await taskClient.delete(`${projectId}/${taskId}`);
+    await taskApiClient.delete(`${projectId}/${taskId}`);
     toast.success("Task deleted!");
     await queryClient.invalidateQueries({
       queryKey: ["project", projectId],
@@ -40,7 +40,7 @@ export const useTaskMutations = (projectId: string) => {
   };
 
   const updateTaskStatus = async (taskId: string, status: TaskStatus) => {
-    await taskClient.patch({ status }, `${projectId}/${taskId}`);
+    await taskApiClient.patch({ status }, `${projectId}/${taskId}`);
     toast.success("Task status updated!");
     await queryClient.invalidateQueries({
       queryKey: ["project", projectId],
@@ -52,7 +52,7 @@ export const useTaskMutations = (projectId: string) => {
     updateDescription: string,
     newStatus: TaskStatus,
   ) => {
-    await taskClient.post(
+    await taskApiClient.post(
       { updateDescription, newStatus },
       `request-update/${projectId}/${taskId}`,
     );
@@ -66,7 +66,7 @@ export const useTaskMutations = (projectId: string) => {
     pendingUpdateId: string,
     newStatus: TaskStatus,
   ) => {
-    await taskClient.patch(
+    await taskApiClient.patch(
       { newStatus },
       `accept-update/${projectId}/${pendingUpdateId}`,
     );
@@ -77,7 +77,7 @@ export const useTaskMutations = (projectId: string) => {
   };
 
   const rejectPendingUpdate = async (pendingUpdateId: string) => {
-    await taskClient.patch(
+    await taskApiClient.patch(
       undefined,
       `reject-update/${projectId}/${pendingUpdateId}`,
     );

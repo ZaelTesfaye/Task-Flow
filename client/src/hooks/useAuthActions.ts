@@ -1,6 +1,6 @@
 import { useAuthContext } from "@/context";
 import { authClient } from "@/lib/auth-client";
-import { userClient } from "@/lib";
+import { userApiClient } from "@/lib";
 import type { User } from "@/types";
 
 export const useAuthActions = () => {
@@ -56,7 +56,7 @@ export const useAuthActions = () => {
       const { data } = await authClient.getSession();
       if (data?.user) {
         try {
-          const fullUser = await userClient.get<User>("me");
+          const fullUser = await userApiClient.get<User>("me");
           setUser(fullUser);
         } catch (err) {
           console.error("Failed to fetch full user profile:", err);

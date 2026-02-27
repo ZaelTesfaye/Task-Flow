@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { projectClient } from "@/lib";
+import { projectApiClient } from "@/lib";
 
 export const useMemberMutations = (projectId: string) => {
   const queryClient = useQueryClient();
@@ -9,7 +9,7 @@ export const useMemberMutations = (projectId: string) => {
     email: string;
     access: "admin" | "member";
   }) => {
-    await projectClient.post(data, `member/${projectId}`);
+    await projectApiClient.post(data, `member/${projectId}`);
     toast.success("Invitation sent!");
     await queryClient.invalidateQueries({
       queryKey: ["project", projectId],
@@ -17,7 +17,7 @@ export const useMemberMutations = (projectId: string) => {
   };
 
   const removeMember = async (userId: string) => {
-    await projectClient.delete(`member/${projectId}/${userId}`);
+    await projectApiClient.delete(`member/${projectId}/${userId}`);
     toast.success("Member removed!");
     await queryClient.invalidateQueries({
       queryKey: ["project", projectId],
@@ -28,7 +28,7 @@ export const useMemberMutations = (projectId: string) => {
     userId: string,
     access: "admin" | "member",
   ) => {
-    await projectClient.patch({ access }, `member/${projectId}/${userId}`);
+    await projectApiClient.patch({ access }, `member/${projectId}/${userId}`);
     toast.success("Member role updated!");
     await queryClient.invalidateQueries({
       queryKey: ["project", projectId],
@@ -36,7 +36,7 @@ export const useMemberMutations = (projectId: string) => {
   };
 
   const leaveProject = async (userId: string) => {
-    await projectClient.delete(`member/${projectId}/${userId}`);
+    await projectApiClient.delete(`member/${projectId}/${userId}`);
     toast.success("You have left the project!");
     await queryClient.invalidateQueries({ queryKey: ["user-projects"] });
   };

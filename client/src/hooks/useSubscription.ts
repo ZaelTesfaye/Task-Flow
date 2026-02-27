@@ -1,7 +1,7 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 
-import { stripeClient } from "@/lib";
+import { paymentApiClient } from "@/lib";
 
 export const useSubscription = () => {
   const [loading, setLoading] = useState(false);
@@ -9,7 +9,7 @@ export const useSubscription = () => {
   const subscribe = async (plan: string) => {
     try {
       setLoading(true);
-      const response = await stripeClient.post<{ url: string }>(
+      const response = await paymentApiClient.post<{ url: string }>(
         { plan },
         "subscribe",
       );

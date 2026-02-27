@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
-import { projectClient } from "@/lib";
+import { projectApiClient } from "@/lib";
 import { useAuthContext } from "@/context";
 import type { ProjectInvitation, ApiResponse } from "@/types";
 
@@ -14,7 +14,7 @@ export const useInvitationsCount = () => {
     queryKey: ["user-invitations"],
     queryFn: async () => {
       const response =
-        await projectClient.get<ApiResponse<ProjectInvitation[]>>(
+        await projectApiClient.get<ApiResponse<ProjectInvitation[]>>(
           "invitations",
         );
       const pendingInvitations = response.data.filter(
@@ -40,7 +40,7 @@ export const useInvitations = () => {
     try {
       setLoading(true);
       const response =
-        await projectClient.get<ApiResponse<ProjectInvitation[]>>(
+        await projectApiClient.get<ApiResponse<ProjectInvitation[]>>(
           "invitations",
         );
       setInvitations(response.data || []);
@@ -64,7 +64,7 @@ export const useInvitations = () => {
   ) => {
     try {
       setInvitationLoading(true);
-      await projectClient.patch({ action }, `invitations/${invitationId}`);
+      await projectApiClient.patch({ action }, `invitations/${invitationId}`);
       toast.success(
         action === "accept" ? "Invitation accepted!" : "Invitation declined.",
       );
