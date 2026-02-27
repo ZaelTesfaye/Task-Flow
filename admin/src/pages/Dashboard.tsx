@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import type { AdminUser } from "../types";
-import { adminAPI } from "../lib/api";
+import { adminUserApiClient, superAdminApiClient } from "../lib/api-client";
 import {
   Card,
   CardContent,
@@ -31,13 +31,13 @@ const Dashboard = () => {
   const [adminName, setAdminName] = useState("");
   const [adminPassword, setAdminPassword] = useState("");
   const [currentAdminUser, setCurrentAdminUser] = useState<AdminUser | null>(
-    null
+    null,
   );
 
   const loadUsers = useCallback(async () => {
     try {
       setLoading(true);
-      const data = await adminAPI.getAllUsers(page, 10);
+      const data = await adminUserApiClient.get<AdminUser[]>(`${page}/10`);
       console.log("Fetched users:", data);
       setUsers(data);
     } catch (error) {
@@ -71,7 +71,7 @@ const Dashboard = () => {
   const handleConfirmDelete = async () => {
     if (!userToDelete) return;
     try {
-      await adminAPI.removeUser(userToDelete.id);
+      await adminUserApiClient.delete(userToDelete.id);
       toast.success("User removed successfully");
       loadUsers();
       setIsDeleteDialogOpen(false);
@@ -84,7 +84,10 @@ const Dashboard = () => {
   const handleUpdatePassword = async () => {
     if (!selectedUser || !newPassword) return;
     try {
-      await adminAPI.updateUserPassword(selectedUser.id, newPassword);
+      await adminUserApiClient.patch({
+        userId: selectedUser.id,
+        password: newPassword,
+      });
       setSelectedUser(null);
       setNewPassword("");
       setIsDialogOpen(false);
@@ -97,7 +100,10 @@ const Dashboard = () => {
   const handleCreateAdmin = async () => {
     if (!adminUsername || !adminName || !adminPassword) return;
     try {
-      await adminAPI.createAdmin(adminUsername, adminName, adminPassword);
+      await superAdminApiClient.post(
+        { username: adminUsername, name: adminName, password: adminPassword },
+        "create-admin",
+      );
       setAdminUsername("");
       setAdminName("");
       setAdminPassword("");

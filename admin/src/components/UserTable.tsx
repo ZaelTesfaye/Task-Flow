@@ -1,6 +1,6 @@
 import React from "react";
-import { Button } from "../ui/button";
-import type { AdminUser } from "../../types";
+import { Button } from "./ui/button";
+import type { AdminUser } from "../types";
 
 interface UserTableProps {
   users: AdminUser[];

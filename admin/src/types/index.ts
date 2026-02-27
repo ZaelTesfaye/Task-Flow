@@ -10,9 +10,3 @@ export interface User {
 export interface AdminUser extends User {
   role: string;
 }
-
-export interface ApiResponse<T> {
-  success: boolean;
-  data: T;
-  message?: string;
-}

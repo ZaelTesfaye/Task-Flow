@@ -8,7 +8,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from "./ui/dialog";
-import { adminAPI } from "../lib/api";
+import { authApiClient } from "../lib/api-client";
 
 interface AdminUser {
   id: string;
@@ -53,7 +53,7 @@ export default function AdminLayout() {
   }, [showProfileMenu]);
 
   const logout = async () => {
-    await adminAPI.logout();
+    await authApiClient.post(undefined, "logout");
     localStorage.removeItem("adminUser");
     window.location.href = "/login";
   };

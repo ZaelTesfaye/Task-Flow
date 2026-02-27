@@ -4,7 +4,8 @@ import { LogIn, Shield } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
-import { adminAPI } from "../lib/api";
+import { authApiClient } from "../lib/api-client";
+import type { AdminUser } from "../types";
 import toast, { Toaster } from "react-hot-toast";
 
 function Login() {
@@ -12,7 +13,7 @@ function Login() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>(
-    {}
+    {},
   );
   const navigate = useNavigate();
 
@@ -45,8 +46,11 @@ function Login() {
 
     setLoading(true);
     try {
-      const response = await adminAPI.login(email, password);
-      localStorage.setItem("adminUser", JSON.stringify(response.user));
+      const result = await authApiClient.post<{ data: { user: AdminUser } }>(
+        { email, password },
+        "login",
+      );
+      localStorage.setItem("adminUser", JSON.stringify(result.data.user));
       toast.success("Login successful!");
       navigate("/dashboard");
     } catch {
