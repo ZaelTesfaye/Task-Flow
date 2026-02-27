@@ -19,11 +19,7 @@ import {
   stripeRoutes,
   notificationRoutes,
 } from "./routes/index.js";
-import {
-  authMiddleware,
-  errorHandler,
-  notFoundHandler,
-} from "./middlewares/index.js";
+import { authMiddleware, errorHandler, notFoundHandler } from "./middlewares/index.js";
 import { logger } from "./lib/index.js";
 
 const app = express();
