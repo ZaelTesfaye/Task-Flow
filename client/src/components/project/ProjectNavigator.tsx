@@ -14,16 +14,8 @@ interface ProjectNavigationProps {
   onViewChange: (view: "all" | "owner" | "admin" | "member") => void;
 }
 
-const ProjectNavigation: React.FC<ProjectNavigationProps> = ({
-  projects,
-  activeView,
-  onViewChange,
-}) => {
-  const allProjects = [
-    ...projects.owner,
-    ...projects.admin,
-    ...projects.member,
-  ];
+const ProjectNavigation: React.FC<ProjectNavigationProps> = ({ projects, activeView, onViewChange }) => {
+  const allProjects = [...projects.owner, ...projects.admin, ...projects.member];
 
   const navItems = [
     {
@@ -36,35 +28,35 @@ const ProjectNavigation: React.FC<ProjectNavigationProps> = ({
       key: "owner" as const,
       label: "Own",
       count: projects.owner.length,
-      icon: <Folder className="w-4 h-4 text-yellow-500" />,
+      icon: <Folder className="h-4 w-4 text-yellow-500" />,
     },
     {
       key: "admin" as const,
       label: "Admin",
       count: projects.admin.length,
-      icon: <Shield className="w-4 h-4 text-blue-500" />,
+      icon: <Shield className="h-4 w-4 text-blue-500" />,
     },
     {
       key: "member" as const,
       label: "Member",
       count: projects.member.length,
-      icon: <Users className="w-4 h-4 text-green-500" />,
+      icon: <Users className="h-4 w-4 text-green-500" />,
     },
   ];
 
   return (
-    <div className="flex justify-center mb-8">
-      <div className="flex gap-2 p-1 rounded-lg bg-[hsl(var(--accent))]">
+    <div className="mb-8 flex justify-center">
+      <div className="flex gap-2 rounded-lg bg-[hsl(var(--accent))] p-1">
         {navItems.map((item) => (
           <button
             key={item.key}
             onClick={() => onViewChange(item.key)}
-            className={`hover:cursor-pointer px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+            className={`rounded-md px-4 py-2 text-sm font-medium transition-colors hover:cursor-pointer ${
               item.icon ? "flex items-center gap-2" : ""
             } border ${
               activeView === item.key
-                ? "bg-[hsl(var(--card))] text-[hsl(var(--foreground))] shadow-sm border-[hsl(var(--border))]"
-                : "border-transparent text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))] hover:bg-[hsl(var(--accent))]"
+                ? "border-[hsl(var(--border))] bg-[hsl(var(--card))] text-[hsl(var(--foreground))] shadow-sm"
+                : "border-transparent text-[hsl(var(--muted-foreground))] hover:bg-[hsl(var(--accent))] hover:text-[hsl(var(--foreground))]"
             }`}
           >
             {item.icon}

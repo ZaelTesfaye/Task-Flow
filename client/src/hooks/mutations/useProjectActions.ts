@@ -6,10 +6,7 @@ import type { Project } from "@/types";
 export const useProjectActions = (projectId: string) => {
   const queryClient = useQueryClient();
 
-  const updateProject = async (data: {
-    title: string;
-    description: string;
-  }) => {
+  const updateProject = async (data: { title: string; description: string }) => {
     await projectApiClient.patch(data, projectId);
     toast.success("Project updated!");
     await queryClient.invalidateQueries({

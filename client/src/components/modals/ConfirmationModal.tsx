@@ -43,10 +43,8 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   return (
     <Modal isOpen={isOpen} onClose={onCancel}>
       <h2
-        className={`text-2xl font-bold mb-4 ${
-          confirmButtonColor === "red"
-            ? "text-red-600 dark:text-red-400"
-            : "text-[hsl(var(--foreground))]"
+        className={`mb-4 text-2xl font-bold ${
+          confirmButtonColor === "red" ? "text-red-600 dark:text-red-400" : "text-[hsl(var(--foreground))]"
         }`}
       >
         {title}
@@ -56,14 +54,14 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
         <button
           onClick={onCancel}
           disabled={isLoading}
-          className="flex-1 px-4 py-2 text-[hsl(var(--foreground))] transition border border-[hsl(var(--border))] rounded-lg hover:cursor-pointer hover:bg-[hsl(var(--muted))] dark:hover:bg-gray-7S00 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="dark:hover:bg-gray-7S00 flex-1 rounded-lg border border-[hsl(var(--border))] px-4 py-2 text-[hsl(var(--foreground))] transition hover:cursor-pointer hover:bg-[hsl(var(--muted))] disabled:cursor-not-allowed disabled:opacity-50"
         >
           {cancelText}
         </button>
         <button
           onClick={onConfirm}
           disabled={isLoading}
-          className={`${getConfirmButtonClasses()} hover:cursor-pointer `}
+          className={`${getConfirmButtonClasses()} hover:cursor-pointer`}
         >
           {isLoading ? "Processing..." : confirmText}
         </button>

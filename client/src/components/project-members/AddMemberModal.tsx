@@ -30,36 +30,25 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <h2 className="text-2xl font-bold mb-6 text-[hsl(var(--foreground))]">
-        Invite Member
-      </h2>
+      <h2 className="mb-6 text-2xl font-bold text-[hsl(var(--foreground))]">Invite Member</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-[hsl(var(--foreground))] mb-2">
-            Email
-          </label>
+          <label className="mb-2 block text-sm font-medium text-[hsl(var(--foreground))]">Email</label>
           <input
             type="email"
             value={forms.newMemberEmail}
             onChange={(e) => updateForm("newMemberEmail", e.target.value)}
             required
-            className="w-full px-4 py-2 border border-[hsl(var(--input))] rounded-lg focus:ring-2 focus:ring-[hsl(var(--ring))] focus:border-transparent outline-none bg-[hsl(var(--card))] text-[hsl(var(--foreground))]"
+            className="w-full rounded-lg border border-[hsl(var(--input))] bg-[hsl(var(--card))] px-4 py-2 text-[hsl(var(--foreground))] outline-none focus:border-transparent focus:ring-2 focus:ring-[hsl(var(--ring))]"
             placeholder="member@example.com"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-[hsl(var(--foreground))] mb-2">
-            Role
-          </label>
+          <label className="mb-2 block text-sm font-medium text-[hsl(var(--foreground))]">Role</label>
           <select
             value={forms.newMemberAccess}
-            onChange={(e) =>
-              updateForm(
-                "newMemberAccess",
-                e.target.value as "admin" | "member"
-              )
-            }
-            className="w-full px-4 py-2 border border-[hsl(var(--input))] rounded-lg focus:ring-2 focus:ring-[hsl(var(--ring))] focus:border-transparent outline-none bg-[hsl(var(--card))] text-[hsl(var(--foreground))]"
+            onChange={(e) => updateForm("newMemberAccess", e.target.value as "admin" | "member")}
+            className="w-full rounded-lg border border-[hsl(var(--input))] bg-[hsl(var(--card))] px-4 py-2 text-[hsl(var(--foreground))] outline-none focus:border-transparent focus:ring-2 focus:ring-[hsl(var(--ring))]"
           >
             <option value="member">Member</option>
             <option value="admin">Admin</option>
@@ -70,14 +59,14 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({
             type="button"
             onClick={onClose}
             disabled={loading}
-            className="hover:cursor-pointer flex-1 px-4 py-2 border border-[hsl(var(--border))] rounded-lg hover:bg-[hsl(var(--accent))] transition text-[hsl(var(--foreground))] disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 rounded-lg border border-[hsl(var(--border))] px-4 py-2 text-[hsl(var(--foreground))] transition hover:cursor-pointer hover:bg-[hsl(var(--accent))] disabled:cursor-not-allowed disabled:opacity-50"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={loading}
-            className="flex-1 px-4 py-2 text-[hsl(var(--primary-foreground))] transition bg-blue-600 rounded-lg hover:cursor-pointer hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-[hsl(var(--primary-foreground))] transition hover:cursor-pointer hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {loading ? (
               <>

@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  CheckCircle,
-  XCircle,
-  Edit2,
-  Trash2,
-  GitPullRequest,
-  ArrowUpFromLine,
-} from "lucide-react";
+import { CheckCircle, XCircle, Edit2, Trash2, GitPullRequest, ArrowUpFromLine } from "lucide-react";
 import { TaskStatus, UserRole } from "@/types";
 import TaskDetailsModal from "./TaskDetailsModal";
 
@@ -15,8 +8,7 @@ export const TASK_STATUS_COLORS: Record<TaskStatus, string> = {
     "bg-blue-500 text-white border border-blue-600 dark:bg-blue-900/30 dark:text-blue-600 dark:border-blue-800/60",
   complete:
     "bg-green-500 text-white border border-green-600 dark:bg-green-900/30 dark:text-green-600 dark:border-green-800/60",
-  canceled:
-    "bg-red-500 text-white border border-red-600 dark:bg-red-900/30 dark:text-red-600 dark:border-red-800/60",
+  canceled: "bg-red-500 text-white border border-red-600 dark:bg-red-900/30 dark:text-red-600 dark:border-red-800/60",
 };
 
 export interface TaskCardProps {
@@ -25,11 +17,7 @@ export interface TaskCardProps {
   currentUserId: string;
   phaseName: string;
   onUpdateStatus: (taskId: string, status: TaskStatus) => void;
-  onRequestUpdate: (
-    taskId: string,
-    description: string,
-    status: TaskStatus,
-  ) => void;
+  onRequestUpdate: (taskId: string, description: string, status: TaskStatus) => void;
   onEdit: (task: any) => void;
   onDelete: (task: any) => void;
   onReviewUpdate: (task: any) => void;
@@ -51,19 +39,19 @@ const TaskCard: React.FC<TaskCardProps> = ({
   return (
     <>
       <div
-        className={`p-2 rounded-lg border cursor-pointer transition-colors ${
+        className={`cursor-pointer rounded-lg border p-2 transition-colors ${
           task.assignedTo === currentUserId
-            ? "bg-blue-50 dark:bg-blue-950/30 border-blue-300 dark:border-blue-700 hover:bg-blue-100 dark:hover:bg-blue-950/50"
-            : "bg-gray-100 dark:bg-gray-900/50 border-[hsl(var(--border))] hover:bg-gray-200 dark:hover:bg-gray-800/50"
+            ? "border-blue-300 bg-blue-50 hover:bg-blue-100 dark:border-blue-700 dark:bg-blue-950/30 dark:hover:bg-blue-950/50"
+            : "border-[hsl(var(--border))] bg-gray-100 hover:bg-gray-200 dark:bg-gray-900/50 dark:hover:bg-gray-800/50"
         }`}
         onClick={() => setShowDetailsModal(true)}
       >
         <div className="flex items-start justify-between gap-4">
-          <div className="flex-1 min-w-0">
+          <div className="min-w-0 flex-1">
             {/* Title */}
-            <div className="flex items-center gap-2 mb-1">
+            <div className="mb-1 flex items-center gap-2">
               <div
-                className={`w-4 h-4 rounded flex items-center justify-center shrink-0 ${
+                className={`flex h-4 w-4 shrink-0 items-center justify-center rounded ${
                   task.status === "complete"
                     ? "bg-green-500"
                     : task.status === "canceled"
@@ -73,17 +61,13 @@ const TaskCard: React.FC<TaskCardProps> = ({
                         : "border-2 border-gray-300 dark:border-gray-500"
                 }`}
               >
-                {task.status === "complete" && (
-                  <CheckCircle className="w-3 h-3 text-white" />
-                )}
-                {task.status === "canceled" && (
-                  <XCircle className="w-3 h-3 text-white" />
-                )}
+                {task.status === "complete" && <CheckCircle className="h-3 w-3 text-white" />}
+                {task.status === "canceled" && <XCircle className="h-3 w-3 text-white" />}
               </div>
               <h4
-                className={`font-medium text-sm truncate text-[hsl(var(--foreground))] ${
+                className={`truncate text-sm font-medium text-[hsl(var(--foreground))] ${
                   task.status === "complete"
-                    ? "opacity-60 line-through"
+                    ? "line-through opacity-60"
                     : task.status === "canceled"
                       ? "text-red-500 line-through"
                       : ""
@@ -95,24 +79,20 @@ const TaskCard: React.FC<TaskCardProps> = ({
 
             {/* Description */}
             {task.description && (
-              <p className="text-xs text-[hsl(var(--muted-foreground))] line-clamp-2 mb-2 pl-6">
-                {task.description}
-              </p>
+              <p className="mb-2 line-clamp-2 pl-6 text-xs text-[hsl(var(--muted-foreground))]">{task.description}</p>
             )}
 
             {/* Status and Pending Updates */}
             <div className="flex items-center gap-2">
               <span
-                className={`px-2 py-1 capitalize rounded-full text-xs font-medium ${
-                  TASK_STATUS_COLORS[
-                    task.status as keyof typeof TASK_STATUS_COLORS
-                  ]
+                className={`rounded-full px-2 py-1 text-xs font-medium capitalize ${
+                  TASK_STATUS_COLORS[task.status as keyof typeof TASK_STATUS_COLORS]
                 }`}
               >
                 {task.status}
               </span>
               {task.pendingUpdates && task.pendingUpdates.length > 0 && (
-                <span className="px-2 py-1 text-xs font-semibold text-yellow-900 bg-yellow-200 border border-yellow-300 rounded-full dark:bg-yellow-900/30 dark:text-yellow-600 dark:border-yellow-800/60">
+                <span className="rounded-full border border-yellow-300 bg-yellow-200 px-2 py-1 text-xs font-semibold text-yellow-900 dark:border-yellow-800/60 dark:bg-yellow-900/30 dark:text-yellow-600">
                   {task.pendingUpdates.length} pending
                 </span>
               )}
@@ -120,48 +100,41 @@ const TaskCard: React.FC<TaskCardProps> = ({
           </div>
 
           {/* Assigned User & Action Buttons */}
-          <div className="flex flex-col items-end gap-0.5 shrink-0">
-            <span className="text-xs text-right truncate opacity-70 max-w-20 text-[hsl(var(--muted-foreground))]">
-              {task.assignedTo === currentUserId
-                ? "You"
-                : `To: ${task.assignedUser?.name}`}
+          <div className="flex shrink-0 flex-col items-end gap-0.5">
+            <span className="max-w-20 truncate text-right text-xs text-[hsl(var(--muted-foreground))] opacity-70">
+              {task.assignedTo === currentUserId ? "You" : `To: ${task.assignedUser?.name}`}
             </span>
-            <div
-              className="flex items-center gap-0"
-              onClick={(e) => e.stopPropagation()}
-            >
+            <div className="flex items-center gap-0" onClick={(e) => e.stopPropagation()}>
               {/* Request Update Button - for assigned user only */}
               {task.assignedTo === currentUserId && !isOwnerOrAdmin && (
                 <button
                   onClick={() => onRequestUpdate(task.id, "", task.status)}
-                  className="p-2 transition-colors rounded hover:bg-gray-500 hover:cursor-pointer opacity-80"
+                  className="rounded p-2 opacity-80 transition-colors hover:cursor-pointer hover:bg-gray-500"
                   title="Request Status Update"
                 >
-                  <ArrowUpFromLine className="w-4 h-4 " />
+                  <ArrowUpFromLine className="h-4 w-4" />
                 </button>
               )}
 
               {/* Review Update Button - for admin/owner */}
-              {isOwnerOrAdmin &&
-                task.pendingUpdates &&
-                task.pendingUpdates.length > 0 && (
-                  <button
-                    onClick={() => onReviewUpdate(task)}
-                    className="p-2 text-blue-600 transition-colors rounded hover:cursor-pointer hover:bg-gray-500"
-                    title="Review Update"
-                  >
-                    <GitPullRequest className="w-4 h-4 hover:cursor-pointer" />
-                  </button>
-                )}
+              {isOwnerOrAdmin && task.pendingUpdates && task.pendingUpdates.length > 0 && (
+                <button
+                  onClick={() => onReviewUpdate(task)}
+                  className="rounded p-2 text-blue-600 transition-colors hover:cursor-pointer hover:bg-gray-500"
+                  title="Review Update"
+                >
+                  <GitPullRequest className="h-4 w-4 hover:cursor-pointer" />
+                </button>
+              )}
 
               {/* Edit Button - for admin/owner */}
               {isOwnerOrAdmin && (
                 <button
                   onClick={() => onEdit(task)}
-                  className="p-2 transition-colors rounded hover:bg-gray-500 hover:cursor-pointer opacity-80"
+                  className="rounded p-2 opacity-80 transition-colors hover:cursor-pointer hover:bg-gray-500"
                   title="Edit Task"
                 >
-                  <Edit2 className="w-4 h-4" />
+                  <Edit2 className="h-4 w-4" />
                 </button>
               )}
 
@@ -169,10 +142,10 @@ const TaskCard: React.FC<TaskCardProps> = ({
               {isOwnerOrAdmin && (
                 <button
                   onClick={() => onDelete(task.id)}
-                  className="p-2 text-red-600 transition-colors rounded hover:cursor-pointer hover:bg-red-100 dark:hover:bg-red-900/30"
+                  className="rounded p-2 text-red-600 transition-colors hover:cursor-pointer hover:bg-red-100 dark:hover:bg-red-900/30"
                   title="Delete Task"
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <Trash2 className="h-4 w-4" />
                 </button>
               )}
             </div>

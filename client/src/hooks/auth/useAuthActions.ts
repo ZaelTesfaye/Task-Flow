@@ -19,11 +19,7 @@ export const useAuthActions = () => {
     }
   };
 
-  const register = async (data: {
-    name: string;
-    email: string;
-    password: string;
-  }) => {
+  const register = async (data: { name: string; email: string; password: string }) => {
     const { data: result } = await authClient.signUp.email({
       email: data.email,
       password: data.password,

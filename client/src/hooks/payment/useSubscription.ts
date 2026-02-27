@@ -9,10 +9,7 @@ export const useSubscription = () => {
   const subscribe = async (plan: string) => {
     try {
       setLoading(true);
-      const response = await paymentApiClient.post<{ url: string }>(
-        { plan },
-        "subscribe",
-      );
+      const response = await paymentApiClient.post<{ url: string }>({ plan }, "subscribe");
       if (response.url) {
         window.location.href = response.url;
       }

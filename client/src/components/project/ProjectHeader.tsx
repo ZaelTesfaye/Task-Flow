@@ -25,27 +25,19 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
   const router = useRouter();
 
   return (
-    <div className="bg-[hsl(var(--card))] text-[hsl(var(--card-foreground))] border-b border-[hsl(var(--border))]">
-      <div
-        className={`max-w-7xl mx-auto px-6 py-3 ${
-          isMembersPaneOpen || isSettingsPaneOpen ? "pr-80" : ""
-        }`}
-      >
+    <div className="border-b border-[hsl(var(--border))] bg-[hsl(var(--card))] text-[hsl(var(--card-foreground))]">
+      <div className={`mx-auto max-w-7xl px-6 py-3 ${isMembersPaneOpen || isSettingsPaneOpen ? "pr-80" : ""}`}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <button
               onClick={() => router.push("/dashboard")}
-              className="p-2 hover:bg-[hsl(var(--accent))] rounded-lg transition hover:cursor-pointer"
+              className="rounded-lg p-2 transition hover:cursor-pointer hover:bg-[hsl(var(--accent))]"
             >
-              <ArrowLeft className="w-5 h-5" />
+              <ArrowLeft className="h-5 w-5" />
             </button>
             <div>
-              <h1 className="text-xl font-bold text-[hsl(var(--foreground))]">
-                {project?.title}
-              </h1>
-              <p className="text-sm text-[hsl(var(--muted-foreground))]">
-                {project?.description}
-              </p>
+              <h1 className="text-xl font-bold text-[hsl(var(--foreground))]">{project?.title}</h1>
+              <p className="text-sm text-[hsl(var(--muted-foreground))]">{project?.description}</p>
             </div>
           </div>
 
@@ -55,14 +47,14 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
                 e.stopPropagation();
                 onToggleMembers();
               }}
-              className={`p-2 border rounded-lg transition hover:cursor-pointer ${
+              className={`rounded-lg border p-2 transition hover:cursor-pointer ${
                 isMembersPaneOpen
                   ? "border-[hsl(var(--ring))] bg-[hsl(var(--accent))]"
                   : "border-[hsl(var(--border))] hover:bg-[hsl(var(--accent))]"
               }`}
               title="Show Members"
             >
-              <Users className="w-5 h-5" />
+              <Users className="h-5 w-5" />
             </button>
             {userRole !== "owner" && (
               <button
@@ -70,10 +62,10 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
                   e.stopPropagation();
                   onLeaveProject();
                 }}
-                className="hover:bg-red-500/10 p-2 border border-[hsl(var(--border))] rounded-lg transition hover:cursor-pointer"
+                className="rounded-lg border border-[hsl(var(--border))] p-2 transition hover:cursor-pointer hover:bg-red-500/10"
                 title="Leave Project"
               >
-                <LogOut className="w-5 h-5" />
+                <LogOut className="h-5 w-5" />
               </button>
             )}
             {userRole === "owner" && (
@@ -82,14 +74,14 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
                   e.stopPropagation();
                   onToggleSettings();
                 }}
-                className={`p-2 border rounded-lg transition hover:cursor-pointer ${
+                className={`rounded-lg border p-2 transition hover:cursor-pointer ${
                   isSettingsPaneOpen
                     ? "border-[hsl(var(--ring))] bg-[hsl(var(--accent))]"
                     : "border-[hsl(var(--border))] hover:bg-[hsl(var(--accent))]"
                 }`}
                 title="Show Settings"
               >
-                <Settings className="w-5 h-5" />
+                <Settings className="h-5 w-5" />
               </button>
             )}
           </div>

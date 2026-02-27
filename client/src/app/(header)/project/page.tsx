@@ -36,8 +36,7 @@ function ProjectBoard() {
   const projectId = searchParams.get("id") as string;
   const { user } = useAuthContext();
 
-  const { project, phases, members, invitations, loading, userRole, refetch } =
-    useProjectData(projectId);
+  const { project, phases, members, invitations, loading, userRole, refetch } = useProjectData(projectId);
 
   const {
     isMembersPaneOpen,
@@ -63,8 +62,7 @@ function ProjectBoard() {
     acceptPendingUpdate,
     rejectPendingUpdate,
   } = useTaskMutations(projectId);
-  const { addMember, removeMember, updateMemberAccess, leaveProject } =
-    useMemberMutations(projectId);
+  const { addMember, removeMember, updateMemberAccess, leaveProject } = useMemberMutations(projectId);
 
   const isOwnerOrAdmin = userRole === "owner" || userRole === "admin";
   const [isSavingSettings, setIsSavingSettings] = useState(false);
@@ -72,8 +70,7 @@ function ProjectBoard() {
 
   const filteredMembers = members.filter((member) => {
     if (forms.memberFilter === "all") return true;
-    if (forms.memberFilter === "owner")
-      return member.userId === project?.ownerId;
+    if (forms.memberFilter === "owner") return member.userId === project?.ownerId;
     if (forms.memberFilter === "admin") return member.access === "admin";
     if (forms.memberFilter === "member") return member.access === "member";
     return true;
@@ -113,8 +110,7 @@ function ProjectBoard() {
       });
       closeSettingsPane();
     } catch (error: any) {
-      const message =
-        error?.response?.data?.message || "Failed to update project";
+      const message = error?.response?.data?.message || "Failed to update project";
       toast.error(message);
     } finally {
       setIsSavingSettings(false);
@@ -129,13 +125,7 @@ function ProjectBoard() {
         updateForm("projectDescription", project.description || "");
       }
     }
-  }, [
-    userRole,
-    isSettingsPaneOpen,
-    setIsSettingsPaneOpen,
-    project,
-    updateForm,
-  ]);
+  }, [userRole, isSettingsPaneOpen, setIsSettingsPaneOpen, project, updateForm]);
 
   useEffect(() => {
     if (loading || hasAutoOpenedCategory.current) {
@@ -157,11 +147,7 @@ function ProjectBoard() {
     if (!forms.taskToDelete || !forms.updateDescription.trim()) return;
 
     try {
-      await requestTaskUpdate(
-        forms.taskToDelete,
-        forms.updateDescription,
-        forms.updateStatus,
-      );
+      await requestTaskUpdate(forms.taskToDelete, forms.updateDescription, forms.updateStatus);
       closeModal("showUpdateTaskModal");
       resetForm("updateDescription");
       resetForm("updateStatus");
@@ -174,8 +160,8 @@ function ProjectBoard() {
   if (loading) {
     return (
       <>
-        <div className="flex items-center justify-center h-96">
-          <div className="w-12 h-12 border-b-2 border-blue-600 rounded-full animate-spin"></div>
+        <div className="flex h-96 items-center justify-center">
+          <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-blue-600"></div>
         </div>
       </>
     );
@@ -192,24 +178,22 @@ function ProjectBoard() {
         onToggleMembers={handleToggleMembers}
         onLeaveProject={handleLeaveProject}
       />{" "}
-      <div className="px-6 py-8 mx-auto max-w-7xl">
+      <div className="mx-auto max-w-7xl px-6 py-8">
         <div className="flex gap-8">
           <div className="flex-1">
             {loading ? (
               <div className="flex items-center justify-center py-16">
-                <div className="w-12 h-12 border-b-2 border-blue-600 rounded-full animate-spin"></div>
+                <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-blue-600"></div>
               </div>
             ) : phases.length === 0 ? (
-              <div className="text-center py-16 bg-[hsl(var(--card))] rounded-lg border border-[hsl(var(--border))]">
-                <p className="text-[hsl(var(--muted-foreground))] mb-4">
-                  No phases yet
-                </p>
+              <div className="rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--card))] py-16 text-center">
+                <p className="mb-4 text-[hsl(var(--muted-foreground))]">No phases yet</p>
                 {isOwnerOrAdmin && (
                   <button
                     onClick={() => openModal("showPhaseModal")}
-                    className="inline-flex items-center gap-2 px-4 py-2 dark:text-white text-[hsl(var(--primary-foreground))] transition bg-blue-600 rounded-lg hover:cursor-pointer hover:bg-blue-700"
+                    className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-[hsl(var(--primary-foreground))] transition hover:cursor-pointer hover:bg-blue-700 dark:text-white"
                   >
-                    <Plus className="w-4 h-4" />
+                    <Plus className="h-4 w-4" />
                     Create Phase
                   </button>
                 )}
@@ -217,15 +201,13 @@ function ProjectBoard() {
             ) : (
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-semibold text-[hsl(var(--foreground))]">
-                    Phases
-                  </h2>
+                  <h2 className="text-xl font-semibold text-[hsl(var(--foreground))]">Phases</h2>
                   {isOwnerOrAdmin && (
                     <button
                       onClick={() => openModal("showPhaseModal")}
-                      className="dark:text-white flex items-center gap-2 px-4 py-2 text-sm text-[hsl(var(--primary-foreground))] transition bg-blue-600 rounded-lg hover:cursor-pointer hover:bg-blue-700"
+                      className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm text-[hsl(var(--primary-foreground))] transition hover:cursor-pointer hover:bg-blue-700 dark:text-white"
                     >
-                      <Plus className="w-4 h-4" />
+                      <Plus className="h-4 w-4" />
                       Add Phase
                     </button>
                   )}
@@ -297,9 +279,7 @@ function ProjectBoard() {
           title={forms.projectTitle}
           description={forms.projectDescription}
           onTitleChange={(value) => updateForm("projectTitle", value)}
-          onDescriptionChange={(value) =>
-            updateForm("projectDescription", value)
-          }
+          onDescriptionChange={(value) => updateForm("projectDescription", value)}
           onSave={handleSaveProject}
           onDelete={() => openModal("showDeleteProjectModal")}
           isSaving={isSavingSettings}
@@ -398,15 +378,8 @@ function ProjectBoard() {
         onSubmit={handleSubmitTaskUpdate}
         updateDescription={forms.updateDescription}
         updateStatus={forms.updateStatus}
-        onUpdateDescriptionChange={(value) =>
-          updateForm("updateDescription", value)
-        }
-        onUpdateStatusChange={(value) =>
-          updateForm(
-            "updateStatus",
-            value as "active" | "complete" | "canceled",
-          )
-        }
+        onUpdateDescriptionChange={(value) => updateForm("updateDescription", value)}
+        onUpdateStatusChange={(value) => updateForm("updateStatus", value as "active" | "complete" | "canceled")}
       />
       {/* Review Update Modal */}
       <ReviewUpdateModal

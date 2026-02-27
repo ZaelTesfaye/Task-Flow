@@ -9,8 +9,7 @@ type ForgotPasswordStep = "email" | "code" | "password";
 export const usePasswordReset = () => {
   const { checkSession } = useAuthActions();
 
-  const [forgotPasswordStep, setForgotPasswordStep] =
-    useState<ForgotPasswordStep>("email");
+  const [forgotPasswordStep, setForgotPasswordStep] = useState<ForgotPasswordStep>("email");
   const [resetEmail, setResetEmail] = useState("");
   const [resetCode, setResetCode] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -43,10 +42,7 @@ export const usePasswordReset = () => {
 
     setIsResetting(true);
     try {
-      await authApiClient.post(
-        { email: resetEmail, code: resetCode },
-        "verify-reset-code",
-      );
+      await authApiClient.post({ email: resetEmail, code: resetCode }, "verify-reset-code");
       toast.success("Code verified! Set your new password.");
       setForgotPasswordStep("password");
     } catch (error: any) {
@@ -68,10 +64,7 @@ export const usePasswordReset = () => {
 
     setIsResetting(true);
     try {
-      await authApiClient.post(
-        { email: resetEmail, newPassword },
-        "reset-password",
-      );
+      await authApiClient.post({ email: resetEmail, newPassword }, "reset-password");
       toast.success("Password reset successful! Logging you in...");
       await checkSession();
       return true;

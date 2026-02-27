@@ -1,14 +1,6 @@
 "use client";
 
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  ReactNode,
-  Dispatch,
-  SetStateAction,
-} from "react";
+import { createContext, useContext, useEffect, useState, ReactNode, Dispatch, SetStateAction } from "react";
 import { authClient } from "@/lib/auth-client";
 import { userApiClient } from "@/lib";
 

@@ -5,51 +5,33 @@ import { RefreshCw, Clock } from "lucide-react";
 import toast from "react-hot-toast";
 
 import { useInvitations, useInvitationActions } from "@/hooks";
-import {
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  InvitationsList,
-} from "@/components";
+import { Button, Card, CardContent, CardHeader, CardTitle, InvitationsList } from "@/components";
 
 export default function InvitationsPage() {
   const { invitations, loading, loadInvitations } = useInvitations();
   const { respondToInvitation } = useInvitationActions();
   const [invitationLoading, setInvitationLoading] = useState(false);
 
-  const handleRespond = async (
-    invitationId: string,
-    action: "accept" | "decline",
-  ) => {
+  const handleRespond = async (invitationId: string, action: "accept" | "decline") => {
     try {
       setInvitationLoading(true);
       await respondToInvitation(invitationId, action);
-      toast.success(
-        action === "accept" ? "Invitation accepted!" : "Invitation declined.",
-      );
+      toast.success(action === "accept" ? "Invitation accepted!" : "Invitation declined.");
       loadInvitations();
     } catch (error: any) {
-      toast.error(
-        error?.response?.data?.message || "Invitation response failed",
-      );
+      toast.error(error?.response?.data?.message || "Invitation response failed");
     } finally {
       setInvitationLoading(false);
     }
   };
 
   return (
-    <div className="max-w-4xl px-6 py-10 mx-auto">
+    <div className="mx-auto max-w-4xl px-6 py-10">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-[hsl(var(--foreground))]">
-            Project Invitations
-          </h1>
-          <p className="text-[hsl(var(--muted-foreground))]">
-            Join and collaborate in projects
-          </p>
+          <h1 className="text-3xl font-bold text-[hsl(var(--foreground))]">Project Invitations</h1>
+          <p className="text-[hsl(var(--muted-foreground))]">Join and collaborate in projects</p>
         </div>
 
         <Button
@@ -58,7 +40,7 @@ export default function InvitationsPage() {
           disabled={loading}
           className="hover:cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700"
         >
-          <RefreshCw className="w-4 h-4 mr-2 hover:cursor-pointer" />
+          <RefreshCw className="mr-2 h-4 w-4 hover:cursor-pointer" />
           Refresh
         </Button>
       </div>
@@ -67,7 +49,7 @@ export default function InvitationsPage() {
       {loading ? (
         <div className="flex items-center justify-center py-20">
           <div className="flex items-center gap-3 text-[hsl(var(--muted-foreground))]">
-            <div className="w-6 h-6 border-2 border-blue-600 rounded-full border-t-transparent animate-spin" />
+            <div className="h-6 w-6 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
             <span>Loading invitations...</span>
           </div>
         </div>
@@ -75,7 +57,7 @@ export default function InvitationsPage() {
         // No invitations view
         <Card className="border-dashed shadow-none">
           <CardHeader className="text-center">
-            <Clock className="w-10 h-10 mx-auto text-[hsl(var(--muted-foreground))] mb-3" />
+            <Clock className="mx-auto mb-3 h-10 w-10 text-[hsl(var(--muted-foreground))]" />
             <CardTitle className="text-xl">No pending invitations</CardTitle>
           </CardHeader>
           <CardContent className="text-center text-[hsl(var(--muted-foreground))]">
@@ -84,11 +66,7 @@ export default function InvitationsPage() {
         </Card>
       ) : (
         // Invitations
-        <InvitationsList
-          invitations={invitations}
-          invitationLoading={invitationLoading}
-          onRespond={handleRespond}
-        />
+        <InvitationsList invitations={invitations} invitationLoading={invitationLoading} onRespond={handleRespond} />
       )}
     </div>
   );

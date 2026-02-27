@@ -13,14 +13,8 @@ interface BillingPortalResponse {
 export const usePayment = () => {
   const queryClient = useQueryClient();
 
-  const createCheckoutSession = async (data: {
-    priceId: string;
-    projectId?: string;
-  }) => {
-    const response = await paymentApiClient.post<CheckoutResponse>(
-      data,
-      "checkout",
-    );
+  const createCheckoutSession = async (data: { priceId: string; projectId?: string }) => {
+    const response = await paymentApiClient.post<CheckoutResponse>(data, "checkout");
     if (response?.sessionId) {
       window.location.href = response.sessionId;
     }
@@ -28,10 +22,7 @@ export const usePayment = () => {
   };
 
   const createBillingPortalSession = async () => {
-    const response = await paymentApiClient.post<BillingPortalResponse>(
-      {},
-      "billing-portal",
-    );
+    const response = await paymentApiClient.post<BillingPortalResponse>({}, "billing-portal");
     if (response?.url) {
       window.location.href = response.url;
     }

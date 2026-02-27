@@ -13,10 +13,7 @@ export const useInvitations = () => {
   const loadInvitations = useCallback(async () => {
     try {
       setLoading(true);
-      const response =
-        await projectApiClient.get<ApiResponse<ProjectInvitation[]>>(
-          "invitations",
-        );
+      const response = await projectApiClient.get<ApiResponse<ProjectInvitation[]>>("invitations");
       setInvitations(response.data || []);
     } catch (error) {
       console.error("Failed to load invitations", error);

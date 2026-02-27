@@ -25,17 +25,12 @@ export const useProfileActions = () => {
 
   const manageSubscription = async () => {
     try {
-      const response = await paymentApiClient.post<{ url: string }>(
-        undefined,
-        "create-portal-session",
-      );
+      const response = await paymentApiClient.post<{ url: string }>(undefined, "create-portal-session");
       if (response.url) {
         window.location.href = response.url;
       }
     } catch (error: any) {
-      toast.error(
-        error.response?.data?.message || "Failed to open billing portal",
-      );
+      toast.error(error.response?.data?.message || "Failed to open billing portal");
     }
   };
 

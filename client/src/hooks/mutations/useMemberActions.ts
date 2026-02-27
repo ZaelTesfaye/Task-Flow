@@ -5,10 +5,7 @@ import { projectApiClient } from "@/lib";
 export const useMemberActions = (projectId: string) => {
   const queryClient = useQueryClient();
 
-  const addMember = async (data: {
-    email: string;
-    access: "admin" | "member";
-  }) => {
+  const addMember = async (data: { email: string; access: "admin" | "member" }) => {
     await projectApiClient.post(data, `member/${projectId}`);
     toast.success("Invitation sent!");
     await queryClient.invalidateQueries({
@@ -24,10 +21,7 @@ export const useMemberActions = (projectId: string) => {
     });
   };
 
-  const updateMemberAccess = async (
-    userId: string,
-    access: "admin" | "member",
-  ) => {
+  const updateMemberAccess = async (userId: string, access: "admin" | "member") => {
     await projectApiClient.patch({ access }, `member/${projectId}/${userId}`);
     toast.success("Member role updated!");
     await queryClient.invalidateQueries({

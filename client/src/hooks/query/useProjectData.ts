@@ -2,12 +2,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { projectApiClient, phaseApiClient } from "@/lib";
 import { useAuthContext } from "@/context";
-import type {
-  ProjectMember,
-  ApiResponse,
-  TasksResponse,
-  ProjectInvitation,
-} from "@/types";
+import type { ProjectMember, ApiResponse, TasksResponse, ProjectInvitation } from "@/types";
 
 export const useProjectData = (projectId: string | string[] | undefined) => {
   const { user } = useAuthContext();
@@ -19,8 +14,7 @@ export const useProjectData = (projectId: string | string[] | undefined) => {
     error: phasesError,
   } = useQuery({
     queryKey: ["project", projectId, "phases"],
-    queryFn: () =>
-      phaseApiClient.get<ApiResponse<TasksResponse>>(projectId as string),
+    queryFn: () => phaseApiClient.get<ApiResponse<TasksResponse>>(projectId as string),
     enabled: !!projectId && !!user,
     retry: false,
   });
@@ -31,31 +25,19 @@ export const useProjectData = (projectId: string | string[] | undefined) => {
     error: membersError,
   } = useQuery({
     queryKey: ["project", projectId, "members"],
-    queryFn: () =>
-      projectApiClient.get<ApiResponse<ProjectMember[]>>(
-        `member/${projectId as string}`,
-      ),
+    queryFn: () => projectApiClient.get<ApiResponse<ProjectMember[]>>(`member/${projectId as string}`),
     enabled: !!projectId && !!user,
     retry: false,
   });
 
   const members = membersData?.data || [];
-  const currentMember = members.find(
-    (m: ProjectMember) => m.userId === user?.id,
-  );
-  const userRole = (currentMember?.access || "member") as
-    | "owner"
-    | "admin"
-    | "member";
+  const currentMember = members.find((m: ProjectMember) => m.userId === user?.id);
+  const userRole = (currentMember?.access || "member") as "owner" | "admin" | "member";
 
   const { data: invitationsData, isLoading: invitationsLoading } = useQuery({
     queryKey: ["project", projectId, "invitations"],
-    queryFn: () =>
-      projectApiClient.get<ApiResponse<ProjectInvitation[]>>(
-        `member/${projectId as string}/invitations`,
-      ),
-    enabled:
-      !!projectId && !!user && (userRole === "owner" || userRole === "admin"),
+    queryFn: () => projectApiClient.get<ApiResponse<ProjectInvitation[]>>(`member/${projectId as string}/invitations`),
+    enabled: !!projectId && !!user && (userRole === "owner" || userRole === "admin"),
     retry: false,
   });
 

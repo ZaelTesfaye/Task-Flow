@@ -15,16 +15,8 @@ interface ProjectsGridSectionProps {
   onCreateProject: () => void;
 }
 
-const ProjectsGridSection: React.FC<ProjectsGridSectionProps> = ({
-  projects,
-  activeView,
-  onCreateProject,
-}) => {
-  const allProjects = [
-    ...projects.owner,
-    ...projects.admin,
-    ...projects.member,
-  ];
+const ProjectsGridSection: React.FC<ProjectsGridSectionProps> = ({ projects, activeView, onCreateProject }) => {
+  const allProjects = [...projects.owner, ...projects.admin, ...projects.member];
 
   const emptySectionContent = [
     {
@@ -45,8 +37,7 @@ const ProjectsGridSection: React.FC<ProjectsGridSectionProps> = ({
       icon: Users,
       iconClass: "text-green-600 dark:text-green-600",
       title: "No Projects Where You Are Member",
-      description:
-        "Projects appear here when others add you as a member to their projects.",
+      description: "Projects appear here when others add you as a member to their projects.",
       showCreateCard: false,
     },
   ] as const;
@@ -56,11 +47,9 @@ const ProjectsGridSection: React.FC<ProjectsGridSectionProps> = ({
       {activeView === "all" ? (
         <div>
           {/* All Projects Section Content */}
-          <div className="flex items-center gap-3 mb-6">
-            <h2 className="text-2xl font-bold text-[hsl(var(--foreground))]">
-              All Projects
-            </h2>
-            <span className="px-3 py-1 text-sm font-semibold text-blue-900 bg-blue-200 border border-blue-300 rounded-full dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800/60">
+          <div className="mb-6 flex items-center gap-3">
+            <h2 className="text-2xl font-bold text-[hsl(var(--foreground))]">All Projects</h2>
+            <span className="rounded-full border border-blue-300 bg-blue-200 px-3 py-1 text-sm font-semibold text-blue-900 dark:border-blue-800/60 dark:bg-blue-900/30 dark:text-blue-400">
               {allProjects.length}
             </span>
           </div>
@@ -72,35 +61,26 @@ const ProjectsGridSection: React.FC<ProjectsGridSectionProps> = ({
                   : projects.admin.find((p) => p.id === project.id)
                     ? "admin"
                     : "member";
-                return (
-                  <ProjectCard key={project.id} project={project} role={role} />
-                );
+                return <ProjectCard key={project.id} project={project} role={role} />;
               })}
               <CreateProjectCard setShowCreateModal={onCreateProject} />
             </div>
           ) : (
             // Show create project card only if no project found
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-              <CreateProjectCard
-                isFirst={true}
-                setShowCreateModal={onCreateProject}
-              />
+              <CreateProjectCard isFirst={true} setShowCreateModal={onCreateProject} />
             </div>
           )}
         </div>
       ) : (
         <div>
           {/* Other sections */}
-          <div className="flex items-center gap-3 mb-6">
-            <h2 className="text-2xl font-bold text-[hsl(var(--foreground))] capitalize">
-              {activeView === "owner"
-                ? "Own Projects"
-                : activeView === "admin"
-                  ? "Admin Projects"
-                  : "Member Projects"}
+          <div className="mb-6 flex items-center gap-3">
+            <h2 className="text-2xl font-bold capitalize text-[hsl(var(--foreground))]">
+              {activeView === "owner" ? "Own Projects" : activeView === "admin" ? "Admin Projects" : "Member Projects"}
             </h2>
             <span
-              className={`px-3 py-1 rounded-full text-sm font-semibold ${
+              className={`rounded-full px-3 py-1 text-sm font-semibold ${
                 activeView === "owner"
                   ? "badge-role-owner"
                   : activeView === "admin"
@@ -128,42 +108,30 @@ const ProjectsGridSection: React.FC<ProjectsGridSectionProps> = ({
                   ? projects.admin
                   : projects.member
               ).map((project) => (
-                <ProjectCard
-                  key={project.id}
-                  project={project}
-                  role={activeView}
-                />
+                <ProjectCard key={project.id} project={project} role={activeView} />
               ))}
               {/* Show create project card only inside own projects section. */}
-              {activeView === "owner" && (
-                <CreateProjectCard setShowCreateModal={onCreateProject} />
-              )}
+              {activeView === "owner" && <CreateProjectCard setShowCreateModal={onCreateProject} />}
             </div>
           ) : (
             // If no projects in the section
             <div className="py-12 text-center">
               {(() => {
-                const content = emptySectionContent.find(
-                  (c) => c.view === activeView,
-                );
+                const content = emptySectionContent.find((c) => c.view === activeView);
 
                 if (!content) return null;
 
                 return (
                   <>
                     {content.view !== "owner" && (
-                      <content.icon
-                        className={`w-16 h-16 mx-auto mb-4 ${content.iconClass}`}
-                      />
+                      <content.icon className={`mx-auto mb-4 h-16 w-16 ${content.iconClass}`} />
                     )}
                     {content.view !== "owner" && (
-                      <h3 className="text-xl font-semibold text-[hsl(var(--foreground))] mb-2">
-                        {content.title}
-                      </h3>
+                      <h3 className="mb-2 text-xl font-semibold text-[hsl(var(--foreground))]">{content.title}</h3>
                     )}
                     {content.view !== "owner" && (
                       <p
-                        className={`text-[hsl(var(--muted-foreground))] max-w-md mx-auto ${
+                        className={`mx-auto max-w-md text-[hsl(var(--muted-foreground))] ${
                           content.showCreateCard ? "mb-6" : ""
                         }`}
                       >
@@ -171,11 +139,8 @@ const ProjectsGridSection: React.FC<ProjectsGridSectionProps> = ({
                       </p>
                     )}
                     {content.showCreateCard && (
-                      <div className="grid grid-cols-1 gap-6 mx-auto md:grid-cols-2 lg:grid-cols-3">
-                        <CreateProjectCard
-                          isFirst={true}
-                          setShowCreateModal={onCreateProject}
-                        />
+                      <div className="mx-auto grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                        <CreateProjectCard isFirst={true} setShowCreateModal={onCreateProject} />
                       </div>
                     )}
                   </>

@@ -2,15 +2,7 @@
 
 import { useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import {
-  LogOut,
-  Settings,
-  Trash2,
-  Moon,
-  Sun,
-  Inbox,
-  CreditCard,
-} from "lucide-react";
+import { LogOut, Settings, Trash2, Moon, Sun, Inbox, CreditCard } from "lucide-react";
 import { useThemeStore } from "@/stores";
 import { Switch } from "@/components";
 import { User } from "@/types";
@@ -43,10 +35,7 @@ export default function ProfileMenu({
   const router = useRouter();
 
   const handleClickOutside = (event: MouseEvent) => {
-    if (
-      profileMenuRef.current &&
-      !profileMenuRef.current.contains(event.target as Node)
-    ) {
+    if (profileMenuRef.current && !profileMenuRef.current.contains(event.target as Node)) {
       onClose();
     }
   };
@@ -65,44 +54,33 @@ export default function ProfileMenu({
 
   const getBadge = () => {
     if (!user?.stripePriceId) {
-      return (
-        <span className="text-xs bg-gray-200 dark:bg-gray-700 px-2 py-0.5 rounded-full ml-2">
-          Free
-        </span>
-      );
+      return <span className="ml-2 rounded-full bg-gray-200 px-2 py-0.5 text-xs dark:bg-gray-700">Free</span>;
     }
 
     // Determine if it's starter or pro based on price
     const isStarterPrice =
-      user.stripePriceId.includes("starter") ||
-      user.stripePriceId === process.env.NEXT_PUBLIC_STRIPE_PRICE_STARTER_ID;
+      user.stripePriceId.includes("starter") || user.stripePriceId === process.env.NEXT_PUBLIC_STRIPE_PRICE_STARTER_ID;
 
     if (isStarterPrice) {
       return (
-        <span className="text-xs bg-gray-400 dark:bg-gray-600 text-white px-2 py-0.5 rounded-full ml-2">
-          Starter
-        </span>
+        <span className="ml-2 rounded-full bg-gray-400 px-2 py-0.5 text-xs text-white dark:bg-gray-600">Starter</span>
       );
     }
 
     // Pro plan
     return (
-      <div className="flex items-center gap-1.5 ml-2">
-        <span className="text-xs bg-gradient-to-r from-amber-500 to-orange-500 text-white px-2 py-0.5 rounded-full">
+      <div className="ml-2 flex items-center gap-1.5">
+        <span className="rounded-full bg-gradient-to-r from-amber-500 to-orange-500 px-2 py-0.5 text-xs text-white">
           Premium
         </span>
-        <span className="text-[10px] text-amber-600 dark:text-amber-400 font-medium">
-          Pro
-        </span>
+        <span className="text-[10px] font-medium text-amber-600 dark:text-amber-400">Pro</span>
       </div>
     );
   };
 
   // Check if user is premium
   const isPremium =
-    !!user?.stripePriceId &&
-    !!user?.stripeCurrentPeriodEnd &&
-    new Date(user.stripeCurrentPeriodEnd) > new Date();
+    !!user?.stripePriceId && !!user?.stripeCurrentPeriodEnd && new Date(user.stripeCurrentPeriodEnd) > new Date();
 
   const menuItems = [
     // Show either Upgrade or Manage Subscription based on premium status
@@ -110,7 +88,7 @@ export default function ProfileMenu({
       ? [
           {
             label: "Manage Subscription",
-            icon: <CreditCard className="w-4 h-4" />,
+            icon: <CreditCard className="h-4 w-4" />,
             onClick: onManageSubscription,
             style: "text-blue-600 dark:text-blue-400 font-medium",
           },
@@ -118,25 +96,25 @@ export default function ProfileMenu({
       : [
           {
             label: "Upgrade to Premium",
-            icon: <CreditCard className="w-4 h-4" />,
+            icon: <CreditCard className="h-4 w-4" />,
             onClick: onUpgrade,
             style: "text-blue-600 dark:text-blue-400 font-medium",
           },
         ]),
     {
       label: "Edit Profile",
-      icon: <Settings className="w-4 h-4" />,
+      icon: <Settings className="h-4 w-4" />,
       onClick: onEditProfile,
     },
     {
       label: "Delete Account",
-      icon: <Trash2 className="w-4 h-4" />,
+      icon: <Trash2 className="h-4 w-4" />,
       onClick: onDeleteAccount,
       style: "text-red-600",
     },
     {
       label: "Invitations",
-      icon: <Inbox className="w-4 h-4" />,
+      icon: <Inbox className="h-4 w-4" />,
       onClick: () => {
         router.push("/invitations");
         onClose();
@@ -151,16 +129,14 @@ export default function ProfileMenu({
       {isOpen && (
         <div
           ref={profileMenuRef}
-          className="absolute right-0 mt-2 w-72 bg-[hsl(var(--card))] text-[hsl(var(--card-foreground))] rounded-lg shadow-lg border border-[hsl(var(--border))] py-2 backdrop-blur supports-backdrop-filter:bg-[hsla(var(--card)/0.92)]"
+          className="supports-backdrop-filter:bg-[hsla(var(--card)/0.92)] absolute right-0 mt-2 w-72 rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--card))] py-2 text-[hsl(var(--card-foreground))] shadow-lg backdrop-blur"
         >
-          <div className="px-4 py-3 border-b border-[hsl(var(--border))] mb-2">
-            <div className="flex items-center justify-between mb-1">
-              <p className="font-semibold truncate">{user?.name}</p>
+          <div className="mb-2 border-b border-[hsl(var(--border))] px-4 py-3">
+            <div className="mb-1 flex items-center justify-between">
+              <p className="truncate font-semibold">{user?.name}</p>
               {getBadge()}
             </div>
-            <p className="text-sm text-[hsl(var(--muted-foreground))] truncate">
-              {user?.email}
-            </p>
+            <p className="truncate text-sm text-[hsl(var(--muted-foreground))]">{user?.email}</p>
           </div>
 
           {menuItems.map((menuItem) => (
@@ -172,7 +148,7 @@ export default function ProfileMenu({
               {menuItem.icon}
               {menuItem.label}
               {menuItem.notificationDot && (
-                <div className="absolute w-2 h-2 transform -translate-y-1/2 bg-red-500 rounded-full right-4 top-1/2"></div>
+                <div className="absolute right-4 top-1/2 h-2 w-2 -translate-y-1/2 transform rounded-full bg-red-500"></div>
               )}
             </button>
           ))}
@@ -181,18 +157,12 @@ export default function ProfileMenu({
 
           <div className="flex items-center justify-between px-4 py-2">
             <div className="flex items-center gap-3">
-              {theme === "dark" ? (
-                <Moon className="w-4 h-4" />
-              ) : (
-                <Sun className="w-4 h-4" />
-              )}
+              {theme === "dark" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
               <span className="text-sm">Dark Mode</span>
             </div>
             <Switch
               checked={theme === "dark"}
-              onCheckedChange={(checked) =>
-                setTheme(checked ? "dark" : "light")
-              }
+              onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
               className="hover:cursor-pointer"
             />
           </div>
@@ -200,7 +170,7 @@ export default function ProfileMenu({
           <hr className="my-2 border-gray-200 dark:border-gray-700" />
 
           <button onClick={onLogout} className={`${baseButtonClasses} `}>
-            <LogOut className="w-4 h-4 " />
+            <LogOut className="h-4 w-4" />
             Logout
           </button>
         </div>

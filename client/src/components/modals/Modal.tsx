@@ -8,27 +8,22 @@ interface ModalProps {
   className?: string;
 }
 
-const Modal: React.FC<ModalProps> = ({
-  isOpen,
-  onClose,
-  children,
-  className = "",
-}) => {
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children, className = "" }) => {
   if (!isOpen) return null;
 
   return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 dark:bg-black/50 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm dark:bg-black/50"
       onClick={onClose}
     >
       <div
-        className={`bg-[hsl(var(--card))] text-[hsl(var(--card-foreground))] rounded-xl shadow-xl w-full max-w-md p-6 ${className}`}
+        className={`w-full max-w-md rounded-xl bg-[hsl(var(--card))] p-6 text-[hsl(var(--card-foreground))] shadow-xl ${className}`}
         onClick={(e) => e.stopPropagation()}
       >
         {children}
       </div>
     </div>,
-    document.body
+    document.body,
   );
 };
 

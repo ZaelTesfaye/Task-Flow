@@ -36,15 +36,11 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
 }) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent
-        overlayClassName="bg-black/50W backdrop-blur-sm"
-        className="bg-white dark:bg-gray-700"
-      >
+      <DialogContent overlayClassName="bg-black/50W backdrop-blur-sm" className="bg-white dark:bg-gray-700">
         <DialogHeader>
           <DialogTitle>Create New Project</DialogTitle>
           <DialogDescription>
-            Start a new project to organize your tasks and collaborate with your
-            team
+            Start a new project to organize your tasks and collaborate with your team
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={onSubmit} className="space-y-6">
@@ -79,11 +75,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
             >
               Cancel
             </Button>
-            <Button
-              type="submit"
-              className="hover:cursor-pointer flex items-center gap-2"
-              disabled={loading}
-            >
+            <Button type="submit" className="flex items-center gap-2 hover:cursor-pointer" disabled={loading}>
               {loading ? (
                 <>
                   <Spinner className="text-white" />

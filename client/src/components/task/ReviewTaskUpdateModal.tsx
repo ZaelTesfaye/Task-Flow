@@ -8,9 +8,7 @@ interface ReviewUpdateModalProps {
   onClose: () => void;
   task: any;
   forms: any;
-  resetForm: (
-    key: keyof typeof import("@/constants/project").DEFAULT_FORM_STATE,
-  ) => void;
+  resetForm: (key: keyof typeof import("@/constants/project").DEFAULT_FORM_STATE) => void;
   acceptPendingUpdate: (pendingUpdateId: string, newStatus: TaskStatus) => void;
   rejectPendingUpdate: (pendingUpdateId: string) => void;
   loading?: boolean;
@@ -48,78 +46,54 @@ const ReviewUpdateModal: React.FC<ReviewUpdateModalProps> = ({
       return;
     }
     const latestUpdate = pendingUpdates[pendingUpdates.length - 1];
-    acceptPendingUpdate(
-      latestUpdate.id,
-      latestUpdate.newStatus as "active" | "complete" | "canceled",
-    );
+    acceptPendingUpdate(latestUpdate.id, latestUpdate.newStatus as "active" | "complete" | "canceled");
     handleClose();
   };
 
-  const latestUpdate =
-    forms.reviewingTask?.pendingUpdates?.[
-      forms.reviewingTask.pendingUpdates.length - 1
-    ];
+  const latestUpdate = forms.reviewingTask?.pendingUpdates?.[forms.reviewingTask.pendingUpdates.length - 1];
 
   return (
     <Modal isOpen={isOpen} onClose={handleClose} className="max-w-lg">
-      <h2 className="text-2xl font-bold mb-6 text-[hsl(var(--foreground))]">
-        Review Task Update
-      </h2>
+      <h2 className="mb-6 text-2xl font-bold text-[hsl(var(--foreground))]">Review Task Update</h2>
 
       <div className="space-y-4">
         {/* Task Info */}
-        <div className="rounded-lg p-4 bg-[hsl(var(--accent))]">
-          <h3 className="font-semibold text-[hsl(var(--foreground))] mb-4">
-            Task
-          </h3>
+        <div className="rounded-lg bg-[hsl(var(--accent))] p-4">
+          <h3 className="mb-4 font-semibold text-[hsl(var(--foreground))]">Task</h3>
           <div className="flex gap-3">
             <label htmlFor="task-title">Title:</label>
-            <h3
-              id="task-title"
-              className="font-semibold text-[hsl(var(--muted-foreground))] mb-2"
-            >
+            <h3 id="task-title" className="mb-2 font-semibold text-[hsl(var(--muted-foreground))]">
               {forms.reviewingTask?.title}
             </h3>
           </div>
           <div className="flex gap-4">
             <label htmlFor="task-description">Description: </label>
-            <p
-              id="task-description"
-              className="text-[hsl(var(--muted-foreground))] mb-3"
-            >
+            <p id="task-description" className="mb-3 text-[hsl(var(--muted-foreground))]">
               {forms.reviewingTask?.description}
             </p>
           </div>
 
           <div className="flex items-center gap-2">
             <span>Assigned to:</span>
-            <span className="text-[hsl(var(--muted-foreground))] ]">
-              {forms.reviewingTask?.assignedUser?.name}
-            </span>
+            <span className="] text-[hsl(var(--muted-foreground))]">{forms.reviewingTask?.assignedUser?.name}</span>
           </div>
         </div>
 
         {/* Update Details */}
         {latestUpdate && (
-          <div className="border border-[hsl(var(--border))] rounded-lg p-4 bg-[hsl(var(--card))]">
-            <h4 className="font-semibold text-[hsl(var(--foreground))] mb-4">
-              Update Request
-            </h4>
+          <div className="rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--card))] p-4">
+            <h4 className="mb-4 font-semibold text-[hsl(var(--foreground))]">Update Request</h4>
             <div className="space-y-4">
               <div className="space-x-4">
-                <label className="text-sm font-medium text-[hsl(var(--foreground))] mb-1">
-                  Description
-                </label>
-                <span className="text-sm text-[hsl(var(--muted-foreground))] bg-[hsl(var(--accent))] py-2 rounded">
+                <label className="mb-1 text-sm font-medium text-[hsl(var(--foreground))]">Description</label>
+                <span className="rounded bg-[hsl(var(--accent))] py-2 text-sm text-[hsl(var(--muted-foreground))]">
                   {latestUpdate.updateDescription}
                 </span>
               </div>
               <div className="space-x-4">
-                <label className="text-sm font-medium text-[hsl(var(--foreground))] mb-1">
-                  Requested Status
-                </label>
+                <label className="mb-1 text-sm font-medium text-[hsl(var(--foreground))]">Requested Status</label>
                 <span
-                  className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
+                  className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${
                     latestUpdate.newStatus === "complete"
                       ? "bg-emerald-50 text-emerald-800 dark:bg-green-900/30 dark:text-green-400"
                       : latestUpdate.newStatus === "canceled"
@@ -134,11 +108,11 @@ const ReviewUpdateModal: React.FC<ReviewUpdateModalProps> = ({
           </div>
         )}
 
-        <div className="flex justify-center gap-12 ">
+        <div className="flex justify-center gap-12">
           <button
             onClick={handleReject}
             disabled={loading}
-            className="px-4 py-2 text-[hsl(var(--primary-foreground))] dark:text-white transition bg-red-600 rounded-lg hover:cursor-pointer hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="flex items-center justify-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-[hsl(var(--primary-foreground))] transition hover:cursor-pointer hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50 dark:text-white"
           >
             {loading ? (
               <>
@@ -152,7 +126,7 @@ const ReviewUpdateModal: React.FC<ReviewUpdateModalProps> = ({
           <button
             onClick={handleApprove}
             disabled={loading}
-            className="px-4 py-2 text-[hsl(var(--primary-foreground))] dark:text-white transition bg-green-600 rounded-lg hover:cursor-pointer hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="flex items-center justify-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-[hsl(var(--primary-foreground))] transition hover:cursor-pointer hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50 dark:text-white"
           >
             {loading ? (
               <>

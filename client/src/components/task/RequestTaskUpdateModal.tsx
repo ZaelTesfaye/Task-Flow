@@ -24,31 +24,25 @@ const RequestUpdateModal: React.FC<RequestUpdateModalProps> = ({
 }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <h2 className="text-2xl font-bold mb-6 text-[hsl(var(--foreground))]">
-        Request Task Update
-      </h2>
+      <h2 className="mb-6 text-2xl font-bold text-[hsl(var(--foreground))]">Request Task Update</h2>
       <form onSubmit={onSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-[hsl(var(--foreground))] mb-2">
-            Update Description
-          </label>
+          <label className="mb-2 block text-sm font-medium text-[hsl(var(--foreground))]">Update Description</label>
           <textarea
             value={updateDescription}
             onChange={(e) => onUpdateDescriptionChange(e.target.value)}
             required
             rows={3}
-            className="w-full px-4 py-2 border border-[hsl(var(--input))] rounded-lg focus:ring-2 focus:ring-[hsl(var(--ring))] focus:border-transparent outline-none resize-none bg-[hsl(var(--card))] text-[hsl(var(--foreground))]"
+            className="w-full resize-none rounded-lg border border-[hsl(var(--input))] bg-[hsl(var(--card))] px-4 py-2 text-[hsl(var(--foreground))] outline-none focus:border-transparent focus:ring-2 focus:ring-[hsl(var(--ring))]"
             placeholder="Describe the changes you want to make..."
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-[hsl(var(--foreground))] mb-2">
-            New Status
-          </label>
+          <label className="mb-2 block text-sm font-medium text-[hsl(var(--foreground))]">New Status</label>
           <select
             value={updateStatus}
             onChange={(e) => onUpdateStatusChange(e.target.value)}
-            className="w-full px-4 py-2 border border-[hsl(var(--input))] rounded-lg focus:ring-2 focus:ring-[hsl(var(--ring))] focus:border-transparent outline-none bg-[hsl(var(--card))] text-[hsl(var(--foreground))]"
+            className="w-full rounded-lg border border-[hsl(var(--input))] bg-[hsl(var(--card))] px-4 py-2 text-[hsl(var(--foreground))] outline-none focus:border-transparent focus:ring-2 focus:ring-[hsl(var(--ring))]"
           >
             <option value="active">Active</option>
             <option value="complete">Complete</option>
@@ -60,14 +54,14 @@ const RequestUpdateModal: React.FC<RequestUpdateModalProps> = ({
             type="button"
             onClick={onClose}
             disabled={loading}
-            className="hover:cursor-pointer duration-200 hover:bg-gray-500 flex-1 px-4 py-2 border border-[hsl(var(--border))] rounded-lg transition text-[hsl(var(--foreground))] disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 rounded-lg border border-[hsl(var(--border))] px-4 py-2 text-[hsl(var(--foreground))] transition duration-200 hover:cursor-pointer hover:bg-gray-500 disabled:cursor-not-allowed disabled:opacity-50"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={loading || !updateDescription.trim()}
-            className="flex-1 px-4 py-2 text-[hsl(var(--primary-foreground))] transition bg-blue-600 rounded-lg hover:cursor-pointer hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-[hsl(var(--primary-foreground))] transition hover:cursor-pointer hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {loading ? (
               <>

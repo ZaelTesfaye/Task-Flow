@@ -29,20 +29,18 @@ const ProjectSettingsPane: React.FC<ProjectSettingsPaneProps> = ({
     <div
       // Ensure this side pane aligns beneath the page header. `top-18` is not a
       // default Tailwind spacing key; use explicit value to avoid layout issues.
-      className={`fixed right-0 top-[72px] h-full w-80 bg-[hsl(var(--card))] text-[hsl(var(--card-foreground))] border-l border-[hsl(var(--border))] shadow-xl transform transition-transform duration-300 ease-in-out z-40 ${
+      className={`fixed right-0 top-[72px] z-40 h-full w-80 transform border-l border-[hsl(var(--border))] bg-[hsl(var(--card))] text-[hsl(var(--card-foreground))] shadow-xl transition-transform duration-300 ease-in-out ${
         isOpen ? "translate-x-0" : "translate-x-full"
       }`}
     >
-      <div className="flex items-center justify-between p-6 border-b border-[hsl(var(--border))]">
-        <h3 className="text-lg font-semibold text-[hsl(var(--foreground))]">
-          Project Settings
-        </h3>
+      <div className="flex items-center justify-between border-b border-[hsl(var(--border))] p-6">
+        <h3 className="text-lg font-semibold text-[hsl(var(--foreground))]">Project Settings</h3>
         <button
           onClick={onClose}
-          className="p-2 hover:bg-[hsl(var(--accent))] rounded-lg transition"
+          className="rounded-lg p-2 transition hover:bg-[hsl(var(--accent))]"
           title="Close Settings"
         >
-          <X className="w-4 h-4 hover:cursor-pointer" />
+          <X className="h-4 w-4 hover:cursor-pointer" />
         </button>
       </div>
 
@@ -54,10 +52,7 @@ const ProjectSettingsPane: React.FC<ProjectSettingsPaneProps> = ({
         className="flex flex-col gap-4 p-6"
       >
         <div className="space-y-2">
-          <label
-            className="block text-sm font-medium text-[hsl(var(--foreground))]"
-            htmlFor="project-title"
-          >
+          <label className="block text-sm font-medium text-[hsl(var(--foreground))]" htmlFor="project-title">
             Title
           </label>
           <input
@@ -65,17 +60,14 @@ const ProjectSettingsPane: React.FC<ProjectSettingsPaneProps> = ({
             type="text"
             value={title}
             onChange={(event) => onTitleChange(event.target.value)}
-            className="w-full px-3 py-2 outline-1 focus:outline-none border border-[hsl(var(--input))] rounded-lg focus:ring-2 focus:ring-[hsl(var(--ring))] focus:border-transparent outline bg-[hsl(var(--card))] text-[hsl(var(--foreground))]"
+            className="w-full rounded-lg border border-[hsl(var(--input))] bg-[hsl(var(--card))] px-3 py-2 text-[hsl(var(--foreground))] outline outline-1 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))]"
             placeholder="Project title"
             required
           />
         </div>
 
         <div className="space-y-2">
-          <label
-            className="block text-sm font-medium text-[hsl(var(--foreground))]"
-            htmlFor="project-description"
-          >
+          <label className="block text-sm font-medium text-[hsl(var(--foreground))]" htmlFor="project-description">
             Description
           </label>
           <textarea
@@ -83,7 +75,7 @@ const ProjectSettingsPane: React.FC<ProjectSettingsPaneProps> = ({
             value={description}
             onChange={(event) => onDescriptionChange(event.target.value)}
             rows={5}
-            className="w-full px-3 py-2 outline-1 focus:outline-none  border border-[hsl(var(--input))] outline rounded-lg focus:ring-2 focus:ring-[hsl(var(--ring))] focus:border-transparent resize-none bg-[hsl(var(--card))] text-[hsl(var(--foreground))]"
+            className="w-full resize-none rounded-lg border border-[hsl(var(--input))] bg-[hsl(var(--card))] px-3 py-2 text-[hsl(var(--foreground))] outline outline-1 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))]"
             placeholder="Describe your project"
           />
         </div>
@@ -92,7 +84,7 @@ const ProjectSettingsPane: React.FC<ProjectSettingsPaneProps> = ({
           <button
             type="submit"
             disabled={isSaving}
-            className="w-full px-4 py-2 text-[hsl(var(--primary-foreground))] transition bg-blue-600 rounded-lg hover:cursor-pointer hover:bg-blue-700 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-[hsl(var(--primary-foreground))] transition hover:cursor-pointer hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
           >
             {isSaving ? (
               <>
@@ -106,9 +98,9 @@ const ProjectSettingsPane: React.FC<ProjectSettingsPaneProps> = ({
           <button
             type="button"
             onClick={onDelete}
-            className="w-full px-4 py-2 text-red-600 transition border border-red-200 rounded-lg hover:cursor-pointer hover:bg-red-50 dark:hover:bg-red-900/20"
+            className="w-full rounded-lg border border-red-200 px-4 py-2 text-red-600 transition hover:cursor-pointer hover:bg-red-50 dark:hover:bg-red-900/20"
           >
-            <Trash2 className="inline w-4 h-4 mr-2" />
+            <Trash2 className="mr-2 inline h-4 w-4" />
             Delete Project
           </button>
         </div>

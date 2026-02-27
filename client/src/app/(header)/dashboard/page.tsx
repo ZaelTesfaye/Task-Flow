@@ -3,16 +3,8 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
-import {
-  useUserProjects,
-  useSubscriptionVerification,
-  useProjectMutations,
-} from "@/hooks";
-import {
-  ProjectNavigation,
-  CreateProjectModal,
-  ProjectsGridSection,
-} from "@/components";
+import { useUserProjects, useSubscriptionVerification, useProjectMutations } from "@/hooks";
+import { ProjectNavigation, CreateProjectModal, ProjectsGridSection } from "@/components";
 
 export default function Dashboard() {
   const { projects, projectsLoading, authLoading } = useUserProjects();
@@ -23,9 +15,7 @@ export default function Dashboard() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [activeView, setActiveView] = useState<
-    "all" | "owner" | "admin" | "member"
-  >("all");
+  const [activeView, setActiveView] = useState<"all" | "owner" | "admin" | "member">("all");
 
   const handleCreateProject = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -46,30 +36,24 @@ export default function Dashboard() {
   if (authLoading || projectsLoading) {
     return (
       <>
-        <div className="flex items-center justify-center h-[calc(100vh-73px)] text-center">
+        <div className="flex h-[calc(100vh-73px)] items-center justify-center text-center">
           <div className="text-center">
-            <div className="w-16 h-16 mx-auto mb-4 border-4 border-blue-600 rounded-full border-t-transparent animate-spin"></div>
-            <p className="text-[hsl(var(--muted-foreground))]">
-              Loading your projects...
-            </p>
+            <div className="mx-auto mb-4 h-16 w-16 animate-spin rounded-full border-4 border-blue-600 border-t-transparent"></div>
+            <p className="text-[hsl(var(--muted-foreground))]">Loading your projects...</p>
           </div>
         </div>
       </>
     );
   }
 
-  const allProjects = [
-    ...projects.owner,
-    ...projects.admin,
-    ...projects.member,
-  ];
+  const allProjects = [...projects.owner, ...projects.admin, ...projects.member];
   return (
     <>
-      <div className="px-6 py-16 mx-auto max-w-7xl">
+      <div className="mx-auto max-w-7xl px-6 py-16">
         {/* Hero Section - Only when no projects exist */}
         {allProjects.length === 0 && (
           <div className="mb-12 text-center">
-            <h1 className="mb-4 text-3xl font-bold text-[hsl(var(--foreground))] md:text-4xl bg-linear-to-r bg-clip-text">
+            <h1 className="bg-linear-to-r mb-4 bg-clip-text text-3xl font-bold text-[hsl(var(--foreground))] md:text-4xl">
               Your Projects
             </h1>
           </div>
@@ -77,11 +61,7 @@ export default function Dashboard() {
 
         {/* Project Navigation */}
         {(allProjects.length > 0 || activeView !== "all") && (
-          <ProjectNavigation
-            projects={projects}
-            activeView={activeView}
-            onViewChange={setActiveView}
-          />
+          <ProjectNavigation projects={projects} activeView={activeView} onViewChange={setActiveView} />
         )}
 
         {/* Projects Section */}

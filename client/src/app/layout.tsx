@@ -10,11 +10,7 @@ import { useEffect } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   // intialize to theme last/default
   const { initializeTheme } = useThemeStore();
 

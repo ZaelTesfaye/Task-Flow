@@ -13,9 +13,7 @@ function VerifyEmailContent() {
   const { checkSession } = useAuthActions();
   const email = searchParams.get("email")?.trim() ?? "";
   const [code, setCode] = useState("");
-  const [status, setStatus] = useState<
-    "idle" | "loading" | "success" | "error"
-  >("idle");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -61,20 +59,15 @@ function VerifyEmailContent() {
 
   if (status === "success") {
     return (
-      <div className="min-h-screen bg-[hsl(var(--background))] flex items-center justify-center p-4">
-        <div className="w-full max-w-lg bg-[hsl(var(--card))] border border-[hsl(var(--border))] rounded-2xl shadow-xl p-8">
+      <div className="flex min-h-screen items-center justify-center bg-[hsl(var(--background))] p-4">
+        <div className="w-full max-w-lg rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] p-8 shadow-xl">
           <div className="flex flex-col items-center justify-center text-center">
-            <CheckCircle className="w-20 h-20 mb-6 text-green-500" />
-            <h2 className="text-3xl font-bold text-[hsl(var(--foreground))] mb-2">
-              Email Verified!
-            </h2>
-            <p className="text-[hsl(var(--muted-foreground))] mb-8 max-w-md">
-              Your email has been successfully verified. You can now access all
-              features of TaskFlow.
+            <CheckCircle className="mb-6 h-20 w-20 text-green-500" />
+            <h2 className="mb-2 text-3xl font-bold text-[hsl(var(--foreground))]">Email Verified!</h2>
+            <p className="mb-8 max-w-md text-[hsl(var(--muted-foreground))]">
+              Your email has been successfully verified. You can now access all features of TaskFlow.
             </p>
-            <p className="text-sm text-[hsl(var(--muted-foreground))]">
-              Redirecting to login...
-            </p>
+            <p className="text-sm text-[hsl(var(--muted-foreground))]">Redirecting to login...</p>
           </div>
         </div>
       </div>
@@ -82,36 +75,29 @@ function VerifyEmailContent() {
   }
 
   return (
-    <div className="min-h-screen bg-[hsl(var(--background))] flex items-center justify-center p-4">
-      <div className="w-full max-w-lg bg-[hsl(var(--card))] border border-[hsl(var(--border))] rounded-2xl shadow-xl p-8">
+    <div className="flex min-h-screen items-center justify-center bg-[hsl(var(--background))] p-4">
+      <div className="w-full max-w-lg rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] p-8 shadow-xl">
         <div className="mb-8 text-center">
-          <Mail className="w-16 h-16 mx-auto mb-4 text-blue-500" />
-          <h1 className="text-3xl font-bold text-[hsl(var(--foreground))] mb-2">
-            Verify Your Email
-          </h1>
+          <Mail className="mx-auto mb-4 h-16 w-16 text-blue-500" />
+          <h1 className="mb-2 text-3xl font-bold text-[hsl(var(--foreground))]">Verify Your Email</h1>
           <p className="text-[hsl(var(--muted-foreground))]">
-            We&apos;ve sent a 6-digit verification code to{" "}
-            {email || "your email"}. Enter it below to verify your account.
+            We&apos;ve sent a 6-digit verification code to {email || "your email"}. Enter it below to verify your
+            account.
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label
-              htmlFor="code"
-              className="block text-sm font-medium text-[hsl(var(--foreground))] mb-2"
-            >
+            <label htmlFor="code" className="mb-2 block text-sm font-medium text-[hsl(var(--foreground))]">
               Verification Code
             </label>
             <input
               id="code"
               type="text"
               value={code}
-              onChange={(e) =>
-                setCode(e.target.value.replace(/\D/g, "").slice(0, 6))
-              }
+              onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
               placeholder="Enter 6-digit code"
-              className="w-full px-4 py-3 text-center text-2xl font-mono tracking-widest border border-[hsl(var(--border))] rounded-lg bg-[hsl(var(--background))] text-[hsl(var(--foreground))] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--background))] px-4 py-3 text-center font-mono text-2xl tracking-widest text-[hsl(var(--foreground))] focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
               maxLength={6}
               required
             />
@@ -119,7 +105,7 @@ function VerifyEmailContent() {
 
           {errorMessage && (
             <div className="flex items-center justify-center space-x-2 text-red-500">
-              <XCircle className="w-5 h-5" />
+              <XCircle className="h-5 w-5" />
               <span className="text-sm">{errorMessage}</span>
             </div>
           )}
@@ -127,11 +113,11 @@ function VerifyEmailContent() {
           <button
             type="submit"
             disabled={status === "loading" || code.length !== 6}
-            className="flex items-center justify-center w-full px-4 py-3 space-x-2 font-semibold text-white transition-colors bg-blue-600 rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+            className="flex w-full items-center justify-center space-x-2 rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-400"
           >
             {status === "loading" ? (
               <>
-                <Loader2 className="w-5 h-5 animate-spin" />
+                <Loader2 className="h-5 w-5 animate-spin" />
                 <span>Verifying...</span>
               </>
             ) : (
@@ -141,14 +127,10 @@ function VerifyEmailContent() {
         </form>
 
         <div className="mt-8 text-center">
-          <p className="text-sm text-[hsl(var(--muted-foreground))] mb-4">
-            Didn&apos;t receive the code? Check your spam folder or try signing
-            up again.
+          <p className="mb-4 text-sm text-[hsl(var(--muted-foreground))]">
+            Didn&apos;t receive the code? Check your spam folder or try signing up again.
           </p>
-          <Link
-            href="/login"
-            className="text-sm font-medium text-blue-600 hover:text-blue-700"
-          >
+          <Link href="/login" className="text-sm font-medium text-blue-600 hover:text-blue-700">
             Back to Login
           </Link>
         </div>

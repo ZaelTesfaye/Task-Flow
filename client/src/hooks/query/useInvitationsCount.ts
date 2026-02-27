@@ -11,13 +11,8 @@ export const useInvitationsCount = () => {
   const { data: invitationsCount = 0 } = useQuery({
     queryKey: ["user-invitations"],
     queryFn: async () => {
-      const response =
-        await projectApiClient.get<ApiResponse<ProjectInvitation[]>>(
-          "invitations",
-        );
-      const pendingInvitations = response.data.filter(
-        (inv: ProjectInvitation) => inv.status === "pending",
-      );
+      const response = await projectApiClient.get<ApiResponse<ProjectInvitation[]>>("invitations");
+      const pendingInvitations = response.data.filter((inv: ProjectInvitation) => inv.status === "pending");
       return pendingInvitations.length;
     },
     enabled: !!user,

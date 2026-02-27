@@ -8,7 +8,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint src/",
-    "lint:fix": "eslint src/ --fix"
+    "lint:fix": "eslint src/ --fix",
+    "format": "prettier --write src/",
+    "format:check": "prettier --check src/"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.11",

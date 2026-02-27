@@ -2,9 +2,7 @@ import { useState } from "react";
 import { DEFAULT_MODAL_STATE, DEFAULT_FORM_STATE } from "@/constants";
 
 export const useProjectModals = () => {
-  const [activePane, setActivePane] = useState<"members" | "settings" | null>(
-    null,
-  );
+  const [activePane, setActivePane] = useState<"members" | "settings" | null>(null);
   const [modals, setModals] = useState(DEFAULT_MODAL_STATE);
   const [forms, setForms] = useState(DEFAULT_FORM_STATE);
 

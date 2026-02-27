@@ -9,10 +9,7 @@ interface EditTaskModalProps {
   forms: any;
   updateForm: (key: any, value: any) => void;
   resetForm: (key: keyof typeof DEFAULT_FORM_STATE) => void;
-  updateTask: (
-    taskId: string,
-    data: { title: string; description: string },
-  ) => void;
+  updateTask: (taskId: string, data: { title: string; description: string }) => void;
   updateTaskStatus: (taskId: string, status: TaskStatus) => void;
   isOwnerOrAdmin: boolean;
   loading?: boolean;
@@ -54,48 +51,35 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({
 
   return (
     <Modal isOpen={isOpen} onClose={handleClose}>
-      <h2 className="text-2xl font-bold mb-6 text-[hsl(var(--foreground))]">
-        Edit Task
-      </h2>
+      <h2 className="mb-6 text-2xl font-bold text-[hsl(var(--foreground))]">Edit Task</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-[hsl(var(--foreground))] mb-2">
-            Title
-          </label>
+          <label className="mb-2 block text-sm font-medium text-[hsl(var(--foreground))]">Title</label>
           <input
             type="text"
             value={forms.editTaskTitle}
             onChange={(e) => updateForm("editTaskTitle", e.target.value)}
             required
-            className="w-full px-4 py-2  rounded-lg focus:ring-2 focus:ring-[hsl(var(--ring))] focus:outline-none focus:border-transparent outline outline-1 bg-[hsl(var(--card))] text-[hsl(var(--foreground))]"
+            className="w-full rounded-lg bg-[hsl(var(--card))] px-4 py-2 text-[hsl(var(--foreground))] outline outline-1 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))]"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-[hsl(var(--foreground))] mb-2">
-            Description
-          </label>
+          <label className="mb-2 block text-sm font-medium text-[hsl(var(--foreground))]">Description</label>
           <textarea
             value={forms.editTaskDescription}
             onChange={(e) => updateForm("editTaskDescription", e.target.value)}
             required
             rows={3}
-            className="w-full px-4 py-2 border border-[hsl(var(--input))] rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))]  outline-1 focus:border-transparent outline resize-none bg-[hsl(var(--card))] text-[hsl(var(--foreground))]"
+            className="w-full resize-none rounded-lg border border-[hsl(var(--input))] bg-[hsl(var(--card))] px-4 py-2 text-[hsl(var(--foreground))] outline outline-1 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))]"
           />
         </div>
         {isOwnerOrAdmin && (
           <div>
-            <label className="block text-sm font-medium text-[hsl(var(--foreground))] mb-2">
-              Status
-            </label>
+            <label className="mb-2 block text-sm font-medium text-[hsl(var(--foreground))]">Status</label>
             <select
               value={forms.editTaskStatus}
-              onChange={(e) =>
-                updateForm(
-                  "editTaskStatus",
-                  e.target.value as "active" | "complete" | "canceled",
-                )
-              }
-              className="w-full px-4 py-2 border border-[hsl(var(--input))] rounded-lg focus:ring-2 focus:ring-[hsl(var(--ring))] focus:border-transparent outline-none bg-[hsl(var(--card))] text-[hsl(var(--foreground))]"
+              onChange={(e) => updateForm("editTaskStatus", e.target.value as "active" | "complete" | "canceled")}
+              className="w-full rounded-lg border border-[hsl(var(--input))] bg-[hsl(var(--card))] px-4 py-2 text-[hsl(var(--foreground))] outline-none focus:border-transparent focus:ring-2 focus:ring-[hsl(var(--ring))]"
             >
               <option value="active">Active</option>
               <option value="complete">Complete</option>
@@ -108,14 +92,14 @@ const EditTaskModal: React.FC<EditTaskModalProps> = ({
             type="button"
             onClick={handleClose}
             disabled={loading}
-            className="flex-1 px-4 py-2 border border-[hsl(var(--border))] rounded-lg hover:bg-[hsl(var(--accent))] transition text-[hsl(var(--foreground))] hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 rounded-lg border border-[hsl(var(--border))] px-4 py-2 text-[hsl(var(--foreground))] transition hover:cursor-pointer hover:bg-[hsl(var(--accent))] disabled:cursor-not-allowed disabled:opacity-50"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={loading}
-            className="flex-1 px-4 py-2 text-[hsl(var(--primary-foreground))] transition bg-blue-600 rounded-lg hover:bg-blue-700 hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-[hsl(var(--primary-foreground))] transition hover:cursor-pointer hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {loading ? (
               <>
