@@ -5,6 +5,7 @@ services:
       - ./.env
     environment:
       CONTAINER_NAME: process1
+      DATABASE_URL: postgresql://task-manager-db:${DB_PASSWORD}@db:5432/tasks
       REDIS_URL: redis://redis:6379
     restart: on-failure
     # command: "npx prisma generate && exec npm start"
@@ -33,6 +34,7 @@ services:
       - ./.env
     environment:
       CONTAINER_NAME: process2
+      DATABASE_URL: postgresql://task-manager-db:${DB_PASSWORD}@db:5432/tasks
       REDIS_URL: redis://redis:6379
     restart: on-failure
     # command: "npx prisma generate && exec npm start"
@@ -66,7 +68,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "pg_isready -U task-manager-db -d tasks"]
+      test: ["CMD-SHELL", "pg_isready -U task-manager-db -d tasks"]
       interval: 60s
       timeout: 30s
       retries: 5
@@ -76,6 +78,8 @@ services:
     image: ${DOCKER_USERNAME}/${IMAGE_NAME}:latest
     env_file:
       - ./.env
+    environment:
+      DATABASE_URL: postgresql://task-manager-db:${DB_PASSWORD}@db:5432/tasks
     command: npx prisma migrate deploy
     depends_on:
       db:
@@ -87,6 +91,8 @@ services:
     image: ${DOCKER_USERNAME}/${IMAGE_NAME}:latest
     env_file:
       - ./.env
+    environment:
+      DATABASE_URL: postgresql://task-manager-db:${DB_PASSWORD}@db:5432/tasks
     command: npm run seed
     depends_on:
       migrator:
@@ -127,6 +133,11 @@ services:
     volumes:
       - ./monitor/loki-config.yml:/etc/loki/local-config.yml
     command: -config.file=/etc/loki/local-config.yml
+    depends_on:
+      process1:
+        condition: service_healthy
+      process2:
+        condition: service_healthy
 
   prometheus:
     image: prom/prometheus:latest
@@ -142,8 +153,10 @@ services:
       - '--storage.tsdb.retention.time=72h'
       - '--web.enable-lifecycle'
     depends_on:
-      - process1
-      - process2
+      process1:
+          condition: service_healthy      
+      process2:
+          condition: service_healthy      
 
   promtail:
     image: grafana/promtail:latest
@@ -154,7 +167,12 @@ services:
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
     command: -config.file=/etc/promtail/config.yml
     depends_on:
-      - loki
+      loki:
+        condition: service_started
+      process1:
+        condition: service_healthy
+      process2:
+        condition: service_healthy
 
   grafana:
     image: grafana/grafana:latest
@@ -164,7 +182,12 @@ services:
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin123
     depends_on:
-      - loki
+      loki:
+        condition: service_started
+      process1:
+        condition: service_healthy
+      process2: 
+        condition: service_healthy
 
 volumes:
   postgres_data:

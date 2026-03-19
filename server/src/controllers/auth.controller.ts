@@ -1,4 +1,4 @@
-import type { CookieOptions, Request, Response } from "express";
+import type { CookieOptions, Request, Response, RequestHandler } from "express";
 import httpStatus from "http-status";
 
 import { asyncWrapper } from "../lib/index.js";
@@ -14,7 +14,7 @@ export const defaultCookieConfig: CookieOptions = {
   maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
 };
 
-export const register = asyncWrapper(async (req: Request<{}, {}, RegisterBody>, res: Response) => {
+export const register: RequestHandler = asyncWrapper(async (req: Request<{}, {}, RegisterBody>, res: Response) => {
   const { name, email, password } = req.body;
   const userData = await authServices.register(name, email, password);
 
@@ -24,7 +24,7 @@ export const register = asyncWrapper(async (req: Request<{}, {}, RegisterBody>, 
   });
 });
 
-export const login = asyncWrapper(async (req: Request<{}, {}, LoginBody>, res: Response) => {
+export const login: RequestHandler = asyncWrapper(async (req: Request<{}, {}, LoginBody>, res: Response) => {
   const { email, password } = req.body;
   // check if the user exists
   const data = await authServices.login(email, password);
@@ -34,7 +34,7 @@ export const login = asyncWrapper(async (req: Request<{}, {}, LoginBody>, res: R
   });
 });
 
-export const logout = asyncWrapper(async (req: Request, res: Response) => {
+export const logout: RequestHandler = asyncWrapper(async (req: Request, res: Response) => {
   res
     .clearCookie("auth", {
       path: "/",
@@ -45,15 +45,17 @@ export const logout = asyncWrapper(async (req: Request, res: Response) => {
     .send();
 });
 
-export const requestPasswordReset = asyncWrapper(async (req: Request<{}, {}, { email: string }>, res: Response) => {
-  const { email } = req.body;
-  const result = await authServices.requestPasswordReset(email);
-  res.json({
-    message: result.message,
-  });
-});
+export const requestPasswordReset: RequestHandler = asyncWrapper(
+  async (req: Request<{}, {}, { email: string }>, res: Response) => {
+    const { email } = req.body;
+    const result = await authServices.requestPasswordReset(email);
+    res.json({
+      message: result.message,
+    });
+  },
+);
 
-export const verifyResetCode = asyncWrapper(
+export const verifyResetCode: RequestHandler = asyncWrapper(
   async (req: Request<{}, {}, { email: string; code: string }>, res: Response) => {
     const { email, code } = req.body;
     const result = await authServices.verifyResetCode(email, code);
@@ -63,7 +65,7 @@ export const verifyResetCode = asyncWrapper(
   },
 );
 
-export const resetPassword = asyncWrapper(
+export const resetPassword: RequestHandler = asyncWrapper(
   async (req: Request<{}, {}, { email: string; newPassword: string }>, res: Response) => {
     const { email, newPassword } = req.body;
     const data = await authServices.resetPassword(email, newPassword);

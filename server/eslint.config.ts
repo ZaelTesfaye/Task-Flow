@@ -18,6 +18,7 @@ export default defineConfig([
       "@typescript-eslint/no-unused-vars": ["error"],
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-empty-object-type": "off",
+      "@typescript-eslint/ban-ts-comment": "off",
     },
   },
   prettier,

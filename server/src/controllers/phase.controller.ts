@@ -1,11 +1,11 @@
-import type { Request, Response } from "express";
+import type { Request, Response, RequestHandler } from "express";
 import httpStatus from "http-status";
 
 import { asyncWrapper, redis } from "../lib/index.js";
 import { phaseServices, projectServices } from "../services/index.js";
 import type { CreatePhaseDTO, UpdatePhaseDTO } from "../types/index.js";
 
-export const createPhase = asyncWrapper(
+export const createPhase: RequestHandler = asyncWrapper(
   async (req: Request<{ projectId: string }, {}, CreatePhaseDTO>, res: Response) => {
     const { projectId } = req.params;
     const { id: userId } = req.user!;
@@ -30,7 +30,7 @@ export const createPhase = asyncWrapper(
   },
 );
 
-export const updatePhase = asyncWrapper(
+export const updatePhase: RequestHandler = asyncWrapper(
   async (req: Request<{ projectId: string; phaseId: string }, {}, UpdatePhaseDTO>, res: Response) => {
     const { projectId, phaseId } = req.params;
     const { id: userId } = req.user!;
@@ -55,7 +55,7 @@ export const updatePhase = asyncWrapper(
   },
 );
 
-export const getPhases = asyncWrapper(async (req: Request<{ projectId: string }>, res: Response) => {
+export const getPhases: RequestHandler = asyncWrapper(async (req: Request<{ projectId: string }>, res: Response) => {
   const { projectId } = req.params;
   const { id: userId } = req.user!;
 
@@ -92,23 +92,25 @@ export const getPhases = asyncWrapper(async (req: Request<{ projectId: string }>
     data: result,
   });
 });
-export const removePhase = asyncWrapper(async (req: Request<{ projectId: string; phaseId: string }>, res: Response) => {
-  const { projectId, phaseId } = req.params;
-  const { id: userId } = req.user!;
+export const removePhase: RequestHandler = asyncWrapper(
+  async (req: Request<{ projectId: string; phaseId: string }>, res: Response) => {
+    const { projectId, phaseId } = req.params;
+    const { id: userId } = req.user!;
 
-  const hasAccess = await projectServices.checkUserAccess(projectId, userId, ["owner", "admin"]);
-  if (!hasAccess) {
-    return res.status(httpStatus.FORBIDDEN).json({
-      message: "Only project owner or admin can remove phases",
+    const hasAccess = await projectServices.checkUserAccess(projectId, userId, ["owner", "admin"]);
+    if (!hasAccess) {
+      return res.status(httpStatus.FORBIDDEN).json({
+        message: "Only project owner or admin can remove phases",
+      });
+    }
+
+    await phaseServices.removePhase(phaseId, projectId);
+
+    // Invalidate phases cache
+    await redis.del(`project:${projectId}:phases`);
+
+    res.json({
+      message: "Phase removed successfully",
     });
-  }
-
-  await phaseServices.removePhase(phaseId, projectId);
-
-  // Invalidate phases cache
-  await redis.del(`project:${projectId}:phases`);
-
-  res.json({
-    message: "Phase removed successfully",
-  });
-});
+  },
+);

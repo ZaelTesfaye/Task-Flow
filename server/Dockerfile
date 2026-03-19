@@ -10,10 +10,12 @@ WORKDIR /app
 
 COPY package*.json pnpm-lock.yaml ./
 ENV HUSKY=0
-RUN pnpm install --shamefully-hoist 
+RUN --mount=type=cache,target=/home/app/.local/share/pnpm/store \
+    pnpm install --frozen-lockfile --shamefully-hoist
 
 COPY . .
 RUN npx prisma generate
+
 RUN npm run build
 
 
@@ -32,7 +34,9 @@ WORKDIR /app
 RUN mkdir -p /app/logs
 
 COPY package*.json pnpm-lock.yaml ./
-RUN pnpm install --shamefully-hoist 
+ENV HUSKY=0
+RUN --mount=type=cache,target=/home/app/.local/share/pnpm/store \
+    pnpm install --prod --frozen-lockfile --shamefully-hoist
 
 # Copy compiled code & dependencies
 COPY --from=build /app/dist ./dist

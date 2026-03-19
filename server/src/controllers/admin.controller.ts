@@ -1,11 +1,11 @@
-import type { Request, Response } from "express";
+import type { Request, Response, RequestHandler } from "express";
 import httpStatus from "http-status";
 
 import type { AddAdmin, GetAllUsers as GetAllUsersParams, RemoveUser, UpdateUserPassword } from "../types/index.js";
 import { adminServices, authServices } from "../services/index.js";
 import { asyncWrapper } from "../lib/index.js";
 
-export const getAllUsers = asyncWrapper(async (req: Request<GetAllUsersParams>, res: Response) => {
+export const getAllUsers: RequestHandler = asyncWrapper(async (req: Request<GetAllUsersParams>, res: Response) => {
   const { page, limit } = req.params;
   const result = await adminServices.getAllUsers(page, limit);
   if (result) {
@@ -16,7 +16,7 @@ export const getAllUsers = asyncWrapper(async (req: Request<GetAllUsersParams>, 
   });
 });
 
-export const removeUser = asyncWrapper(async (req: Request<RemoveUser>, res: Response) => {
+export const removeUser: RequestHandler = asyncWrapper(async (req: Request<RemoveUser>, res: Response) => {
   const { userId } = req.params;
 
   const { role } = req.user!;
@@ -33,18 +33,20 @@ export const removeUser = asyncWrapper(async (req: Request<RemoveUser>, res: Res
   });
 });
 
-export const updateUserPassword = asyncWrapper(async (req: Request<{}, {}, UpdateUserPassword>, res) => {
-  console.log("Update User Password called with body:", req.body);
-  const { userId, password } = req.body;
+export const updateUserPassword: RequestHandler = asyncWrapper(
+  async (req: Request<{}, {}, UpdateUserPassword>, res) => {
+    console.log("Update User Password called with body:", req.body);
+    const { userId, password } = req.body;
 
-  await adminServices.updateUserPassword(userId, password);
+    await adminServices.updateUserPassword(userId, password);
 
-  res.json({
-    message: "Password updated successfully",
-  });
-});
+    res.json({
+      message: "Password updated successfully",
+    });
+  },
+);
 
-export const createAdmin = asyncWrapper(async (req: Request<{}, {}, AddAdmin>, res: Response) => {
+export const createAdmin: RequestHandler = asyncWrapper(async (req: Request<{}, {}, AddAdmin>, res: Response) => {
   const { username, name, password } = req.body;
   await authServices.register(username, name, password, "admin");
   res.json({

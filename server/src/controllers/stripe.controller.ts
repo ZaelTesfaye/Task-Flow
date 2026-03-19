@@ -3,10 +3,10 @@ import config from "../config/env.config.js";
 import { APIError } from "../utils/index.js";
 import { asyncWrapper, logger } from "../lib/index.js";
 import httpStatus from "http-status";
-import type { Request, Response } from "express";
+import type { Request, Response, RequestHandler } from "express";
 import { stripeServices } from "../services/index.js";
 
-export const createCheckoutSession = asyncWrapper(async (req: Request, res: Response) => {
+export const createCheckoutSession: RequestHandler = asyncWrapper(async (req: Request, res: Response) => {
   const { plan } = req.body;
   const user = req.user;
 
@@ -56,7 +56,7 @@ export const webhook = async (req: Request, res: Response) => {
   res.status(httpStatus.OK).send();
 };
 
-export const createPortalSession = asyncWrapper(async (req: Request, res: Response) => {
+export const createPortalSession: RequestHandler = asyncWrapper(async (req: Request, res: Response) => {
   const user = req.user;
 
   if (!user) {
@@ -68,7 +68,7 @@ export const createPortalSession = asyncWrapper(async (req: Request, res: Respon
   res.status(httpStatus.OK).json(result);
 });
 
-export const verifySubscriptionStatus = asyncWrapper(async (req: Request, res: Response) => {
+export const verifySubscriptionStatus: RequestHandler = asyncWrapper(async (req: Request, res: Response) => {
   const user = req.user;
   const { sessionId } = req.query;
 

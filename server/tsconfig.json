@@ -32,12 +32,14 @@
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
+    "noEmit": false
   },
   "include": [
-    "**/*.ts",
-    "**/*.d.ts",
+    "src/**/*.ts",
+    "src/**/*.d.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "dist"
   ]
 }
