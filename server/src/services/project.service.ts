@@ -1,14 +1,11 @@
 import { memberModel, projectModel } from "../model/index.js";
 import { userModel } from "../model/index.js";
 import { APIError } from "../utils/index.js";
-import config from "../config/config.js";
+import config from "../config/env.config.js";
 import * as emailServices from "./email.service.js";
+import httpStatus from "http-status";
 
-export const createProject = async (
-  title: string,
-  description: string,
-  userId: string,
-) => {
+export const createProject = async (title: string, description: string, userId: string) => {
   const user = await userModel.getUser(userId);
   if (!user) {
     throw new APIError("User not found", 404);
@@ -17,10 +14,7 @@ export const createProject = async (
   const projectCount = await projectModel.countProjectsByOwnerId(userId);
   let limit = 5;
 
-  const isSubscribed =
-    user.stripePriceId &&
-    user.stripeCurrentPeriodEnd &&
-    user.stripeCurrentPeriodEnd > new Date();
+  const isSubscribed = user.stripePriceId && user.stripeCurrentPeriodEnd && user.stripeCurrentPeriodEnd > new Date();
 
   if (isSubscribed) {
     if (user.stripePriceId === config.stripe.starter.priceId) {
@@ -33,17 +27,14 @@ export const createProject = async (
   if (projectCount >= limit) {
     throw new APIError(
       `You have reached the project limit of ${limit} for your current plan. Please upgrade to create more projects.`,
-      403,
+      httpStatus.FORBIDDEN,
     );
   }
 
   return projectModel.createProject(title, description, userId);
 };
 
-export const updateProject = (
-  projectId: string,
-  updates: { title?: string; description?: string },
-) => {
+export const updateProject = (projectId: string, updates: { title?: string; description?: string }) => {
   return projectModel.updateProject(projectId, updates);
 };
 
@@ -63,13 +54,13 @@ export const addMember = async (
   if (userId) {
     targetUser = await userModel.getUser(userId);
     if (!targetUser) {
-      throw new APIError("User not found", 404);
+      throw new APIError("User not found", httpStatus.FORBIDDEN);
     }
   }
 
   let invitationEmail = email || targetUser?.email;
   if (!invitationEmail) {
-    throw new APIError("Email is required to send an invitation", 400);
+    throw new APIError("Email is required to send an invitation", httpStatus.BAD_REQUEST);
   }
 
   invitationEmail = invitationEmail.trim().toLowerCase();
@@ -80,37 +71,31 @@ export const addMember = async (
   }
 
   if (targetUser && targetUser.id === inviterId) {
-    throw new APIError("You cannot invite yourself", 400);
+    throw new APIError("You cannot invite yourself", httpStatus.BAD_REQUEST);
   }
 
   if (targetUser) {
-    const existingMember = await memberModel.findMember(
-      projectId,
-      targetUser.id,
-    );
+    const existingMember = await memberModel.findMember(projectId, targetUser.id);
     if (existingMember) {
-      throw new APIError("User is already a project member", 409);
+      throw new APIError("User is already a project member", httpStatus.CONFLICT);
     }
   }
 
-  const existingInvitation = await projectModel.getPendingInvitationByEmail(
-    projectId,
-    invitationEmail,
-  );
+  const existingInvitation = await projectModel.getPendingInvitationByEmail(projectId, invitationEmail);
 
   if (existingInvitation) {
-    throw new APIError("An invitation is already pending for this user", 409);
+    throw new APIError("An invitation is already pending for this user", httpStatus.CONFLICT);
   }
 
   // Check member limit based on project owner's subscription
   const project = await projectModel.getProjectById(projectId);
   if (!project) {
-    throw new APIError("Project not found", 404);
+    throw new APIError("Project not found", httpStatus.NOT_FOUND);
   }
 
   const projectOwner = await userModel.getUser(project.ownerId);
   if (!projectOwner) {
-    throw new APIError("Project owner not found", 404);
+    throw new APIError("Project owner not found", httpStatus.NOT_FOUND);
   }
 
   const currentMemberCount = await memberModel.countProjectMembers(projectId);
@@ -132,14 +117,14 @@ export const addMember = async (
   if (currentMemberCount >= memberLimit) {
     throw new APIError(
       `You have reached the member limit of ${memberLimit} for your current plan. Please upgrade to add more members.`,
-      403,
+      httpStatus.FORBIDDEN,
     );
   }
 
   // Get inviter information for email
   const inviter = await userModel.getUser(inviterId);
   if (!inviter) {
-    throw new APIError("Inviter not found", 404);
+    throw new APIError("Inviter not found", httpStatus.NOT_FOUND);
   }
 
   // Create the invitation
@@ -155,19 +140,10 @@ export const addMember = async (
   try {
     if (targetUser) {
       // User is registered - send email with link to invitations page
-      await emailServices.sendInvitationToRegisteredUser(
-        inviter.name,
-        targetUser.name,
-        invitationEmail,
-        project.title,
-      );
+      await emailServices.sendInvitationToRegisteredUser(inviter.name, targetUser.name, invitationEmail, project.title);
     } else {
       // User is not registered - send email with link to signup
-      await emailServices.sendInvitationToNonRegisteredUser(
-        inviter.name,
-        invitationEmail,
-        project.title,
-      );
+      await emailServices.sendInvitationToNonRegisteredUser(inviter.name, invitationEmail, project.title);
     }
   } catch (emailError) {
     // Log the error but don't fail the invitation creation
@@ -182,16 +158,8 @@ export const removeMember = (projectId: string, userId: string) => {
   return memberModel.removeMember(projectId, userId);
 };
 
-export const checkUserAccess = async (
-  projectId: string,
-  userId: string,
-  requiredAccess: string[],
-) => {
-  const result = await memberModel.getProjectMemberWithAccess(
-    projectId,
-    userId,
-    requiredAccess,
-  );
+export const checkUserAccess = async (projectId: string, userId: string, requiredAccess: string[]) => {
+  const result = await memberModel.getProjectMemberWithAccess(projectId, userId, requiredAccess);
   return !!result;
 };
 
@@ -205,11 +173,7 @@ export const isTargetRequester = async (projectId: string, userId: string) => {
   return true;
 };
 
-export const promoteProjectMember = (
-  projectId: string,
-  userId: string,
-  access: string,
-) => {
+export const promoteProjectMember = (projectId: string, userId: string, access: string) => {
   return memberModel.updateMemberAccess(projectId, userId, access);
 };
 
@@ -264,11 +228,7 @@ export const getUserInvitations = async (userId: string) => {
   return projectModel.getUserPendingInvitations(userId, normalizedEmail);
 };
 
-export const respondToInvitation = async (
-  invitationId: string,
-  userId: string,
-  action: "accept" | "decline",
-) => {
+export const respondToInvitation = async (invitationId: string, userId: string, action: "accept" | "decline") => {
   const invitation = await projectModel.getInvitationById(invitationId);
   if (!invitation) {
     throw new APIError("Invitation not found", 404);
@@ -286,17 +246,11 @@ export const respondToInvitation = async (
   const normalizedEmail = user.email.trim().toLowerCase();
 
   if (invitation.inviteeId && invitation.inviteeId !== userId) {
-    throw new APIError(
-      "You are not authorized to respond to this invitation",
-      403,
-    );
+    throw new APIError("You are not authorized to respond to this invitation", 403);
   }
 
   if (!invitation.inviteeId && invitation.email !== normalizedEmail) {
-    throw new APIError(
-      "You are not authorized to respond to this invitation",
-      403,
-    );
+    throw new APIError("You are not authorized to respond to this invitation", 403);
   }
 
   await projectModel.updateInvitation(invitationId, {
@@ -311,17 +265,10 @@ export const respondToInvitation = async (
     });
   }
 
-  const existingMember = await memberModel.findMember(
-    invitation.projectId,
-    userId,
-  );
+  const existingMember = await memberModel.findMember(invitation.projectId, userId);
 
   if (!existingMember) {
-    await memberModel.addMember(
-      invitation.projectId,
-      userId,
-      invitation.access === "admin" ? "admin" : "member",
-    );
+    await memberModel.addMember(invitation.projectId, userId, invitation.access === "admin" ? "admin" : "member");
   }
 
   return projectModel.updateInvitation(invitationId, {

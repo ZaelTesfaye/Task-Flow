@@ -1,7 +1,6 @@
 import prisma from "../lib/prisma.js";
 
-export const getAllUsers = (page: number, limit: number) => {
-  const offset = (page - 1) * limit;
+export const getAllUsers = (offset: number, limit: number) => {
   return prisma.user.findMany({
     skip: offset,
     take: limit,

@@ -1,9 +1,5 @@
 import joi from "joi";
-import type {
-  CreateTaskDTO,
-  UpdateTaskDTO as UpdateTaskDTO,
-  RequestTaskUpdateDTO,
-} from "../dtos/index.js";
+import type { CreateTaskDTO, UpdateTaskDTO as UpdateTaskDTO, RequestTaskUpdateDTO } from "../types/index.js";
 
 export const createTaskSchema = {
   body: joi
@@ -57,10 +53,7 @@ export const requestTaskUpdateSchema = {
   body: joi
     .object<RequestTaskUpdateDTO>({
       updateDescription: joi.string().min(1).max(255).required(),
-      newStatus: joi
-        .string()
-        .valid("active", "complete", "canceled")
-        .required(),
+      newStatus: joi.string().valid("active", "complete", "canceled").required(),
     })
     .required()
     .unknown(true),

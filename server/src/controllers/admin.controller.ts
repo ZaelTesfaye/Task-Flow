@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import httpStatus from "http-status";
 
-import type { AddAdmin, GetAllUsers as GetAllUsersParams, RemoveUser, UpdateUserPassword } from "../dtos/index.js";
+import type { AddAdmin, GetAllUsers as GetAllUsersParams, RemoveUser, UpdateUserPassword } from "../types/index.js";
 import { adminServices, authServices } from "../services/index.js";
 import { asyncWrapper } from "../lib/index.js";
 
@@ -11,7 +11,11 @@ export const getAllUsers = asyncWrapper(async (req: Request<GetAllUsersParams>, 
   if (result) {
     res.status(httpStatus.OK).json(result);
   }
+  res.status(httpStatus.NOT_FOUND).json({
+    message: "User Not Found",
+  });
 });
+
 export const removeUser = asyncWrapper(async (req: Request<RemoveUser>, res: Response) => {
   const { userId } = req.params;
 
@@ -23,11 +27,10 @@ export const removeUser = asyncWrapper(async (req: Request<RemoveUser>, res: Res
     res.json({
       message: "User deleted successfully",
     });
-  } else {
-    res.status(httpStatus.NOT_FOUND).json({
-      message: "User Not Found",
-    });
   }
+  res.status(httpStatus.NOT_FOUND).json({
+    message: "User Not Found",
+  });
 });
 
 export const updateUserPassword = asyncWrapper(async (req: Request<{}, {}, UpdateUserPassword>, res) => {

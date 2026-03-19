@@ -1,5 +1,5 @@
 import joi from "joi";
-import type { CreatePhaseDTO, UpdatePhaseDTO } from "../dtos/index.js";
+import type { CreatePhaseDTO, UpdatePhaseDTO } from "../types/index.js";
 
 export const createPhaseSchema = {
   body: joi

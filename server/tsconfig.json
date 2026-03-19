@@ -31,11 +31,11 @@
     "verbatimModuleSyntax": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
-    "skipLibCheck": true
+    "skipLibCheck": true,
   },
   "include": [
-    "src/**/*.ts",
-    "src/**/*.d.ts",
+    "**/*.ts",
+    "**/*.d.ts",
   ],
   "exclude": [
     "node_modules"

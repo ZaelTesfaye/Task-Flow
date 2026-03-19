@@ -9,25 +9,30 @@ USER app
 WORKDIR /app
 
 COPY package*.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile --ignore-scripts --shamefully-hoist 
+ENV HUSKY=0
+RUN pnpm install --shamefully-hoist 
 
 COPY . .
-ENV NODE_TLS_REJECT_UNAUTHORIZED=0
 RUN npx prisma generate
 RUN npm run build
+
+
+
+
 
 # Runtime Stage
 FROM node:20-slim AS runtime
 
-RUN apt-get update && apt-get install -y curl gosu && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 RUN addgroup --system app && adduser --system --ingroup app app
 RUN npm install -g pnpm
 
 USER app
 WORKDIR /app
+RUN mkdir -p /app/logs
 
 COPY package*.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile --ignore-scripts --shamefully-hoist 
+RUN pnpm install --shamefully-hoist 
 
 # Copy compiled code & dependencies
 COPY --from=build /app/dist ./dist
@@ -36,7 +41,6 @@ COPY --from=build /app/prisma.config.ts ./prisma.config.ts
 COPY --from=build /app/public ./public
 COPY --from=build /app/views ./views
 
-ENV NODE_TLS_REJECT_UNAUTHORIZED=0
 RUN npx prisma generate
 EXPOSE 5000
 

@@ -1,4 +1,4 @@
-import type { RequestTaskUpdateDTO, UpdateTaskDTO } from "../dtos/index.js";
+import type { RequestTaskUpdateDTO, UpdateTaskDTO } from "../types/index.js";
 import prisma from "../lib/prisma.js";
 
 export const createTask = async (
@@ -54,11 +54,7 @@ export const removeTask = async (taskId: string) => {
   });
 };
 
-export const createPendingUpdate = async (
-  taskId: string,
-  userId: string,
-  updateData: RequestTaskUpdateDTO,
-) => {
+export const createPendingUpdate = async (taskId: string, userId: string, updateData: RequestTaskUpdateDTO) => {
   return prisma.pendingUpdates.create({
     data: {
       taskId,

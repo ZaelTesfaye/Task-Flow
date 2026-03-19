@@ -1,32 +1,22 @@
 import type { Request, Response, RequestHandler } from "express";
 import httpStatus from "http-status";
-
 import { asyncWrapper, redis } from "../lib/index.js";
-import {
-  taskServices,
-  phaseServices,
-  projectServices,
-} from "../services/index.js";
+import { taskServices, phaseServices, projectServices } from "../services/index.js";
+
 import type {
   CreateTaskDTO,
   UpdateTaskDTO,
   RequestTaskUpdateDTO as TaskUpdateRequestDTO,
   AcceptPendingUpdateDTO,
-} from "../dtos/index.js";
+} from "../types/index.js";
 
 export const createTask: RequestHandler = asyncWrapper(
-  async (
-    req: Request<{ projectId: string; phaseId: string }, {}, CreateTaskDTO>,
-    res: Response,
-  ) => {
+  async (req: Request<{ projectId: string; phaseId: string }, {}, CreateTaskDTO>, res: Response) => {
     const { projectId, phaseId } = req.params;
     const { id: userId } = req.user!;
     const { title, description, assignedTo } = req.body;
 
-    const hasAccess = await projectServices.checkUserAccess(projectId, userId, [
-      "owner",
-      "admin",
-    ]);
+    const hasAccess = await projectServices.checkUserAccess(projectId, userId, ["owner", "admin"]);
     if (!hasAccess) {
       return res.status(httpStatus.FORBIDDEN).json({
         message: "Only project owner or admin can create tasks",
@@ -40,14 +30,7 @@ export const createTask: RequestHandler = asyncWrapper(
       });
     }
 
-    const result = await taskServices.createTask(
-      title,
-      description,
-      userId,
-      phaseId,
-      assignedTo,
-      projectId,
-    );
+    const result = await taskServices.createTask(title, description, userId, phaseId, assignedTo, projectId);
 
     // Invalidate phases cache (which includes tasks)
     await redis.del(`project:${projectId}:phases`);
@@ -60,29 +43,19 @@ export const createTask: RequestHandler = asyncWrapper(
 );
 
 export const updateTask: RequestHandler = asyncWrapper(
-  async (
-    req: Request<{ projectId: string; taskId: string }, {}, UpdateTaskDTO>,
-    res: Response,
-  ) => {
+  async (req: Request<{ projectId: string; taskId: string }, {}, UpdateTaskDTO>, res: Response) => {
     const { projectId, taskId } = req.params;
     const { id: userId } = req.user!;
     const updates = req.body;
 
-    const hasAccess = await projectServices.checkUserAccess(projectId, userId, [
-      "owner",
-      "admin",
-    ]);
+    const hasAccess = await projectServices.checkUserAccess(projectId, userId, ["owner", "admin"]);
     if (!hasAccess) {
       return res.status(httpStatus.FORBIDDEN).json({
         message: "Only project owner or admin can update tasks",
       });
     }
 
-    const result = await taskServices.updateProjectTask(
-      taskId,
-      updates,
-      projectId,
-    );
+    const result = await taskServices.updateProjectTask(taskId, updates, projectId);
 
     // Invalidate phases cache (which includes tasks)
     await redis.del(`project:${projectId}:phases`);
@@ -95,17 +68,11 @@ export const updateTask: RequestHandler = asyncWrapper(
 );
 
 export const removeTask: RequestHandler = asyncWrapper(
-  async (
-    req: Request<{ projectId: string; taskId: string }>,
-    res: Response,
-  ) => {
+  async (req: Request<{ projectId: string; taskId: string }>, res: Response) => {
     const { projectId, taskId } = req.params;
     const { id: userId } = req.user!;
 
-    const hasAccess = await projectServices.checkUserAccess(projectId, userId, [
-      "owner",
-      "admin",
-    ]);
+    const hasAccess = await projectServices.checkUserAccess(projectId, userId, ["owner", "admin"]);
     if (!hasAccess) {
       return res.status(httpStatus.FORBIDDEN).json({
         message: "Only project owner or admin can remove tasks",
@@ -124,33 +91,19 @@ export const removeTask: RequestHandler = asyncWrapper(
 );
 
 export const requestTaskUpdate: RequestHandler = asyncWrapper(
-  async (
-    req: Request<
-      { projectId: string; taskId: string },
-      {},
-      TaskUpdateRequestDTO
-    >,
-    res: Response,
-  ) => {
+  async (req: Request<{ projectId: string; taskId: string }, {}, TaskUpdateRequestDTO>, res: Response) => {
     const { projectId, taskId } = req.params;
     const { id: userId } = req.user!;
     const updateData = req.body;
 
-    const hasAccess = await projectServices.checkUserAccess(projectId, userId, [
-      "member",
-    ]);
+    const hasAccess = await projectServices.checkUserAccess(projectId, userId, ["member"]);
     if (!hasAccess) {
       return res.status(httpStatus.FORBIDDEN).json({
         message: "Only project members can request task updates",
       });
     }
 
-    const result = await taskServices.requestTaskUpdate(
-      taskId,
-      userId,
-      projectId,
-      updateData,
-    );
+    const result = await taskServices.requestTaskUpdate(taskId, userId, projectId, updateData);
 
     // Invalidate phases cache (which includes tasks)
     await redis.del(`project:${projectId}:phases`);
@@ -163,31 +116,18 @@ export const requestTaskUpdate: RequestHandler = asyncWrapper(
 );
 
 export const acceptPendingUpdate: RequestHandler = asyncWrapper(
-  async (
-    req: Request<
-      { projectId: string; pendingUpdateId: string },
-      {},
-      AcceptPendingUpdateDTO
-    >,
-    res: Response,
-  ) => {
+  async (req: Request<{ projectId: string; pendingUpdateId: string }, {}, AcceptPendingUpdateDTO>, res: Response) => {
     const { projectId, pendingUpdateId } = req.params;
     const { id: userId } = req.user!;
 
-    const hasAccess = await projectServices.checkUserAccess(projectId, userId, [
-      "owner",
-      "admin",
-    ]);
+    const hasAccess = await projectServices.checkUserAccess(projectId, userId, ["owner", "admin"]);
     if (!hasAccess) {
       return res.status(httpStatus.FORBIDDEN).json({
         message: "Only project owner or admin can accept pending updates",
       });
     }
 
-    const result = await taskServices.acceptPendingUpdate(
-      pendingUpdateId,
-      projectId,
-    );
+    const result = await taskServices.acceptPendingUpdate(pendingUpdateId, projectId);
 
     // Invalidate phases cache (which includes tasks)
     await redis.del(`project:${projectId}:phases`);
@@ -200,27 +140,18 @@ export const acceptPendingUpdate: RequestHandler = asyncWrapper(
 );
 
 export const rejectPendingUpdate: RequestHandler = asyncWrapper(
-  async (
-    req: Request<{ projectId: string; pendingUpdateId: string }>,
-    res: Response,
-  ) => {
+  async (req: Request<{ projectId: string; pendingUpdateId: string }>, res: Response) => {
     const { projectId, pendingUpdateId } = req.params;
     const { id: userId } = req.user!;
 
-    const hasAccess = await projectServices.checkUserAccess(projectId, userId, [
-      "owner",
-      "admin",
-    ]);
+    const hasAccess = await projectServices.checkUserAccess(projectId, userId, ["owner", "admin"]);
     if (!hasAccess) {
       return res.status(httpStatus.FORBIDDEN).json({
         message: "Only project owner or admin can reject pending updates",
       });
     }
 
-    const result = await taskServices.rejectPendingUpdate(
-      pendingUpdateId,
-      projectId,
-    );
+    const result = await taskServices.rejectPendingUpdate(pendingUpdateId, projectId);
 
     // Invalidate categories cache (which includes tasks)
     await redis.del(`project:${projectId}:categories`);

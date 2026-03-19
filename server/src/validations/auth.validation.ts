@@ -1,5 +1,5 @@
 import joi from "joi";
-import type { LoginBody, RegisterBody } from "../dtos/index.js";
+import type { LoginBody, RegisterBody } from "../types/index.js";
 
 export const registerSchema = {
   body: joi

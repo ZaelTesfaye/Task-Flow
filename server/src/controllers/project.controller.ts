@@ -3,12 +3,7 @@ import httpStatus from "http-status";
 
 import { asyncWrapper, redis } from "../lib/index.js";
 import { projectServices } from "../services/index.js";
-import type {
-  CreateProjectDTO,
-  UpdateProjectDTO,
-  AddMemberDTO,
-  RespondInvitationDTO,
-} from "../dtos/project.dto.js";
+import type { CreateProjectDTO, UpdateProjectDTO, AddMemberDTO, RespondInvitationDTO } from "../types/project.type.js";
 
 export const createProject: RequestHandler = asyncWrapper(
   async (req: Request<{}, {}, CreateProjectDTO>, res: Response) => {
@@ -25,17 +20,12 @@ export const createProject: RequestHandler = asyncWrapper(
 );
 
 export const updateProject: RequestHandler = asyncWrapper(
-  async (
-    req: Request<{ projectId: string }, {}, UpdateProjectDTO>,
-    res: Response,
-  ) => {
+  async (req: Request<{ projectId: string }, {}, UpdateProjectDTO>, res: Response) => {
     const { projectId } = req.params;
     const { id: userId } = req.user!;
     const updates = req.body;
 
-    const hasAccess = await projectServices.checkUserAccess(projectId, userId, [
-      "owner",
-    ]);
+    const hasAccess = await projectServices.checkUserAccess(projectId, userId, ["owner"]);
     if (!hasAccess) {
       return res.status(httpStatus.FORBIDDEN).json({
         message: "Only project owner can update the project",
@@ -56,9 +46,7 @@ export const removeProject: RequestHandler = asyncWrapper(
     const { projectId } = req.params;
     const { id: userId } = req.user!;
 
-    const hasAccess = await projectServices.checkUserAccess(projectId, userId, [
-      "owner",
-    ]);
+    const hasAccess = await projectServices.checkUserAccess(projectId, userId, ["owner"]);
 
     if (!hasAccess) {
       return res.status(httpStatus.FORBIDDEN).json({
@@ -75,18 +63,11 @@ export const removeProject: RequestHandler = asyncWrapper(
 );
 
 export const addMember: RequestHandler = asyncWrapper(
-  async (
-    req: Request<{ projectId: string }, {}, AddMemberDTO>,
-    res: Response,
-  ) => {
+  async (req: Request<{ projectId: string }, {}, AddMemberDTO>, res: Response) => {
     const { projectId } = req.params;
     const { id: requesterId } = req.user!;
 
-    const hasAccess = await projectServices.checkUserAccess(
-      projectId,
-      requesterId,
-      ["owner"],
-    );
+    const hasAccess = await projectServices.checkUserAccess(projectId, requesterId, ["owner"]);
 
     if (!hasAccess) {
       return res.status(httpStatus.FORBIDDEN).json({
@@ -99,11 +80,7 @@ export const addMember: RequestHandler = asyncWrapper(
     if (req.body.email) payload.email = req.body.email;
     if (req.body.access) payload.access = req.body.access;
 
-    const result = await projectServices.addMember(
-      projectId,
-      requesterId,
-      payload,
-    );
+    const result = await projectServices.addMember(projectId, requesterId, payload);
 
     // Invalidate project members and invitations caches
     await redis.del(`project:${projectId}:members`);
@@ -116,38 +93,26 @@ export const addMember: RequestHandler = asyncWrapper(
   },
 );
 
-export const getUserProjects: RequestHandler = asyncWrapper(
-  async (req: Request, res: Response) => {
-    const { id: userId } = req.user!;
+export const getUserProjects: RequestHandler = asyncWrapper(async (req: Request, res: Response) => {
+  const { id: userId } = req.user!;
 
-    const result = await projectServices.getUserProjects(userId);
+  const result = await projectServices.getUserProjects(userId);
 
-    res.json({
-      data: result,
-    });
-  },
-);
+  res.json({
+    data: result,
+  });
+});
 
 export const removeProjectMember: RequestHandler = asyncWrapper(
-  async (
-    req: Request<{ projectId: string; userId: string }>,
-    res: Response,
-  ) => {
+  async (req: Request<{ projectId: string; userId: string }>, res: Response) => {
     const { projectId, userId: targetUserId } = req.params;
     const { id: requesterUserId } = req.user!;
 
-    const hasAccess = await projectServices.checkUserAccess(
-      projectId,
-      requesterUserId,
-      ["owner"],
-    );
+    const hasAccess = await projectServices.checkUserAccess(projectId, requesterUserId, ["owner"]);
 
     let isRequesterTarget: boolean;
     if (!hasAccess) {
-      isRequesterTarget = await projectServices.isTargetRequester(
-        projectId,
-        targetUserId,
-      );
+      isRequesterTarget = await projectServices.isTargetRequester(projectId, targetUserId);
 
       if (!isRequesterTarget) {
         return res.status(httpStatus.FORBIDDEN).json({
@@ -168,19 +133,12 @@ export const removeProjectMember: RequestHandler = asyncWrapper(
 );
 
 export const promoteProjectMember: RequestHandler = asyncWrapper(
-  async (
-    req: Request<{ projectId: string; userId: string }, {}, { access: string }>,
-    res: Response,
-  ) => {
+  async (req: Request<{ projectId: string; userId: string }, {}, { access: string }>, res: Response) => {
     const { projectId, userId } = req.params;
     const { access } = req.body;
     const { id: promoterId } = req.user!;
 
-    const hasAccess = await projectServices.checkUserAccess(
-      projectId,
-      promoterId,
-      ["owner"],
-    );
+    const hasAccess = await projectServices.checkUserAccess(projectId, promoterId, ["owner"]);
 
     if (!hasAccess) {
       return res.status(httpStatus.FORBIDDEN).json({
@@ -205,11 +163,7 @@ export const getProjectMembers: RequestHandler = asyncWrapper(
     const { id: userId } = req.user!;
 
     // Check if user is a member of the project
-    const hasAccess = await projectServices.checkUserAccess(projectId, userId, [
-      "owner",
-      "admin",
-      "member",
-    ]);
+    const hasAccess = await projectServices.checkUserAccess(projectId, userId, ["owner", "admin", "member"]);
 
     if (!hasAccess) {
       return res.status(httpStatus.FORBIDDEN).json({
@@ -230,11 +184,7 @@ export const getProjectInvitations: RequestHandler = asyncWrapper(
     const { projectId } = req.params;
     const { id: requesterId } = req.user!;
 
-    const hasAccess = await projectServices.checkUserAccess(
-      projectId,
-      requesterId,
-      ["owner", "admin"],
-    );
+    const hasAccess = await projectServices.checkUserAccess(projectId, requesterId, ["owner", "admin"]);
 
     if (!hasAccess) {
       return res.status(httpStatus.FORBIDDEN).json({
@@ -250,32 +200,23 @@ export const getProjectInvitations: RequestHandler = asyncWrapper(
   },
 );
 
-export const getUserInvitations: RequestHandler = asyncWrapper(
-  async (req: Request, res: Response) => {
-    const { id: userId } = req.user!;
+export const getUserInvitations: RequestHandler = asyncWrapper(async (req: Request, res: Response) => {
+  const { id: userId } = req.user!;
 
-    const invitations = await projectServices.getUserInvitations(userId);
+  const invitations = await projectServices.getUserInvitations(userId);
 
-    res.json({
-      data: invitations,
-    });
-  },
-);
+  res.json({
+    data: invitations,
+  });
+});
 
 export const respondToInvitation: RequestHandler = asyncWrapper(
-  async (
-    req: Request<{ invitationId: string }, {}, RespondInvitationDTO>,
-    res: Response,
-  ) => {
+  async (req: Request<{ invitationId: string }, {}, RespondInvitationDTO>, res: Response) => {
     const { invitationId } = req.params;
     const { action } = req.body;
     const { id: userId } = req.user!;
 
-    const result = await projectServices.respondToInvitation(
-      invitationId,
-      userId,
-      action,
-    );
+    const result = await projectServices.respondToInvitation(invitationId, userId, action);
 
     // Invalidate user invitations cache
     await redis.del(`user:${userId}:invitations`);
@@ -289,10 +230,7 @@ export const respondToInvitation: RequestHandler = asyncWrapper(
     }
 
     res.json({
-      message:
-        action === "accept"
-          ? "Invitation accepted successfully"
-          : "Invitation declined successfully",
+      message: action === "accept" ? "Invitation accepted successfully" : "Invitation declined successfully",
       data: result,
     });
   },

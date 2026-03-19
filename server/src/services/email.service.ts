@@ -1,5 +1,5 @@
 import { email } from "../lib/index.js";
-import config from "../config/config.js";
+import config from "../config/env.config.js";
 
 // Simple email template with sky blue theme
 const getEmailTemplate = (content: string) => `
@@ -15,9 +15,7 @@ const getEmailTemplate = (content: string) => `
   </html>
 `;
 
-/**
- * Send invitation email to a registered user
- */
+// Send invitation email to a registered user
 export const sendInvitationToRegisteredUser = async (
   inviterName: string,
   inviteeName: string,
@@ -46,17 +44,12 @@ export const sendInvitationToRegisteredUser = async (
     });
     console.log(`✅ Invitation email sent successfully to ${inviteeEmail}`);
   } catch (error) {
-    console.error(
-      "❌ Error sending invitation email to registered user:",
-      error,
-    );
+    console.error("❌ Error sending invitation email to registered user:", error);
     throw error;
   }
 };
 
-/**
- * Send invitation email to a non-registered user
- */
+// Send invitation email to a non-registered user
 export const sendInvitationToNonRegisteredUser = async (
   inviterName: string,
   inviteeEmail: string,
@@ -87,26 +80,15 @@ export const sendInvitationToNonRegisteredUser = async (
       subject: `${inviterName} invited you to join "${projectTitle}" on TaskFlow`,
       html: getEmailTemplate(content),
     });
-    console.log(
-      `✅ Invitation email sent successfully to ${inviteeEmail} (new user)`,
-    );
+    console.log(`✅ Invitation email sent successfully to ${inviteeEmail} (new user)`);
   } catch (error) {
-    console.error(
-      "❌ Error sending invitation email to non-registered user:",
-      error,
-    );
+    console.error("❌ Error sending invitation email to non-registered user:", error);
     throw error;
   }
 };
 
-/**
- * Send password reset code email
- */
-export const sendPasswordResetCode = async (
-  userName: string,
-  userEmail: string,
-  resetCode: string,
-) => {
+// Send password reset code email
+export const sendPasswordResetCode = async (userName: string, userEmail: string, resetCode: string) => {
   const content = `
     <h2>Password Reset Request</h2>
     <p>Hi <strong>${userName}</strong>,</p>
@@ -133,9 +115,7 @@ export const sendPasswordResetCode = async (
   }
 };
 
-/**
- * Send task assignment notification email
- */
+// Send task assignment notification email
 export const sendTaskAssignmentEmail = async (
   assigneeName: string,
   assigneeEmail: string,
@@ -169,9 +149,7 @@ export const sendTaskAssignmentEmail = async (
       subject: `New Task Assigned: ${taskTitle}`,
       html: getEmailTemplate(content),
     });
-    console.log(
-      `✅ Task assignment email sent successfully to ${assigneeEmail}`,
-    );
+    console.log(`✅ Task assignment email sent successfully to ${assigneeEmail}`);
   } catch (error) {
     console.error("❌ Error sending task assignment email:", error);
     throw error;

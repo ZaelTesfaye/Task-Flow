@@ -2,7 +2,7 @@
 
 import "dotenv/config.js";
 import bcrypt from "bcrypt";
-import config from "../config/config.js";
+import config from "../config/env.config.js";
 import { prisma, logger } from "../lib/index.js";
 
 async function seedAdmin() {

@@ -1,10 +1,12 @@
 import type { Request, Response, NextFunction, RequestHandler } from "express";
 
 const asyncWrapper = <P>(fn: RequestHandler<P>): RequestHandler => {
-  return (req: Request, res: Response, next: NextFunction) => {
-    Promise.resolve()
-      .then(() => fn(req as Request<P>, res, next))
-      .catch(next);
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      await fn(req as Request<P>, res, next);
+    } catch (error) {
+      next(error);
+    }
   };
 };
 

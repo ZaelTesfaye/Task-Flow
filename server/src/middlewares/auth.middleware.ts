@@ -3,14 +3,10 @@ import httpStatus from "http-status";
 import type { Request, Response, NextFunction } from "express";
 import { auth } from "../lib/auth.js";
 import jwt from "jsonwebtoken";
-import config from "../config/config.js";
-import type { JwtPayload } from "../types/jwt.js";
+import config from "../config/env.config.js";
+import type { JwtPayload } from "../types/jwt.type.js";
 
-const authMiddleware = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   const isAdminPath = req.baseUrl.includes("/admin");
   const isSuperAdminPath = req.baseUrl.includes("/super-admin");
   let isAdmin = false;
@@ -70,7 +66,7 @@ const authMiddleware = async (
 
 export default authMiddleware;
 
-// Custom JWT-based auth middleware
+// JWT auth middleware
 
 // import { APIError } from "../utils/index.js";
 // import httpStatus from "http-status";

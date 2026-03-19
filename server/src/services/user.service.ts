@@ -1,5 +1,5 @@
 import { userModel } from "../model/index.js";
-import type { UpdateUserDTO } from "../dtos/index.js";
+import type { UpdateUserDTO } from "../types/index.js";
 
 export const updateUser = async (userId: string, updates: UpdateUserDTO) => {
   return userModel.updateUser(userId, updates);

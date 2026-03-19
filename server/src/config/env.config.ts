@@ -1,8 +1,7 @@
-import { APIError } from "../utils/index.js";
+import { APIError } from "../utils/error.js";
 import { envSchema, type EnvSchemaType } from "../validations/index.js";
 
 const { value, error } = envSchema.validate(process.env);
-
 if (error) {
   throw new APIError(`Config validation error: ${error.message}`, 500);
 }

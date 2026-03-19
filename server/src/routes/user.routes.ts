@@ -9,17 +9,9 @@ const router: Router = express.Router();
 router.get("/me", userController.getMe);
 
 // Update user
-router.patch(
-  "/",
-  validatorMiddleware(updateUserSchema),
-  userController.updateUser,
-);
+router.patch("/", validatorMiddleware(updateUserSchema), userController.updateUser);
 
 // Delete user
-router.delete(
-  "/",
-  // No input requried
-  userController.deleteUser,
-);
+router.delete("/", userController.deleteUser);
 
 export default router;

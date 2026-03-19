@@ -5,11 +5,18 @@ import type { Request, Response } from "express";
 import { logger } from "../lib/index.js";
 import { APIError } from "../utils/index.js";
 
-const errorHandler = (error: Error | APIError | Prisma.PrismaClientKnownRequestError, req: Request, res: Response) => {
-  logger.debug(error.message, error);
+const errorHandler = (
+  error: Error | APIError | Prisma.PrismaClientKnownRequestError | unknown,
+  req: Request,
+  res: Response,
+) => {
+  if (error instanceof Error) logger.debug(error.message, error);
+  else logger.debug(error);
 
   if (error instanceof APIError) {
-    if (error.statusCode === httpStatus.INTERNAL_SERVER_ERROR) logger.error(error.message, error);
+    if (error.statusCode === httpStatus.INTERNAL_SERVER_ERROR) {
+      logger.error(error.message, error);
+    }
 
     return res.status(error.statusCode).json({
       message: error.message,
@@ -47,7 +54,8 @@ const errorHandler = (error: Error | APIError | Prisma.PrismaClientKnownRequestE
     }
   }
 
-  logger.error(error.message, error);
+  if (error instanceof Error) logger.error(error.message, error);
+  else logger.error(error);
 
   res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
     message: "An error occurred",

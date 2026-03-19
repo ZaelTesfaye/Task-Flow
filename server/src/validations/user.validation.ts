@@ -1,5 +1,5 @@
 import joi from "joi";
-import type { UpdateUserDTO } from "../dtos/index.js";
+import type { UpdateUserDTO } from "../types/index.js";
 
 export const updateUserSchema = {
   body: joi

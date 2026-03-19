@@ -1,30 +1,23 @@
 import Stripe from "stripe";
-import config from "../config/config.js";
+import config from "../config/env.config.js";
 import { APIError } from "../utils/index.js";
-import { asyncWrapper } from "../lib/index.js";
+import { asyncWrapper, logger } from "../lib/index.js";
 import httpStatus from "http-status";
 import type { Request, Response } from "express";
 import { stripeServices } from "../services/index.js";
 
-export const createCheckoutSession = asyncWrapper(
-  async (req: Request, res: Response) => {
-    console.log("Creating checkout session");
-    const { plan } = req.body;
-    const user = req.user;
+export const createCheckoutSession = asyncWrapper(async (req: Request, res: Response) => {
+  const { plan } = req.body;
+  const user = req.user;
 
-    if (!user) {
-      throw new APIError("Unauthorized", httpStatus.UNAUTHORIZED);
-    }
+  if (!user) {
+    throw new APIError("Unauthorized", httpStatus.UNAUTHORIZED);
+  }
 
-    const result = await stripeServices.createCheckoutSession(
-      user.id,
-      user.email,
-      plan,
-    );
+  const result = await stripeServices.createCheckoutSession(user.id, user.email, plan);
 
-    res.status(httpStatus.OK).json(result);
-  },
-);
+  res.status(httpStatus.OK).json(result);
+});
 
 export const webhook = async (req: Request, res: Response) => {
   const sig = req.headers["stripe-signature"];
@@ -32,13 +25,9 @@ export const webhook = async (req: Request, res: Response) => {
   let event: Stripe.Event;
 
   try {
-    event = stripeServices.constructEvent(
-      req.body,
-      sig as string,
-      config.stripe.webhookSecret,
-    );
+    event = stripeServices.constructEvent(req.body, sig as string, config.stripe.webhookSecret);
   } catch (err: any) {
-    console.error("Webhook signature verification failed:", err.message);
+    logger.error("Webhook signature verification failed:", err.message);
     throw new APIError(`Webhook Error: ${err.message}`, httpStatus.BAD_REQUEST);
   }
 
@@ -67,38 +56,31 @@ export const webhook = async (req: Request, res: Response) => {
   res.status(httpStatus.OK).send();
 };
 
-export const createPortalSession = asyncWrapper(
-  async (req: Request, res: Response) => {
-    const user = req.user;
+export const createPortalSession = asyncWrapper(async (req: Request, res: Response) => {
+  const user = req.user;
 
-    if (!user) {
-      throw new APIError("Unauthorized", httpStatus.UNAUTHORIZED);
-    }
+  if (!user) {
+    throw new APIError("Unauthorized", httpStatus.UNAUTHORIZED);
+  }
 
-    const result = await stripeServices.createPortalSession(user.id);
+  const result = await stripeServices.createPortalSession(user.id);
 
-    res.status(httpStatus.OK).json(result);
-  },
-);
+  res.status(httpStatus.OK).json(result);
+});
 
-export const verifySubscriptionStatus = asyncWrapper(
-  async (req: Request, res: Response) => {
-    const user = req.user;
-    const { sessionId } = req.query;
+export const verifySubscriptionStatus = asyncWrapper(async (req: Request, res: Response) => {
+  const user = req.user;
+  const { sessionId } = req.query;
 
-    if (!user) {
-      throw new APIError("Unauthorized", httpStatus.UNAUTHORIZED);
-    }
+  if (!user) {
+    throw new APIError("Unauthorized", httpStatus.UNAUTHORIZED);
+  }
 
-    if (!sessionId || typeof sessionId !== "string") {
-      throw new APIError("Session ID is required", httpStatus.BAD_REQUEST);
-    }
+  if (!sessionId || typeof sessionId !== "string") {
+    throw new APIError("Session ID is required", httpStatus.BAD_REQUEST);
+  }
 
-    const result = await stripeServices.verifySubscriptionStatus(
-      user.id,
-      sessionId,
-    );
+  const result = await stripeServices.verifySubscriptionStatus(user.id, sessionId);
 
-    res.status(httpStatus.OK).json(result);
-  },
-);
+  res.status(httpStatus.OK).json(result);
+});

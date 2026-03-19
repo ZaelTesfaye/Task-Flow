@@ -1,16 +1,12 @@
 import Stripe from "stripe";
-import config from "../config/config.js";
+import config from "../config/env.config.js";
 import { APIError } from "../utils/index.js";
 import { prisma } from "../lib/index.js";
 import httpStatus from "http-status";
 
 const stripe = new Stripe(config.stripe.apiKey);
 
-export const createCheckoutSession = async (
-  userId: string,
-  email: string,
-  plan: string,
-) => {
+export const createCheckoutSession = async (userId: string, email: string, plan: string) => {
   const userRecord = await prisma.user.findUnique({
     where: { id: userId },
   });
@@ -33,9 +29,7 @@ export const createCheckoutSession = async (
   }
 
   const isSubscribed =
-    userRecord.stripePriceId &&
-    userRecord.stripeCurrentPeriodEnd &&
-    userRecord.stripeCurrentPeriodEnd > new Date();
+    userRecord.stripePriceId && userRecord.stripeCurrentPeriodEnd && userRecord.stripeCurrentPeriodEnd > new Date();
 
   if (isSubscribed) {
     const currentPriceId = userRecord.stripePriceId!;
@@ -57,57 +51,40 @@ export const createCheckoutSession = async (
     }
 
     if (newRank === currentRank) {
-      throw new APIError(
-        "You are already subscribed to this plan.",
-        httpStatus.BAD_REQUEST,
-      );
+      throw new APIError("You are already subscribed to this plan.", httpStatus.BAD_REQUEST);
     }
 
     // Upgrade logic
     if (newRank > currentRank) {
       if (!userRecord.stripeSubscriptionId) {
-        throw new APIError(
-          "Subscription ID missing for upgrade.",
-          httpStatus.INTERNAL_SERVER_ERROR,
-        );
+        throw new APIError("Subscription ID missing for upgrade.", httpStatus.INTERNAL_SERVER_ERROR);
       }
 
-      const subscription = await stripe.subscriptions.retrieve(
-        userRecord.stripeSubscriptionId,
-      );
+      const subscription = await stripe.subscriptions.retrieve(userRecord.stripeSubscriptionId);
 
       const subscriptionItem = subscription.items.data?.[0];
       if (!subscriptionItem) {
-        throw new APIError(
-          "Subscription item not found",
-          httpStatus.INTERNAL_SERVER_ERROR,
-        );
+        throw new APIError("Subscription item not found", httpStatus.INTERNAL_SERVER_ERROR);
       }
       const itemId = subscriptionItem.id;
 
-      const updatedSubscription = await stripe.subscriptions.update(
-        userRecord.stripeSubscriptionId,
-        {
-          items: [
-            {
-              id: itemId,
-              price: priceId,
-            },
-          ],
-          proration_behavior: "always_invoice",
-        },
-      );
+      const updatedSubscription = await stripe.subscriptions.update(userRecord.stripeSubscriptionId, {
+        items: [
+          {
+            id: itemId,
+            price: priceId,
+          },
+        ],
+        proration_behavior: "always_invoice",
+      });
 
-      const invoice = await stripe.invoices.retrieve(
-        updatedSubscription.latest_invoice as string,
-      );
+      const invoice = await stripe.invoices.retrieve(updatedSubscription.latest_invoice as string);
 
       if (invoice.status === "paid") {
         let currentPeriodEnd = (updatedSubscription as any).current_period_end;
 
         if (!currentPeriodEnd) {
-          currentPeriodEnd = (updatedSubscription as any).items?.data?.[0]
-            ?.current_period_end;
+          currentPeriodEnd = (updatedSubscription as any).items?.data?.[0]?.current_period_end;
         }
 
         const updateData: any = {
@@ -171,25 +148,17 @@ export const createPortalSession = async (userId: string) => {
   return { url: portalSession.url };
 };
 
-export const constructEvent = (
-  body: string | Buffer,
-  signature: string,
-  secret: string,
-) => {
+export const constructEvent = (body: string | Buffer, signature: string, secret: string) => {
   return stripe.webhooks.constructEvent(body, signature, secret);
 };
 
-export const handleCheckoutSessionCompleted = async (
-  session: Stripe.Checkout.Session,
-) => {
+export const handleCheckoutSessionCompleted = async (session: Stripe.Checkout.Session) => {
   if (!session.subscription) {
     console.error("No subscription in session");
     return;
   }
 
-  const subscription = await stripe.subscriptions.retrieve(
-    session.subscription as string,
-  );
+  const subscription = await stripe.subscriptions.retrieve(session.subscription as string);
 
   if (!session?.metadata?.userId) {
     console.error("No userId in session metadata");
@@ -199,18 +168,14 @@ export const handleCheckoutSessionCompleted = async (
   const priceId = (subscription as any).items?.data?.[0]?.price?.id;
   if (!priceId) {
     console.error("No priceId found in subscription");
-    throw new APIError(
-      "Subscription price id not found",
-      httpStatus.BAD_REQUEST,
-    );
+    throw new APIError("Subscription price id not found", httpStatus.BAD_REQUEST);
   }
 
   console.log("Subscription object:", JSON.stringify(subscription, null, 2));
 
   let currentPeriodEnd = (subscription as any).current_period_end;
   if (!currentPeriodEnd) {
-    currentPeriodEnd = (subscription as any).items?.data?.[0]
-      ?.current_period_end;
+    currentPeriodEnd = (subscription as any).items?.data?.[0]?.current_period_end;
   }
   const updateData: any = {
     stripeSubscriptionId: subscription.id,
@@ -221,9 +186,7 @@ export const handleCheckoutSessionCompleted = async (
     updateData.stripeCurrentPeriodEnd = new Date(currentPeriodEnd * 1000);
   }
 
-  console.log(
-    `Updating user ${session.metadata.userId} with subscription data`,
-  );
+  console.log(`Updating user ${session.metadata.userId} with subscription data`);
   await prisma.user.update({
     where: {
       id: session.metadata.userId,
@@ -239,28 +202,19 @@ export const handleInvoicePaid = async (invoice: Stripe.Invoice) => {
     return;
   }
 
-  const subscription = await stripe.subscriptions.retrieve(
-    (invoice as any).subscription as string,
-  );
+  const subscription = await stripe.subscriptions.retrieve((invoice as any).subscription as string);
 
   const priceId = (subscription as any).items?.data?.[0]?.price?.id;
   if (!priceId) {
     console.error("No priceId found in subscription for invoice");
-    throw new APIError(
-      "Subscription price id not found",
-      httpStatus.BAD_REQUEST,
-    );
+    throw new APIError("Subscription price id not found", httpStatus.BAD_REQUEST);
   }
 
-  console.log(
-    "Subscription object (invoice):",
-    JSON.stringify(subscription, null, 2),
-  );
+  console.log("Subscription object (invoice):", JSON.stringify(subscription, null, 2));
 
   let currentPeriodEnd = (subscription as any).current_period_end;
   if (!currentPeriodEnd) {
-    currentPeriodEnd = (subscription as any).items?.data?.[0]
-      ?.current_period_end;
+    currentPeriodEnd = (subscription as any).items?.data?.[0]?.current_period_end;
   }
   const updateData: any = {
     stripePriceId: priceId,
@@ -279,19 +233,13 @@ export const handleInvoicePaid = async (invoice: Stripe.Invoice) => {
   console.log("Subscription updated successfully");
 };
 
-export const verifySubscriptionStatus = async (
-  userId: string,
-  sessionId: string,
-) => {
+export const verifySubscriptionStatus = async (userId: string, sessionId: string) => {
   // Retrieve the checkout session from Stripe
   const session = await stripe.checkout.sessions.retrieve(sessionId);
 
   // Verify the session belongs to this user
   if (session.metadata?.userId !== userId) {
-    throw new APIError(
-      "Session does not belong to this user",
-      httpStatus.FORBIDDEN,
-    );
+    throw new APIError("Session does not belong to this user", httpStatus.FORBIDDEN);
   }
 
   // Check if payment was successful
@@ -318,17 +266,12 @@ export const verifySubscriptionStatus = async (
   }
 
   // Check if user has active subscription
-  const isPremium =
-    !!user.stripePriceId &&
-    !!user.stripeCurrentPeriodEnd &&
-    user.stripeCurrentPeriodEnd > new Date();
+  const isPremium = !!user.stripePriceId && !!user.stripeCurrentPeriodEnd && user.stripeCurrentPeriodEnd > new Date();
 
   return {
     isPremium,
     status: isPremium ? "active" : "processing",
-    message: isPremium
-      ? "Subscription active"
-      : "Subscription is being activated",
+    message: isPremium ? "Subscription active" : "Subscription is being activated",
     priceId: user.stripePriceId,
     subscriptionId: user.stripeSubscriptionId,
   };

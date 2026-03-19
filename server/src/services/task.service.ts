@@ -1,10 +1,5 @@
-import {
-  memberModel,
-  taskModel,
-  userModel,
-  projectModel,
-} from "../model/index.js";
-import type { RequestTaskUpdateDTO, UpdateTaskDTO } from "../dtos/index.js";
+import { memberModel, taskModel, userModel, projectModel } from "../model/index.js";
+import type { RequestTaskUpdateDTO, UpdateTaskDTO } from "../types/index.js";
 import { sendTaskAssignmentEmail } from "./email.service.js";
 import { createTaskAssignedNotification } from "./notification.service.js";
 
@@ -22,13 +17,7 @@ export const createTask = async (
     throw new Error("Assigned user must be a member of the project");
   }
 
-  const task = await taskModel.createTask(
-    title,
-    description,
-    userId,
-    phaseId,
-    assignedTo,
-  );
+  const task = await taskModel.createTask(title, description, userId, phaseId, assignedTo);
 
   // Get assignee and assigner details
   const [assignee, assigner, project] = await Promise.all([
@@ -47,28 +36,18 @@ export const createTask = async (
       project.title,
       assigner.name,
       projectId,
-    ).catch((err) =>
-      console.error("Failed to send task assignment email:", err),
-    );
+    ).catch((err) => console.error("Failed to send task assignment email:", err));
 
     // Create in-app notification (don't await to avoid blocking)
-    createTaskAssignedNotification(
-      assignedTo,
-      task.id,
-      projectId,
-      title,
-      assigner.name,
-    ).catch((err) => console.error("Failed to create notification:", err));
+    createTaskAssignedNotification(assignedTo, task.id, projectId, title, assigner.name).catch((err) =>
+      console.error("Failed to create notification:", err),
+    );
   }
 
   return task;
 };
 
-export const updateProjectTask = async (
-  taskId: string,
-  updates: UpdateTaskDTO,
-  projectId: string,
-) => {
+export const updateProjectTask = async (taskId: string, updates: UpdateTaskDTO, projectId: string) => {
   const task = await taskModel.findTaskById(taskId);
   if (!task) throw new Error("Task not found");
 
@@ -109,10 +88,7 @@ export const requestTaskUpdate = async (
   return taskModel.createPendingUpdate(taskId, userId, updateData);
 };
 
-export const acceptPendingUpdate = async (
-  pendingUpdateId: string,
-  projectId: string,
-) => {
+export const acceptPendingUpdate = async (pendingUpdateId: string, projectId: string) => {
   const pendingUpdate = await taskModel.findPendingUpdateById(pendingUpdateId);
   if (!pendingUpdate) {
     throw new Error("Pending update not found");
@@ -129,10 +105,7 @@ export const acceptPendingUpdate = async (
   return taskModel.removePendingUpdate(pendingUpdateId);
 };
 
-export const rejectPendingUpdate = async (
-  pendingUpdateId: string,
-  projectId: string,
-) => {
+export const rejectPendingUpdate = async (pendingUpdateId: string, projectId: string) => {
   const pendingUpdate = await taskModel.findPendingUpdateById(pendingUpdateId);
   if (!pendingUpdate) {
     throw new Error("Pending update not found");

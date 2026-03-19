@@ -1,9 +1,5 @@
 import joi from "joi";
-import type {
-  CreateProjectDTO,
-  UpdateProjectDTO,
-  AddMemberDTO,
-} from "../dtos/index.js";
+import type { CreateProjectDTO, UpdateProjectDTO, AddMemberDTO } from "../types/index.js";
 
 export const createProjectSchema = {
   body: joi

@@ -2,25 +2,16 @@ import bcrypt from "bcrypt";
 import { userModel } from "../model/index.js";
 import { APIError } from "../utils/index.js";
 import jwt from "jsonwebtoken";
-import config from "../config/config.js";
+import config from "../config/env.config.js";
 import { redis } from "../lib/index.js";
 import * as emailServices from "./email.service.js";
 
-export const register = async (
-  name: string,
-  email: string,
-  password: string,
-  role: string = "user",
-) => {
+export const register = async (name: string, email: string, password: string, role: string = "user") => {
   email = email.toLowerCase();
+
   //check if email already exists
   const hashedPassword = await bcrypt.hash(password, 10);
-  const userData = await userModel.createUser(
-    name,
-    email,
-    hashedPassword,
-    role,
-  );
+  const userData = await userModel.createUser(name, email, hashedPassword, role);
 
   const tokenData = {
     id: userData.id,
@@ -78,9 +69,7 @@ export const login = async (email: string, password: string) => {
   };
 };
 
-/**
- * Generate and send password reset code
- */
+// Generate and send password reset code
 export const requestPasswordReset = async (email: string) => {
   email = email.toLowerCase();
   const user = await userModel.findByEmail(email);
@@ -102,9 +91,7 @@ export const requestPasswordReset = async (email: string) => {
   return { message: "Password reset code sent to your email" };
 };
 
-/**
- * Verify password reset code
- */
+// Verify password reset code
 export const verifyResetCode = async (email: string, code: string) => {
   email = email.toLowerCase();
   const redisKey = `password_reset:${email}`;
@@ -125,9 +112,7 @@ export const verifyResetCode = async (email: string, code: string) => {
   return { message: "Code verified successfully" };
 };
 
-/**
- * Reset password with verified code
- */
+// Reset password with verified code
 export const resetPassword = async (email: string, newPassword: string) => {
   email = email.toLowerCase();
 
@@ -136,10 +121,7 @@ export const resetPassword = async (email: string, newPassword: string) => {
   const isVerified = await redis.get(verifiedKey);
 
   if (!isVerified) {
-    throw new APIError(
-      "Code not verified or expired. Please request a new code.",
-      400,
-    );
+    throw new APIError("Code not verified or expired. Please request a new code.", 400);
   }
 
   const user = await userModel.findByEmail(email);

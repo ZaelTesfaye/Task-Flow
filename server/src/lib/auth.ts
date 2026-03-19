@@ -4,7 +4,7 @@ import { betterAuth } from "better-auth";
 import { emailOTP } from "better-auth/plugins";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import prisma from "./prisma.js";
-import config from "../config/config.js";
+import config from "../config/env.config.js";
 import { APIError } from "../utils/error.js";
 import httpStatus from "http-status";
 import logger from "./logger.js";
@@ -40,7 +40,7 @@ export const auth = betterAuth({
   },
   trustedOrigins: config.frontEndUrl?.split(",")?.map((o) => o.trim()),
   cookie: {
-    secure: config.env === "production",
+    secure: config.nodeEnv === "production",
   },
   plugins: [
     emailOTP({
@@ -69,10 +69,7 @@ export const auth = betterAuth({
           });
         } catch (error) {
           logger.error("Error sending verification email:", error);
-          throw new APIError(
-            "Failed to send verification email",
-            httpStatus.BAD_GATEWAY,
-          );
+          throw new APIError("Failed to send verification email", httpStatus.BAD_GATEWAY);
         }
       },
     }),

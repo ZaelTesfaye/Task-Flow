@@ -7,24 +7,23 @@ services:
       CONTAINER_NAME: process1
       REDIS_URL: redis://redis:6379
     restart: on-failure
-    user: root
-    entrypoint: ["sh", "-c", "chown -R app:app /app/logs && gosu app npx prisma generate && exec gosu app npm start"]
+    # command: "npx prisma generate && exec npm start"
     depends_on:
+      migrator:
+        condition: service_completed_successfully
       db:
         condition: service_healthy
       redis:
         condition: service_started
-      migrator:
+      seeder:
         condition: service_completed_successfully
-      # seeder:
-      #   condition: service_completed_successfully
       
     volumes:
       - logs_data:/app/logs
     healthcheck:
       test: ["CMD", "curl", "-s", "http://localhost:5000/api/health"]
-      interval: 10s
-      timeout: 5s
+      interval: 60s
+      timeout: 15s
       retries: 3
       start_period: 10s
 
@@ -36,8 +35,7 @@ services:
       CONTAINER_NAME: process2
       REDIS_URL: redis://redis:6379
     restart: on-failure
-    user: root
-    entrypoint: ["sh", "-c", "chown -R app:app /app/logs && gosu app npx prisma generate && exec gosu app npm start"]
+    # command: "npx prisma generate && exec npm start"
     depends_on:
       db:
         condition: service_healthy
@@ -45,40 +43,16 @@ services:
         condition: service_started
       migrator:
         condition: service_completed_successfully
-      # seeder:
-      #   condition: service_completed_successfully
+      seeder:
+        condition: service_completed_successfully
     volumes:
       - logs_data:/app/logs
     healthcheck:
       test: ["CMD", "curl", "-s", "http://localhost:5000/api/health"]
-      interval: 10s
-      timeout: 5s
+      interval: 60s
+      timeout: 15s
       retries: 3
       start_period: 10s
-
-  nginx:
-    image: nginx:stable-alpine3.21
-    ports:
-      - "80:80"
-      - "443:443"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    volumes:
-      - /home/deployment/task-flow/client:/var/www/task-flow-client:ro
-      - /home/deployment/task-flow/admin:/var/www/task-flow-admin:ro
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
-      - /etc/letsencrypt/live/api.desonames.xyz/fullchain.pem:/etc/nginx/certs/api.desonames.xyz/fullchain.pem:ro
-      - /etc/letsencrypt/live/api.desonames.xyz/privkey.pem:/etc/nginx/certs/api.desonames.xyz/privkey.pem:ro
-      - /etc/letsencrypt/live/task-flows.tech/fullchain.pem:/etc/nginx/certs/task-flows.tech/fullchain.pem:ro
-      - /etc/letsencrypt/live/task-flows.tech/privkey.pem:/etc/nginx/certs/task-flows.tech/privkey.pem:ro
-      - /etc/nginx/ssl:/etc/nginx/ssl:ro
-    depends_on:
-      process1:
-        condition: service_healthy
-      process2:
-        condition: service_healthy
-      grafana:
-        condition: service_started
 
   db:
     image: postgres:15.14
@@ -92,9 +66,9 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U task-manager-db -d tasks"]
-      interval: 10s
-      timeout: 5s
+      test: ["CMD", "pg_isready -U task-manager-db -d tasks"]
+      interval: 60s
+      timeout: 30s
       retries: 5
       start_period: 10s
 
@@ -115,19 +89,44 @@ services:
       - ./.env
     command: npm run seed
     depends_on:
-      redis:
-        condition: service_started
       migrator:
         condition: service_completed_successfully
-  
+
+  redis:
+    image: redis:alpine3.22
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  nginx:
+    image: nginx:stable-alpine3.21
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /home/deployment/task-flow/client:/var/www/task-flow-client:ro
+      - /home/deployment/task-flow/admin:/var/www/task-flow-admin:ro
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - /etc/letsencrypt/live/api.desonames.xyz/fullchain.pem:/etc/nginx/certs/api.desonames.xyz/fullchain.pem:ro
+      - /etc/letsencrypt/live/api.desonames.xyz/privkey.pem:/etc/nginx/certs/api.desonames.xyz/privkey.pem:ro
+      - /etc/letsencrypt/live/task-flows.tech/fullchain.pem:/etc/nginx/certs/task-flows.tech/fullchain.pem:ro
+      - /etc/letsencrypt/live/task-flows.tech/privkey.pem:/etc/nginx/certs/task-flows.tech/privkey.pem:ro
+      - /etc/nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      process1:
+        condition: service_healthy
+      process2:
+        condition: service_healthy
+
   loki:
     image: grafana/loki:latest
     container_name: loki
-    # We don't usually need to expose 3100 to the world, 
-    # but it's okay for testing.
     volumes:
-      - ./infra/loki-config.yaml:/etc/loki/local-config.yaml
-    command: -config.file=/etc/loki/local-config.yaml
+      - ./monitor/loki-config.yml:/etc/loki/local-config.yml
+    command: -config.file=/etc/loki/local-config.yml
 
   prometheus:
     image: prom/prometheus:latest
@@ -135,13 +134,12 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      - ./infra/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./monitor/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
-      - '--web.console.libraries=/etc/prometheus/console_libraries'
-      - '--web.console.templates=/etc/prometheus/consoles'
-      - '--storage.tsdb.retention.time=200h'
+      - '--storage.tsdb.retention.time=72h'
       - '--web.enable-lifecycle'
     depends_on:
       - process1
@@ -151,8 +149,7 @@ services:
     image: grafana/promtail:latest
     container_name: promtail
     volumes:
-      - ./infra/promtail-config.yaml:/etc/promtail/config.yml
-      # THESE TWO LINES ARE THE FIX:
+      - ./monitor/promtail-config.yml:/etc/promtail/config.yml
       - /var/run/docker.sock:/var/run/docker.sock
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
     command: -config.file=/etc/promtail/config.yml
@@ -165,20 +162,12 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin # Change this later!
+      - GF_SECURITY_ADMIN_PASSWORD=admin123
     depends_on:
       - loki
 
-  redis:
-    image: redis:alpine3.22
-    container_name: redis
-    restart: always
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-      
 volumes:
   postgres_data:
   logs_data:
   redis_data:
+  prometheus_data:
