@@ -22,4 +22,13 @@ async function seedAdmin() {
   logger.info("Super-admin user seeded");
 }
 
-seedAdmin();
+seedAdmin()
+  .then(async () => {
+    await prisma.$disconnect();
+    process.exit(0);
+  })
+  .catch(async (error) => {
+    logger.error("Seed script failed", error);
+    await prisma.$disconnect();
+    process.exit(1);
+  });
