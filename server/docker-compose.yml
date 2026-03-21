@@ -1,13 +1,14 @@
 services:
-  process1:
+  app:
     image: ${DOCKER_USERNAME}/${IMAGE_NAME}:latest
     env_file:
       - ./.env
     environment:
-      CONTAINER_NAME: process1
       DATABASE_URL: postgresql://task-manager-db:${DB_PASSWORD}@db:5432/tasks
       REDIS_URL: redis://redis:6379
     restart: on-failure
+    deploy:
+      replicas: 2
     depends_on:
       migrator:
         condition: service_completed_successfully
@@ -18,33 +19,6 @@ services:
       seeder:
         condition: service_completed_successfully
       
-    volumes:
-      - logs_data:/app/logs
-    healthcheck:
-      test: ["CMD", "curl", "-s", "http://localhost:5000/api/health"]
-      interval: 60s
-      timeout: 15s
-      retries: 3
-      start_period: 10s
-
-  process2:
-    image: ${DOCKER_USERNAME}/${IMAGE_NAME}:latest
-    env_file:
-      - ./.env
-    environment:
-      CONTAINER_NAME: process2
-      DATABASE_URL: postgresql://task-manager-db:${DB_PASSWORD}@db:5432/tasks
-      REDIS_URL: redis://redis:6379
-    restart: on-failure
-    depends_on:
-      db:
-        condition: service_healthy
-      redis:
-        condition: service_started
-      migrator:
-        condition: service_completed_successfully
-      seeder:
-        condition: service_completed_successfully
     volumes:
       - logs_data:/app/logs
     healthcheck:
@@ -101,8 +75,6 @@ services:
     container_name: redis
     command: redis-server --loglevel warning
     restart: always
-    ports:
-      - "6379:6379"
     volumes:
       - redis_data:/data
 
@@ -123,9 +95,7 @@ services:
       - /etc/letsencrypt/live/task-flows.tech/privkey.pem:/etc/nginx/certs/task-flows.tech/privkey.pem:ro
       - /etc/nginx/ssl:/etc/nginx/ssl:ro
     depends_on:
-      process1:
-        condition: service_healthy
-      process2:
+      app:
         condition: service_healthy
 
   loki:
@@ -135,16 +105,12 @@ services:
       - ./monitor/loki-config.yml:/etc/loki/local-config.yml
     command: -config.file=/etc/loki/local-config.yml
     depends_on:
-      process1:
-        condition: service_healthy
-      process2:
+      app:
         condition: service_healthy
 
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
-    ports:
-      - "9090:9090"
     volumes:
       - ./monitor/prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus
@@ -155,9 +121,7 @@ services:
       - '--web.enable-lifecycle'
       - '--log.level=warn'
     depends_on:
-      process1:
-          condition: service_healthy      
-      process2:
+      app:
           condition: service_healthy      
 
   promtail:
@@ -171,25 +135,19 @@ services:
     depends_on:
       loki:
         condition: service_started
-      process1:
-        condition: service_healthy
-      process2:
+      app:
         condition: service_healthy
 
   grafana:
     image: grafana/grafana:latest
     container_name: grafana
-    ports:
-      - "3000:3000"
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin123
       - GF_LOG_LEVEL=warn
     depends_on:
       loki:
         condition: service_started
-      process1:
-        condition: service_healthy
-      process2: 
+      app:
         condition: service_healthy
 
 volumes:
