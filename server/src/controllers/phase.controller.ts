@@ -77,12 +77,23 @@ export const getPhases: RequestHandler = asyncWrapper(async (req: Request<{ proj
     });
   }
 
-  const phases = await phaseServices.getPhases(projectId);
-  const project = await projectServices.getProjectById(projectId);
+  // Fetch project with phases in a SINGLE query instead of two separate queries
+  const projectWithPhases = await phaseServices.getProjectWithPhases(projectId);
+
+  if (!projectWithPhases) {
+    return res.status(httpStatus.NOT_FOUND).json({
+      message: "Project not found",
+    });
+  }
 
   const result = {
-    project,
-    phases,
+    project: {
+      id: projectWithPhases.id,
+      title: projectWithPhases.title,
+      description: projectWithPhases.description,
+      owner: projectWithPhases.owner,
+    },
+    phases: projectWithPhases.phases,
   };
 
   await redis.set(`project:${projectId}:phases`, JSON.stringify(result), "EX", 60);

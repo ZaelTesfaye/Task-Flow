@@ -4,7 +4,13 @@ import { Pool } from "pg";
 
 const connectionString = process.env.DATABASE_URL;
 
-const pool = new Pool({ connectionString });
+const pool = new Pool({
+  connectionString,
+  min: 5,
+  max: 50, // Local dev: 50, Production: use PgBouncer instead
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 5000,
+});
 const adapter = new PrismaPg(pool);
 
 const prisma = new PrismaClient({ adapter });
