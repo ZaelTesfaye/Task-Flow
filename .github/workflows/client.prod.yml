@@ -39,6 +39,7 @@ jobs:
         working-directory: ./client
         run: pnpm build
         env:
+          NEXT_PUBLIC_BUILD_OUTPUT: export
           NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
           NEXT_PUBLIC_API_BASE_URL: ${{ secrets.NEXT_PUBLIC_API_BASE_URL }}
           NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }}
@@ -48,6 +49,7 @@ jobs:
         with:
           name: client-build-files
           path: client/out/
+          if-no-files-found: error
           retention-days: 1
 
   deploy:
