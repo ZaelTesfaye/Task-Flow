@@ -1,6 +1,6 @@
 import "winston-daily-rotate-file";
 import winston from "winston";
-import { env } from "../config/index.js";
+import env from "../config/env.config.js";
 
 const { createLogger, format, transports } = winston;
 const { combine, timestamp, printf, colorize, errors, json } = format;
