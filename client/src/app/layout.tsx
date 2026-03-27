@@ -7,6 +7,7 @@ import { QueryProvider } from "@/components";
 import { Toaster } from "react-hot-toast";
 import { useThemeStore } from "@/stores";
 import { useEffect } from "react";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -33,6 +34,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             />
           </AuthProvider>
         </QueryProvider>
+        <GoogleAnalytics gaId="G-20DN8R5L1E" />
       </body>
     </html>
   );
