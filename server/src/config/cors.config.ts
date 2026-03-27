@@ -1,4 +1,4 @@
-import { env } from "./index.js";
+import env from "./env.config.js";
 
 const allowedOrigins = env.frontEndUrl?.split(",")?.map((o: string) => o.trim());
 

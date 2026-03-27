@@ -1,7 +1,7 @@
 import "dotenv/config";
 
 import { betterAuth } from "better-auth";
-import { emailOTP } from "better-auth/plugins";
+import { admin, emailOTP } from "better-auth/plugins";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import prisma from "./prisma.js";
 import config from "../config/env.config.js";
@@ -43,6 +43,9 @@ export const auth = betterAuth({
     secure: config.nodeEnv === "production",
   },
   plugins: [
+    admin({
+      adminRoles: ["admin", "super-admin"], // match your studio config
+    }),
     emailOTP({
       overrideDefaultEmailVerification: true,
       expiresIn: 600,
