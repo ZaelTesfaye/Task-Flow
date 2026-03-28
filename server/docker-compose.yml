@@ -4,29 +4,26 @@ services:
     env_file:
       - ./.env
     environment:
-      DATABASE_URL: postgresql://task-manager-db:${DB_PASSWORD}@db:5432/tasks
+      DATABASE_URL: postgresql://task-manager-db:${DB_PASSWORD}@pgbouncer:6432/tasks?pgbouncer=true
       REDIS_URL: redis://redis:6379
-    restart: on-failure
+    restart: unless-stopped 
     deploy:
       replicas: 2
     depends_on:
       migrator:
         condition: service_completed_successfully
-      db:
-        condition: service_healthy
+      pgbouncer:
+        condition: service_started
       redis:
         condition: service_started
       seeder:
         condition: service_completed_successfully
-      
-    volumes:
-      - logs_data:/app/logs
     healthcheck:
       test: ["CMD", "curl", "-s", "http://localhost:5000/api/health"]
-      interval: 60s
-      timeout: 15s
-      retries: 3
-      start_period: 10s
+      interval: 30s        # default
+      timeout: 5s        
+      retries: 3           # default
+      start_period: 10s    
 
   db:
     image: postgres:15.14
@@ -39,23 +36,42 @@ services:
       
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped  
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U task-manager-db -d tasks"]
-      interval: 60s
-      timeout: 30s
-      retries: 5
-      start_period: 10s
+      interval: 30s        # Default
+      timeout: 10s         
+      retries: 3           # Default
+      start_period: 30s   
+
+  pgbouncer:
+    image: pgbouncer:1.23.1 
+    environment:
+      PGBOUNCER_DATABASES_HOST: db
+      PGBOUNCER_DATABASES_PORT: "5432"
+      PGBOUNCER_DATABASES_USER: task-manager-db
+      PGBOUNCER_DATABASES_PASSWORD: ${DB_PASSWORD}
+      PGBOUNCER_DATABASES_DBNAME: tasks
+      PGBOUNCER_POOL_MODE: transaction
+      PGBOUNCER_MAX_CLIENT_CONN: "1000"
+      PGBOUNCER_DEFAULT_POOL_SIZE: "20"
+      PGBOUNCER_MIN_POOL_SIZE: "5"
+
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped 
 
   migrator:
     image: ${DOCKER_USERNAME}/${IMAGE_NAME}:latest
     env_file:
       - ./.env
     environment:
-      DATABASE_URL: postgresql://task-manager-db:${DB_PASSWORD}@db:5432/tasks
+      DATABASE_URL: postgresql://task-manager-db:${DB_PASSWORD}@pgbouncer:6432/tasks?pgbouncer=true
     command: npx prisma migrate deploy
     depends_on:
-      db:
-        condition: service_healthy
+      pgbouncer:
+        condition: service_started
     volumes:
       - ./prisma:/app/prisma:ro
   
@@ -64,7 +80,7 @@ services:
     env_file:
       - ./.env
     environment:
-      DATABASE_URL: postgresql://task-manager-db:${DB_PASSWORD}@db:5432/tasks
+      DATABASE_URL: postgresql://task-manager-db:${DB_PASSWORD}@pgbouncer:6432/tasks?pgbouncer=true
     command: npm run seed
     depends_on:
       migrator:
@@ -74,7 +90,7 @@ services:
     image: redis:alpine3.22
     container_name: redis
     command: redis-server --loglevel warning
-    restart: always
+    restart: unless-stopped 
     volumes:
       - redis_data:/data
 
@@ -82,11 +98,13 @@ services:
     image: nginx:stable-alpine3.21
     environment:
     - NGINX_ENTRYPOINT_QUIET_LOGS=1
+    restart: unless-stopped  
     ports:
       - "80:80"
       - "443:443"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - /var/www/certbot:/var/www/certbot:ro
       - /home/deployment/task-flow/client:/var/www/task-flow-client:ro
       - /home/deployment/task-flow/admin:/var/www/task-flow-admin:ro
       - /etc/letsencrypt/live/api.desonames.xyz/fullchain.pem:/etc/nginx/certs/api.desonames.xyz/fullchain.pem:ro
@@ -99,34 +117,33 @@ services:
         condition: service_healthy
 
   loki:
-    image: grafana/loki:latest
+    image: grafana/loki:3.0.0 
     container_name: loki
+    restart: unless-stopped 
     volumes:
       - ./monitor/loki-config.yml:/etc/loki/local-config.yml
+      - logs_data:/loki
     command: -config.file=/etc/loki/local-config.yml
-    depends_on:
-      app:
-        condition: service_healthy
 
   prometheus:
-    image: prom/prometheus:latest
+    image: prom/prometheus:v2.50.1 
     container_name: prometheus
+    restart: unless-stopped  
     volumes:
       - ./monitor/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./monitor/rules.yml:/etc/prometheus/rules/rules.yml:ro
       - prometheus_data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
       - '--storage.tsdb.retention.time=72h'
       - '--web.enable-lifecycle'
-      - '--log.level=warn'
-    depends_on:
-      app:
-          condition: service_healthy      
+      - '--log.level=warn' 
 
   promtail:
-    image: grafana/promtail:latest
+    image: grafana/promtail:2.9.5 
     container_name: promtail
+    restart: unless-stopped 
     volumes:
       - ./monitor/promtail-config.yml:/etc/promtail/config.yml
       - /var/run/docker.sock:/var/run/docker.sock
@@ -135,20 +152,28 @@ services:
     depends_on:
       loki:
         condition: service_started
-      app:
-        condition: service_healthy
 
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/grafana:10.2.3
     container_name: grafana
+    restart: unless-stopped 
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin123
+      - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD}
       - GF_LOG_LEVEL=warn
     depends_on:
       loki:
         condition: service_started
-      app:
-        condition: service_healthy
+      prometheus:
+        condition: service_started 
+
+  autoheal:
+    image: willfarrell/autoheal:1.2.0
+    container_name: autoheal
+    restart: unless-stopped   
+    environment:
+      - AUTOHEAL_CONTAINER_LABEL=all
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock  # to monitor and restart containers
 
 volumes:
   postgres_data:
