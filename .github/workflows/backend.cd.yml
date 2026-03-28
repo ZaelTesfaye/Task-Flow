@@ -1,4 +1,4 @@
-name: Deploy backend with Docker Compose
+name: Backend CD
 
 on:
   push:
@@ -6,18 +6,25 @@ on:
       - main
     paths: 
       - 'server/**'
-      - '.github/workflows/backend.prod.yml'
+      - '.github/workflows/backend.cd.yml'
   workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
     permissions:
       contents: read
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -45,12 +52,17 @@ jobs:
           cache-to: type=gha,mode=max
 
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
     needs: build
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Prepare config files
         run: |
@@ -79,7 +91,7 @@ jobs:
           target: "~/task-flow/server"
           strip_components: 1
 
-      - name: Inject SSL Certificates
+      - name: Inject Production .env File
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -87,33 +99,24 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           request_pty: true
           script: |
-            sudo mkdir -p /etc/nginx/ssl
-            echo "${{ secrets.NGINX_KEY }}" | sudo tee /etc/nginx/ssl/nginx-selfsigned.key > /dev/null
-            echo "${{ secrets.NGINX_CERTIFICATE }}" | sudo tee /etc/nginx/ssl/nginx-selfsigned.crt > /dev/null
-            sudo chmod 600 /etc/nginx/ssl/nginx-selfsigned.key
-            sudo chmod 644 /etc/nginx/ssl/nginx-selfsigned.crt
-
-      - name: Inject Production .env File
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cd ~/task-flow/server
-            cat > .env <<'EOF'
-            ${{ secrets.PROD_VARIABLES }}
+            cat > ~/task-flow/server/.env << 'EOF'
+            ${{ secrets.SERVER_ENV_VARS }}
             EOF
-            chmod 600 .env
-
-      - name: Deploy to EC2 via SSH
+      - name: Restart Docker Services
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          request_pty: true
           script: |
             cd ~/task-flow/server
             docker compose pull
-            docker compose up -d --remove-orphans --force-recreate nginx db
-            docker image prune -f
+            docker compose up -d
+
+      - name: Verify Backend Deployment Health
+        env:
+          HEALTHCHECK_URL: ${{ secrets.BACKEND_HEALTHCHECK_URL }}
+        run: |
+          curl -fsSL --retry 5 --retry-delay 3 --retry-connrefused "$HEALTHCHECK_URL" > /dev/null
+          echo "Backend health check passed."

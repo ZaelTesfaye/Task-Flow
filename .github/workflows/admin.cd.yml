@@ -1,4 +1,4 @@
-name: Deploy Admin Frontend to VPS
+name: Admin CD
 
 on:
   push:
@@ -6,23 +6,30 @@ on:
       - main
     paths:
       - 'admin/**'
-      - '.github/workflows/admin.prod.yml'
+      - '.github/workflows/admin.cd.yml'
   workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
     permissions:
       contents: read
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: latest
+          version: 10
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -37,7 +44,7 @@ jobs:
 
       - name: Build App
         working-directory: ./admin
-        run: pnpm build
+        run: pnpm run build
         env:
           VITE_API_URL: ${{secrets.VITE_API_URL}}
 
@@ -46,10 +53,14 @@ jobs:
         with:
           name: admin-build-files
           path: admin/dist/
+          if-no-files-found: error
           retention-days: 1
 
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
     needs: build
 
     steps:
@@ -77,3 +88,10 @@ jobs:
           source: "admin/dist/"
           target: "~/task-flow/admin"
           strip_components: 2
+
+      - name: Verify Admin Deployment Health
+        env:
+          HEALTHCHECK_URL: ${{ secrets.ADMIN_HEALTHCHECK_URL }}
+        run: |
+          curl -fsSL --retry 5 --retry-delay 3 --retry-connrefused "$HEALTHCHECK_URL" > /dev/null
+          echo "Admin health check passed."
