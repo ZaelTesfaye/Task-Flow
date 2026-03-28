@@ -1,6 +1,7 @@
 import "dotenv/config";
 
 import { betterAuth } from "better-auth";
+import { redisStorage } from "@better-auth/redis-storage";
 import { admin, emailOTP } from "better-auth/plugins";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import prisma from "./prisma.js";
@@ -9,6 +10,7 @@ import { APIError } from "../utils/error.js";
 import httpStatus from "http-status";
 import logger from "./logger.js";
 import resend from "./email.js";
+import redis from "./redis.js";
 
 export const auth = betterAuth({
   baseURL: config.betterAuthUrl,
@@ -22,6 +24,14 @@ export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
+  secondaryStorage: redisStorage({
+    client: redis,
+    keyPrefix: "better-auth:",
+  }),
+  session: {
+    // With secondaryStorage enabled, sessions are stored/read from Redis by default.
+    storeSessionInDatabase: false,
+  },
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
@@ -77,4 +87,4 @@ export const auth = betterAuth({
       },
     }),
   ],
-});
+}) as any;
