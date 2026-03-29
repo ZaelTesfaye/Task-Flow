@@ -11,7 +11,7 @@ WORKDIR /app
 COPY package*.json pnpm-lock.yaml ./
 ENV HUSKY=0
 RUN --mount=type=cache,target=/home/app/.local/share/pnpm/store \
-    pnpm install --frozen-lockfile --shamefully-hoist
+    pnpm install --frozen-lockfile
 
 COPY . .
 RUN npx prisma generate
@@ -36,7 +36,7 @@ RUN mkdir -p /app/logs
 COPY package*.json pnpm-lock.yaml ./
 ENV HUSKY=0
 RUN --mount=type=cache,target=/home/app/.local/share/pnpm/store \
-    pnpm install --prod --frozen-lockfile --shamefully-hoist
+    pnpm install --prod --frozen-lockfile
 
 # Copy compiled code & dependencies
 COPY --from=build /app/dist ./dist
