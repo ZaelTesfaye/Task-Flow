@@ -45,7 +45,7 @@ COPY --from=build /app/prisma.config.ts ./prisma.config.ts
 COPY --from=build /app/public ./public
 COPY --from=build /app/views ./views
 
-RUN npx prisma generate
+RUN pnpm dlx prisma generate
 EXPOSE 5000
 
 CMD ["npm", "start"]
