@@ -14,8 +14,6 @@ clients:
       max_period: 5m
       max_retries: 10
 
-    queue_capacity: 1000 # How many log batches to hold in memory while waiting to send to Loki, prevents Promtail from dropping logs immediately.
-
 scrape_configs:
   - job_name: docker_containers
     docker_sd_configs:

@@ -47,11 +47,11 @@ services:
   pgbouncer:
     image: edoburu/pgbouncer:v1.25.1-p0 
     environment:
-      PGBOUNCER_DATABASES_HOST: db
-      PGBOUNCER_DATABASES_PORT: "5432"
-      PGBOUNCER_DATABASES_USER: task-manager-db
-      PGBOUNCER_DATABASES_PASSWORD: ${DB_PASSWORD}
-      PGBOUNCER_DATABASES_DBNAME: tasks
+      DB_HOST: db
+      DB_PORT: "5432"
+      DB_USER: task-manager-db
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: tasks
       PGBOUNCER_POOL_MODE: transaction
       PGBOUNCER_MAX_CLIENT_CONN: "1000"
       PGBOUNCER_DEFAULT_POOL_SIZE: "20"
@@ -122,6 +122,7 @@ services:
     restart: unless-stopped 
     volumes:
       - ./monitor/loki-config.yml:/etc/loki/local-config.yml
+      - ./monitor/loki/rules:/loki/rules
       - logs_data:/loki
     command: -config.file=/etc/loki/local-config.yml
 
