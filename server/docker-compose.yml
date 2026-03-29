@@ -52,6 +52,7 @@ services:
       DB_USER: task-manager-db
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: tasks
+      AUTH_TYPE: scram-sha-256
       POOL_MODE: transaction
       MAX_CLIENT_CONN: "1000"
       DEFAULT_POOL_SIZE: "20"
@@ -122,6 +123,7 @@ services:
     restart: unless-stopped 
     volumes:
       - ./monitor/loki-config.yml:/etc/loki/local-config.yml
+      - ./loki/rules:/loki/rules
       - logs_data:/loki
     command: -config.file=/etc/loki/local-config.yml
 
