@@ -90,8 +90,6 @@ jobs:
           strip_components: 2
 
       - name: Verify Admin Deployment Health
-        env:
-          HEALTHCHECK_URL: ${{ secrets.ADMIN_HEALTHCHECK_URL }}
         run: |
-          curl -fsSL --retry 5 --retry-delay 3 --retry-connrefused "$HEALTHCHECK_URL" > /dev/null
+          curl -fsSL --retry 5 --retry-delay 3 --retry-connrefused "${{ secrets.ADMIN_HEALTHCHECK_URL }}" > /dev/null
           echo "Admin health check passed."
