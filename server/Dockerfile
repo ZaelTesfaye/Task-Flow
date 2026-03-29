@@ -28,6 +28,8 @@ FROM node:20-slim AS runtime
 RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 RUN addgroup --system app && adduser --system --ingroup app app
 RUN npm install -g pnpm
+RUN mkdir -p /home/app && chown app:app /home/app
+ENV HOME=/home/app
 
 USER app
 WORKDIR /app
@@ -45,7 +47,7 @@ COPY --from=build /app/prisma.config.ts ./prisma.config.ts
 COPY --from=build /app/public ./public
 COPY --from=build /app/views ./views
 
-RUN pnpm dlx prisma generate
+RUN npx -y prisma@7.0.0 generate
 EXPOSE 5000
 
 CMD ["npm", "start"]
