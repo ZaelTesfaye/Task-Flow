@@ -48,15 +48,6 @@ ingester:
 
   max_chunk_age: 2h # Force-flush chunk even when receiving logs. Prevents from staying in memory and ensures logs are safely on disk
 
-ruler:
-  storage:
-    type: local
-    local:
-      directory: /loki/rules
-  rule_path: /tmp/loki/rules-temp
-  alertmanager_url: http://localhost:9093
-  enable_api: true
-
 compactor:
   working_directory: /loki/compactor # downloads index files here, merges them, then puts them back.
   compaction_interval: 10m # How often
