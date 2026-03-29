@@ -100,7 +100,7 @@ jobs:
           request_pty: true
           script: |
             cat > ~/task-flow/server/.env << 'EOF'
-            ${{ secrets.SERVER_ENV_VARS }}
+            ${{ secrets.PROD_VARIABLES }}
             EOF
       - name: Restart Docker Services
         uses: appleboy/ssh-action@v1.0.3
@@ -115,8 +115,6 @@ jobs:
             docker compose up -d
 
       - name: Verify Backend Deployment Health
-        env:
-          HEALTHCHECK_URL: ${{ secrets.BACKEND_HEALTHCHECK_URL }}
         run: |
-          curl -fsSL --retry 5 --retry-delay 3 --retry-connrefused "$HEALTHCHECK_URL" > /dev/null
+          curl -fsSL --retry 5 --retry-delay 5 --retry-connrefused "${{ secrets.BACKEND_HEALTHCHECK_URL }}" > /dev/null
           echo "Backend health check passed."

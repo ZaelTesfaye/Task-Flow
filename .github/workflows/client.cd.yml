@@ -96,5 +96,5 @@ jobs:
         env:
           HEALTHCHECK_URL: ${{ secrets.CLIENT_HEALTHCHECK_URL }}
         run: |
-          curl -fsSL --retry 5 --retry-delay 3 --retry-connrefused "$HEALTHCHECK_URL" > /dev/null
+          curl -fsSL --retry 5 --retry-delay 5 --retry-connrefused "$HEALTHCHECK_URL" > /dev/null
           echo "Client health check passed."
