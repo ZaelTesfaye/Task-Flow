@@ -69,7 +69,7 @@ services:
       - ./.env
     environment:
       DATABASE_URL: postgresql://task-manager-db:${DB_PASSWORD}@pgbouncer:5432/tasks?pgbouncer=true
-    command: npx prisma migrate deploy
+    command: npx --yes prisma migrate deploy
     depends_on:
       pgbouncer:
         condition: service_started
