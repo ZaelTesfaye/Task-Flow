@@ -1,5 +1,5 @@
 import httpStatus from "http-status";
-import { Prisma } from "@prisma/client";
+import { Prisma } from "../../generated/prisma/index.js";
 import type { Request, Response } from "express";
 
 import { logger } from "../lib/index.js";

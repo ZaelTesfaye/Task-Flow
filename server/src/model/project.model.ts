@@ -1,11 +1,7 @@
 import prisma from "../lib/prisma.js";
-import { Prisma } from "@prisma/client";
+import { Prisma } from "../../generated/prisma/index.js";
 
-export const createProject = (
-  title: string,
-  description: string,
-  userId: string,
-) => {
+export const createProject = (title: string, description: string, userId: string) => {
   return prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     const project = await tx.project.create({
       data: {
@@ -27,10 +23,7 @@ export const createProject = (
   });
 };
 
-export const updateProject = (
-  projectId: string,
-  updates: { title?: string; description?: string },
-) => {
+export const updateProject = (projectId: string, updates: { title?: string; description?: string }) => {
   return prisma.project.update({
     where: {
       id: projectId,
@@ -85,10 +78,7 @@ export const getUserProjects = (userId: string) => {
   });
 };
 
-export const getPendingInvitationByEmail = (
-  projectId: string,
-  email: string,
-) => {
+export const getPendingInvitationByEmail = (projectId: string, email: string) => {
   return prisma.projectInvitation.findFirst({
     where: {
       projectId,
