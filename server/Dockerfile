@@ -14,9 +14,9 @@ RUN --mount=type=cache,target=/home/app/.local/share/pnpm/store \
     pnpm install --frozen-lockfile
 
 COPY . .
-RUN npx prisma generate
+RUN pnpm prisma generate
 
-RUN npm run build
+RUN pnpm run build
 
 
 
@@ -36,7 +36,7 @@ RUN mkdir -p /app/logs
 COPY package*.json pnpm-lock.yaml ./
 ENV HUSKY=0
 RUN --mount=type=cache,target=/home/app/.local/share/pnpm/store \
-    pnpm install --prod --frozen-lockfile 
+    pnpm install --prod --frozen-lockfile
 
 # Copy compiled code & dependencies
 COPY --from=build /app/dist ./dist
@@ -45,7 +45,9 @@ COPY --from=build /app/prisma.config.ts ./prisma.config.ts
 COPY --from=build /app/public ./public
 COPY --from=build /app/views ./views
 
-RUN npx prisma generate
+# Copy generated Prisma client from build stage
+COPY --from=build /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=build /app/node_modules/@prisma/client ./node_modules/@prisma/client
 EXPOSE 5000
 
 CMD ["npm", "start"]
