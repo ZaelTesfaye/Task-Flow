@@ -7,7 +7,7 @@ const connectionString = process.env.DATABASE_URL;
 const pool = new Pool({
   connectionString,
   min: 5,
-  max: 50, // Local dev: 50, Production: use PgBouncer instead
+  max: 50,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 5000,
 });

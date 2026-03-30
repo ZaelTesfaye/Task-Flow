@@ -48,6 +48,14 @@ export const auth = betterAuth({
       },
     },
   },
+  roles: {
+    admin: {
+      name: "admin",
+    },
+    "super-admin": {
+      name: "super-admin",
+    },
+  },
   trustedOrigins: config.frontEndUrl?.split(",")?.map((o) => o.trim()),
   cookie: {
     secure: config.nodeEnv === "production",
