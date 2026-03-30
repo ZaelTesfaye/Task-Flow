@@ -69,7 +69,6 @@ services:
       - ./.env
     environment:
       DATABASE_URL: postgresql://task-manager-db:${DB_PASSWORD}@pgbouncer:5432/tasks?pgbouncer=true
-      HOME: /tmp
     command: sh -c "npm install prisma && npx prisma migrate deploy"
     depends_on:
       pgbouncer:
@@ -124,7 +123,6 @@ services:
     restart: unless-stopped 
     volumes:
       - ./monitor/loki-config.yml:/etc/loki/local-config.yml
-      - ./loki/rules:/loki/rules
       - logs_data:/loki
     command: -config.file=/etc/loki/local-config.yml
 
