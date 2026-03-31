@@ -1,16 +1,15 @@
 # Build Stage
 FROM node:20-slim AS build
 
-RUN addgroup --system app && adduser --system --ingroup app app
 RUN npm install -g pnpm
 
-USER app
+USER node
 
 WORKDIR /app
 
 COPY package*.json pnpm-lock.yaml ./
 ENV HUSKY=0
-RUN --mount=type=cache,target=/home/app/.local/share/pnpm/store \
+RUN --mount=type=cache,target=/home/node/.local/share/pnpm/store \
     pnpm install --frozen-lockfile
 
 COPY . .
@@ -20,22 +19,19 @@ RUN pnpm run build
 
 
 
-
-
 # Runtime Stage
 FROM node:20-slim AS runtime
 
 RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
-RUN addgroup --system app && adduser --system --ingroup app app
 RUN npm install -g pnpm
 
-USER app
+USER node
 WORKDIR /app
 RUN mkdir -p /app/logs
 
 COPY package*.json pnpm-lock.yaml ./
 ENV HUSKY=0
-RUN --mount=type=cache,target=/home/app/.local/share/pnpm/store \
+RUN --mount=type=cache,target=/home/node/.local/share/pnpm/store \
     pnpm install --prod --frozen-lockfile
 
 # Copy compiled code & dependencies
