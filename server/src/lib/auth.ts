@@ -3,6 +3,7 @@ import "dotenv/config";
 import { betterAuth } from "better-auth";
 import { redisStorage } from "@better-auth/redis-storage";
 import { admin, emailOTP } from "better-auth/plugins";
+import { defaultAc, adminAc } from "better-auth/plugins/admin/access";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import prisma from "./prisma.js";
 import config from "../config/env.config.js";
@@ -11,6 +12,12 @@ import httpStatus from "http-status";
 import logger from "./logger.js";
 import resend from "./email.js";
 import redis from "./redis.js";
+
+// Create super-admin role with full permissions (same as admin)
+const superAdminRole = defaultAc.newRole({
+  user: ["create", "list", "set-role", "ban", "impersonate", "impersonate-admins", "delete", "set-password", "get", "update"],
+  session: ["list", "revoke", "delete"],
+});
 
 export const auth = betterAuth({
   baseURL: config.betterAuthUrl,
@@ -48,21 +55,17 @@ export const auth = betterAuth({
       },
     },
   },
-  roles: {
-    admin: {
-      name: "admin",
-    },
-    "super-admin": {
-      name: "super-admin",
-    },
-  },
   trustedOrigins: config.frontEndUrl?.split(",")?.map((o) => o.trim()),
   cookie: {
     secure: config.nodeEnv === "production",
   },
   plugins: [
     admin({
-      adminRoles: ["admin", "super-admin"], // match your studio config
+      roles: {
+        admin: adminAc,
+        "super-admin": superAdminRole,
+      },
+      adminRoles: ["admin", "super-admin"],
     }),
     emailOTP({
       overrideDefaultEmailVerification: true,
