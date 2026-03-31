@@ -15,7 +15,18 @@ import redis from "./redis.js";
 
 // Create super-admin role with full permissions (same as admin)
 const superAdminRole = defaultAc.newRole({
-  user: ["create", "list", "set-role", "ban", "impersonate", "impersonate-admins", "delete", "set-password", "get", "update"],
+  user: [
+    "create",
+    "list",
+    "set-role",
+    "ban",
+    "impersonate",
+    "impersonate-admins",
+    "delete",
+    "set-password",
+    "get",
+    "update",
+  ],
   session: ["list", "revoke", "delete"],
 });
 
@@ -26,6 +37,13 @@ export const auth = betterAuth({
       clientId: config.google.clientId,
       clientSecret: config.google.clientSecret,
       prompt: "select_account",
+    },
+  },
+  account: {
+    // accoount linking with email login
+    accountLinking: {
+      enabled: true,
+      trustedProviders: ["google"],
     },
   },
   database: prismaAdapter(prisma, {
