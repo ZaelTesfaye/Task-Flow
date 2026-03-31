@@ -36,11 +36,9 @@ export const auth = betterAuth({
     google: {
       clientId: config.google.clientId,
       clientSecret: config.google.clientSecret,
-      prompt: "select_account",
     },
   },
   account: {
-    // accoount linking with email login
     accountLinking: {
       enabled: true,
       trustedProviders: ["google"],
@@ -49,6 +47,19 @@ export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
+  databaseHooks: {
+    user: {
+      create: {
+        before: async (user) => {
+          // Ensure name is never empty (required field in Prisma)
+          if (!user.name || user.name.trim() === "") {
+            user.name = user.email?.split("@")[0] || "User";
+          }
+          return { data: user };
+        },
+      },
+    },
+  },
   secondaryStorage: redisStorage({
     client: redis,
     keyPrefix: "better-auth:",
