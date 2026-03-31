@@ -74,7 +74,7 @@ services:
       - ./.env
     environment:
       DATABASE_URL: postgresql://task-manager-db:${DB_PASSWORD}@db:5432/tasks
-    command: sh -c "npm install prisma && npx prisma migrate deploy"
+    command: sh -c "pnpm dlx prisma migrate deploy"
     depends_on:
       db:
         condition: service_healthy
@@ -129,7 +129,10 @@ services:
     volumes:
       - ./monitor/loki-config.yml:/etc/loki/local-config.yml
       - logs_data:/loki
-    command: sh -c "mkdir -p /loki/rules /loki/rules-temp && /usr/bin/loki -config.file=/etc/loki/local-config.yml"
+    entrypoint:
+      - sh
+      - -c
+      - "mkdir -p /loki/rules /loki/rules-temp && /usr/bin/loki -config.file=/etc/loki/local-config.yml"
 
   prometheus:
     image: prom/prometheus:v2.50.1 
