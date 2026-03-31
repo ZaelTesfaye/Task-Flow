@@ -111,8 +111,8 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
       - /var/www/certbot:/var/www/certbot:ro
-      - /home/deployment/task-flow/client:/var/www/task-flow-client:ro
-      - /home/deployment/task-flow/admin:/var/www/task-flow-admin:ro
+      - /home/ubuntu/task-flow/client:/var/www/task-flow-client:ro
+      - /home/ubuntu/task-flow/admin:/var/www/task-flow-admin:ro
       - /etc/letsencrypt/live/api.desonames.xyz/fullchain.pem:/etc/nginx/certs/api.desonames.xyz/fullchain.pem:ro
       - /etc/letsencrypt/live/api.desonames.xyz/privkey.pem:/etc/nginx/certs/api.desonames.xyz/privkey.pem:ro
       - /etc/letsencrypt/live/task-flows.tech/fullchain.pem:/etc/nginx/certs/task-flows.tech/fullchain.pem:ro
