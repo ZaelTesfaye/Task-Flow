@@ -57,11 +57,16 @@ services:
       MAX_CLIENT_CONN: "1000"
       DEFAULT_POOL_SIZE: "20"
       MIN_POOL_SIZE: "5"
-
     depends_on:
       db:
         condition: service_healthy
-    restart: unless-stopped 
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -p 5432 -U task-manager-db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
   migrator:
     image: ${DOCKER_USERNAME}/${IMAGE_NAME}:latest
@@ -72,7 +77,7 @@ services:
     command: sh -c "npm install prisma && npx prisma migrate deploy"
     depends_on:
       pgbouncer:
-        condition: service_started
+        condition: service_healthy
     volumes:
       - ./prisma:/app/prisma:ro
   
@@ -149,6 +154,7 @@ services:
       - ./monitor/promtail-config.yml:/etc/promtail/config.yml
       - /var/run/docker.sock:/var/run/docker.sock
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - promtail_positions:/var/log/promtail
     command: -config.file=/etc/promtail/config.yml
     depends_on:
       loki:
@@ -181,3 +187,4 @@ volumes:
   logs_data:
   redis_data:
   prometheus_data:
+  promtail_positions:

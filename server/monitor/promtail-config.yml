@@ -66,7 +66,8 @@ scrape_configs:
       # by load balancers and monitoring tools and add zero value to your logs.
       # Without this, they account for ~40% of nginx log volume in production.
       - drop:
-          expression: '(uri =~ ".*/health.*" or uri =~ ".*/ping.*" or uri =~ ".*/metrics.*")'
+          source: uri
+          expression: '.*(health|ping|metrics).*'
       - limit:
           rate: 1000
           burst: 2000
