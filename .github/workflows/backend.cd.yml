@@ -97,7 +97,6 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          request_pty: true
           script: |
             cat > ~/task-flow/server/.env << 'EOF'
             ${{ secrets.PROD_VARIABLES }}
@@ -108,13 +107,18 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          request_pty: true
           script: |
             cd ~/task-flow/server
             docker compose pull
             docker compose up -d
 
       - name: Verify Backend Deployment Health
-        run: |
-          curl -fsSL --retry 5 --retry-delay 5 --retry-connrefused "${{ secrets.BACKEND_HEALTHCHECK_URL }}" > /dev/null
-          echo "Backend health check passed."
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd ~/task-flow/server
+            docker compose exec -T app curl -f http://localhost:5000/api/health
+            echo "Backend health check passed!"

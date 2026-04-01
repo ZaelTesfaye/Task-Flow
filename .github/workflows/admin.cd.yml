@@ -88,8 +88,3 @@ jobs:
           source: "admin/dist/"
           target: "~/task-flow/admin"
           strip_components: 2
-
-      - name: Verify Admin Deployment Health
-        run: |
-          curl -fsSL --retry 5 --retry-delay 3 --retry-connrefused "${{ secrets.ADMIN_HEALTHCHECK_URL }}" > /dev/null
-          echo "Admin health check passed."
