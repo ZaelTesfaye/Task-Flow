@@ -8,7 +8,7 @@ import TaskAssignment from "../emails/TaskAssignment.js";
 
 // Get the first frontend URL from the array
 const getFrontendUrl = () => {
-  const frontendUrls = Array.isArray(config.frontendUrls) ? config.frontendUrls : [config.frontEndUrl];
+  const frontendUrls = Array.isArray(config.frontEndUrl) ? config.frontEndUrl : [config.frontEndUrl];
   return frontendUrls[0] || config.frontEndUrl;
 };
 
