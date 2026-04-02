@@ -1,4 +1,4 @@
-import { email } from "../lib/index.js";
+import { email, logger } from "../lib/index.js";
 import config from "../config/env.config.js";
 import { render } from "@react-email/render";
 import InvitationToRegisteredUser from "../emails/InvitationToRegisteredUser.js";
@@ -38,7 +38,7 @@ export const sendInvitationToRegisteredUser = async (
       html: emailHtml,
     });
   } catch (error) {
-    console.error("❌ Error sending invitation email to registered user:", error);
+    logger.error("Error sending invitation email to registered user:", error);
     throw error;
   }
 };
@@ -67,7 +67,7 @@ export const sendInvitationToNonRegisteredUser = async (
       html: emailHtml,
     });
   } catch (error) {
-    console.error("❌ Error sending invitation email to non-registered user:", error);
+    logger.error("Error sending invitation email to non-registered user:", error);
     throw error;
   }
 };
@@ -89,7 +89,7 @@ export const sendPasswordResetCode = async (userName: string, userEmail: string,
       html: emailHtml,
     });
   } catch (error) {
-    console.error("❌ Error sending password reset code email:", error);
+    logger.error("Error sending password reset code email:", error);
     throw error;
   }
 };
@@ -125,7 +125,7 @@ export const sendTaskAssignmentEmail = async (
       html: emailHtml,
     });
   } catch (error) {
-    console.error("❌ Error sending task assignment email:", error);
+    logger.error("Error sending task assignment email:", error);
     throw error;
   }
 };
