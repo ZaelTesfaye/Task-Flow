@@ -1,10 +1,12 @@
 import { useAuthContext } from "@/context";
 import { authClient } from "@/lib/auth-client";
-import { userApiClient } from "@/lib";
+import { userApi } from "@/lib";
 import type { User } from "@/types";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const useAuthActions = () => {
   const { setUser, setLoading } = useAuthContext();
+  const queryClient = useQueryClient();
 
   const login = async (data: { email: string; password: string }) => {
     const { data: result } = await authClient.signIn.email({
@@ -13,6 +15,7 @@ export const useAuthActions = () => {
     });
 
     if (result?.user) {
+      queryClient.clear();
       setUser(result.user);
     } else {
       throw new Error("Login failed");
@@ -26,10 +29,8 @@ export const useAuthActions = () => {
       name: data.name,
     });
 
-    // Send verification email
     await authClient.sendVerificationEmail({ email: data.email });
 
-    // User is created but not signed in until verified
     return result;
   };
 
@@ -37,8 +38,8 @@ export const useAuthActions = () => {
     try {
       await authClient.signOut();
       setUser(null);
+      queryClient.clear();
     } catch (error) {
-      console.error("Logout error:", error);
       throw error;
     }
   };
@@ -52,18 +53,28 @@ export const useAuthActions = () => {
       const { data } = await authClient.getSession();
       if (data?.user) {
         try {
-          const fullUser = await userApiClient.get<User>("me");
-          setUser(fullUser);
-        } catch (err) {
-          console.error("Failed to fetch full user profile:", err);
-          setUser(data.user);
+          const fullUser = await userApi.get<User>("me");
+          setUser((prevUser) => {
+            if (prevUser && prevUser.id !== fullUser.id) {
+              queryClient.clear();
+            }
+            return fullUser;
+          });
+        } catch {
+          setUser((prevUser) => {
+            if (prevUser && prevUser.id !== data.user.id) {
+              queryClient.clear();
+            }
+            return data.user;
+          });
         }
       } else {
         setUser(null);
+        queryClient.clear();
       }
-    } catch (error) {
-      console.error("Session check failed:", error);
+    } catch {
       setUser(null);
+      queryClient.clear();
     } finally {
       setLoading(false);
     }

@@ -40,9 +40,8 @@ COPY --from=build /app/prisma ./prisma
 COPY --from=build /app/prisma.config.ts ./prisma.config.ts
 COPY --from=build /app/public ./public
 COPY --from=build /app/views ./views
-
-# Copy generated Prisma client from build stage
 COPY --from=build /app/generated ./generated
+
 EXPOSE 5000
 
 CMD ["npm", "start"]

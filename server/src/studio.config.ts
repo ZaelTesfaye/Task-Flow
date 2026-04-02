@@ -5,7 +5,7 @@ const config: StudioConfig = {
   auth,
   basePath: "/api/admin/studio",
   access: {
-    roles: ["admin", "super-admin"],
+    roles: ["admin"],
   },
   metadata: {
     title: "Admin Dashboard",

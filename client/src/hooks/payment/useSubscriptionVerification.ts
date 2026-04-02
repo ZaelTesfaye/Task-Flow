@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 
-import { paymentApiClient } from "@/lib";
+import { paymentApi } from "@/lib";
 import { useAuthContext } from "@/context";
 import { useAuthActions } from "../auth/useAuthActions";
 
@@ -23,7 +23,7 @@ export const useSubscriptionVerification = () => {
 
       const verifySubscription = async () => {
         try {
-          const result = await paymentApiClient.get<{
+          const result = await paymentApi.get<{
             isPremium: boolean;
             status: string;
             message: string;
@@ -45,8 +45,7 @@ export const useSubscriptionVerification = () => {
             return true;
           }
           return false;
-        } catch (error) {
-          console.error("Subscription verification error:", error);
+        } catch {
           if (attempts >= maxAttempts) {
             toast.error(
               "Failed to verify subscription. Please try again after a while. If issues persist, contact support@task-flows.tech",
@@ -70,7 +69,7 @@ export const useSubscriptionVerification = () => {
         }
       }, pollInterval);
 
-      // Initial verification
+      // Initial verification (set interval starts after pollInterval)
       verifySubscription().then((done) => {
         if (done) {
           clearInterval(interval);

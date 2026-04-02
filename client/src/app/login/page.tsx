@@ -3,15 +3,15 @@ import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 import { LogIn, UserPlus, Mail, KeyRound } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { authClient } from "@/lib/auth-client";
 import toast from "react-hot-toast";
+import { GoogleOAuthProvider, GoogleLogin, CredentialResponse } from "@react-oauth/google";
 
+import { authClient } from "@/lib/auth-client";
 import { useAuthContext } from "@/context";
 import { useAuthActions, usePasswordReset } from "@/hooks";
 import { useThemeStore } from "@/stores";
 import { LoginRequestSchema, RegisterRequestSchema } from "@/validation";
 import type { LoginFormData, RegisterFormData } from "@/types";
-import { GoogleOAuthProvider, GoogleLogin, CredentialResponse } from "@react-oauth/google";
 import { ThemeToggle } from "@/components";
 
 type AuthFormData = {

@@ -26,4 +26,4 @@ export class APIClient {
 
 export const adminUserApiClient = new APIClient("/admin/user");
 export const authApiClient = new APIClient("/custom-auth");
-export const superAdminApiClient = new APIClient("/super-admin");
+export const adminApiClient = new APIClient("/admin");

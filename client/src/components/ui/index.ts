@@ -8,3 +8,6 @@ export * from "./spinner";
 export * from "./switch";
 export * from "./textarea";
 export * from "./ThemeToggle";
+
+export { default as Modal } from "./Modal";
+export { default as ConfirmationModal } from "./ConfirmationModal";

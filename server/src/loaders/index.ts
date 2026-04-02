@@ -1,10 +1,14 @@
 import { type Express } from "express";
 import expressLoader from "./express.js";
-import metricsLoader from "./metrics.js";
+import { seedAdmin } from "./seed-admin.js";
+import { prisma } from "../lib/index.js";
+import { collectDefaultMetrics } from "prom-client";
 
-const loader = (app: Express) => {
+const loader = async (app: Express) => {
+  await prisma.$connect();
+  await seedAdmin();
   expressLoader(app);
-  metricsLoader();
+  collectDefaultMetrics();
 };
 
 export default loader;

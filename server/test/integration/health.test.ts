@@ -24,7 +24,6 @@ vi.mock("../../src/routes/index.js", () => {
     projectRoutes: noop,
     userRoutes: noop,
     adminRoutes: noop,
-    superAdminRoutes: noop,
     stripeRoutes: noop,
     notificationRoutes: noop,
   };

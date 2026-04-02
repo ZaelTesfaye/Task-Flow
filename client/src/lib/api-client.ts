@@ -20,10 +20,10 @@ export class APIClient {
   delete = <T>(subPath?: string) => httpClient.delete<T>(this.url(subPath)).then((r) => r.data);
 }
 
-export const authApiClient = new APIClient("/custom-auth");
-export const userApiClient = new APIClient("/user");
-export const projectApiClient = new APIClient("/project");
-export const phaseApiClient = new APIClient("/phase");
-export const taskApiClient = new APIClient("/task");
-export const paymentApiClient = new APIClient("/stripe");
-export const notificationApiClient = new APIClient("/notification");
+export const authApi = new APIClient("/custom-auth");
+export const userApi = new APIClient("/user");
+export const projectApi = new APIClient("/project");
+export const phaseApi = new APIClient("/phase");
+export const taskApi = new APIClient("/task");
+export const paymentApi = new APIClient("/stripe");
+export const notificationApi = new APIClient("/notification");

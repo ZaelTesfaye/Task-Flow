@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import type { AdminUser } from "../types";
-import { adminUserApiClient, superAdminApiClient } from "../lib/api-client";
+import { adminUserApiClient, adminApiClient } from "../lib/api-client";
 import {
   Card,
   CardContent,
@@ -100,7 +100,7 @@ const Dashboard = () => {
   const handleCreateAdmin = async () => {
     if (!adminUsername || !adminName || !adminPassword) return;
     try {
-      await superAdminApiClient.post(
+      await adminApiClient.post(
         { username: adminUsername, name: adminName, password: adminPassword },
         "create-admin",
       );

@@ -1,6 +1,6 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { projectApiClient, phaseApiClient } from "@/lib";
+import { projectApi, phaseApi } from "@/lib";
 import { useAuthContext } from "@/context";
 import type { ProjectMember, ApiResponse, TasksResponse, ProjectInvitation } from "@/types";
 
@@ -14,7 +14,7 @@ export const useProjectData = (projectId: string | string[] | undefined) => {
     error: phasesError,
   } = useQuery({
     queryKey: ["project", projectId, "phases"],
-    queryFn: () => phaseApiClient.get<ApiResponse<TasksResponse>>(projectId as string),
+    queryFn: () => phaseApi.get<ApiResponse<TasksResponse>>(projectId as string),
     enabled: !!projectId && !!user,
     retry: false,
   });
@@ -25,7 +25,7 @@ export const useProjectData = (projectId: string | string[] | undefined) => {
     error: membersError,
   } = useQuery({
     queryKey: ["project", projectId, "members"],
-    queryFn: () => projectApiClient.get<ApiResponse<ProjectMember[]>>(`member/${projectId as string}`),
+    queryFn: () => projectApi.get<ApiResponse<ProjectMember[]>>(`member/${projectId as string}`),
     enabled: !!projectId && !!user,
     retry: false,
   });
@@ -36,14 +36,12 @@ export const useProjectData = (projectId: string | string[] | undefined) => {
 
   const { data: invitationsData, isLoading: invitationsLoading } = useQuery({
     queryKey: ["project", projectId, "invitations"],
-    queryFn: () => projectApiClient.get<ApiResponse<ProjectInvitation[]>>(`member/${projectId as string}/invitations`),
+    queryFn: () => projectApi.get<ApiResponse<ProjectInvitation[]>>(`member/${projectId as string}/invitations`),
     enabled: !!projectId && !!user && (userRole === "owner" || userRole === "admin"),
     retry: false,
   });
 
   if (phasesError || membersError) {
-    console.error("Failed to fetch project data:", phasesError || membersError);
-    // Only redirect if it's a permission error or not found, but for now let's keep it simple
     // toast.error("Failed to fetch project data");
     // router.push("/dashboard");
   }

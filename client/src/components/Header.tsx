@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import { useAuthContext } from "@/context";
 import { useAuthActions, useInvitationsCount, useProfileActions } from "@/hooks";
 import type { UpdateUserRequest } from "@/types";
-import { ConfirmationModal, ProfileMenu, EditProfileModal, SubscriptionModal } from "@/components";
+import { ProfileMenu, EditProfileModal, ConfirmationModal, SubscriptionModal } from "@/components";
 
 export default function Header() {
   const { user, loading } = useAuthContext();

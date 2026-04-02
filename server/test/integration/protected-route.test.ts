@@ -24,7 +24,6 @@ vi.mock("../../src/routes/index.js", () => {
     projectRoutes: noop,
     userRoutes: noop,
     adminRoutes: noop,
-    superAdminRoutes: noop,
     stripeRoutes: noop,
     notificationRoutes: noop,
   };
@@ -38,7 +37,7 @@ vi.mock("../../src/middlewares/index.js", () => {
   const noop = (_req: unknown, _res: unknown, next: () => void) => next();
 
   return {
-    authMiddleware: (_req: unknown, res: any, next: () => void) => {
+    authMiddleware: (_req: unknown, res: any) => {
       // Simulate unauthorized for protected routes
       res.status(401).json({ message: "Unauthorized" });
     },

@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { projectApiClient } from "@/lib";
+import { projectApi } from "@/lib";
 import { useAuthContext } from "@/context";
 import type { UserProjectsResponse, ApiResponse } from "@/types";
 
@@ -9,7 +9,7 @@ export const useUserProjects = () => {
 
   const { data: projectsData, isLoading: projectsLoading } = useQuery({
     queryKey: ["user-projects"],
-    queryFn: () => projectApiClient.get<ApiResponse<UserProjectsResponse>>(),
+    queryFn: () => projectApi.get<ApiResponse<UserProjectsResponse>>(),
     enabled: !!user && !authLoading,
   });
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { Trash2 } from "lucide-react";
 
-import { Modal } from "@/components/modals";
+import { Modal } from "@/components";
 import { ProjectMember, ProjectInvitation, Project } from "@/types";
 import { UserRole } from "@/types";
 

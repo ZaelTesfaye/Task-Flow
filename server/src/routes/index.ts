@@ -4,6 +4,5 @@ export { default as authRoutes } from "./auth.routes.js";
 export { default as projectRoutes } from "./project.routes.js";
 export { default as phaseRoutes } from "./phase.routes.js";
 export { default as adminRoutes } from "./admin.routes.js";
-export { default as superAdminRoutes } from "./super-admin.routes.js";
 export { default as stripeRoutes } from "./stripe.routes.js";
 export { default as notificationRoutes } from "./notification.routes.js";

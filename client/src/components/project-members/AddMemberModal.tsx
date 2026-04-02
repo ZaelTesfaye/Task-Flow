@@ -1,6 +1,5 @@
 import React from "react";
-import { Modal } from "@/components/modals";
-import { Spinner } from "@/components/ui";
+import { Modal, Spinner } from "@/components";
 
 interface AddMemberModalProps {
   isOpen: boolean;

@@ -1,5 +1,5 @@
 import React from "react";
-import Modal from "./Modal";
+import { Modal } from "@/components/ui";
 import { Check, Loader2 } from "lucide-react";
 import { useSubscription } from "@/hooks";
 

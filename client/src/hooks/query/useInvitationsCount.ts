@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { projectApiClient } from "@/lib";
+import { projectApi } from "@/lib";
 import { useAuthContext } from "@/context";
 import type { ProjectInvitation, ApiResponse } from "@/types";
 
@@ -11,7 +11,7 @@ export const useInvitationsCount = () => {
   const { data: invitationsCount = 0 } = useQuery({
     queryKey: ["user-invitations"],
     queryFn: async () => {
-      const response = await projectApiClient.get<ApiResponse<ProjectInvitation[]>>("invitations");
+      const response = await projectApi.get<ApiResponse<ProjectInvitation[]>>("invitations");
       const pendingInvitations = response.data.filter((inv: ProjectInvitation) => inv.status === "pending");
       return pendingInvitations.length;
     },

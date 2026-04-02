@@ -12,10 +12,7 @@ export const removeUser = async (userId: string, userRole: string) => {
 
   if (!deleteUser) throw new Error("User not found");
 
-  if (deleteUser.role === "super-admin") throw new Error("Cannot delete super-admin user");
-
-  if (deleteUser.role === "admin" && userRole !== "super-admin")
-    throw new Error("Only super-admin can delete admin users");
+  if (deleteUser.role === "admin") throw new Error("Cannot delete admin user");
 
   return adminModel.deleteUser(userId);
 };

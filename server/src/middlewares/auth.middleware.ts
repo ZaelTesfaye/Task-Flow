@@ -8,9 +8,7 @@ import type { JwtPayload } from "../types/jwt.type.js";
 
 const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   const isAdminPath = req.baseUrl.includes("/admin");
-  const isSuperAdminPath = req.baseUrl.includes("/super-admin");
   let isAdmin = false;
-  let isSuperAdmin = false;
 
   try {
     const token = req.cookies.adminAuth;
@@ -20,7 +18,6 @@ const authMiddleware = async (req: Request, res: Response, next: NextFunction) =
       try {
         const userData = jwt.verify(token, config.jwtSecret) as JwtPayload;
         if (userData.role === "admin") isAdmin = true;
-        if (userData.role === "super-admin") isSuperAdmin = true;
 
         req.user = userData;
       } catch {
@@ -50,11 +47,7 @@ const authMiddleware = async (req: Request, res: Response, next: NextFunction) =
       };
     }
 
-    if (
-      (!isAdmin && !isAdminPath && !isSuperAdminPath) ||
-      (isAdmin && isAdminPath) ||
-      (isSuperAdmin && (isSuperAdminPath || isAdminPath))
-    ) {
+    if ((!isAdmin && !isAdminPath) || (isAdmin && isAdminPath)) {
       return next();
     } else {
       throw new APIError("Forbidden", httpStatus.FORBIDDEN);

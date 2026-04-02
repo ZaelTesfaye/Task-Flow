@@ -6,14 +6,7 @@ import toast from "react-hot-toast";
 import { Plus } from "lucide-react";
 
 import { useAuthContext } from "@/context";
-import {
-  useProjectData,
-  useProjectModals,
-  useProjectMutations,
-  usePhaseMutations,
-  useTaskMutations,
-  useMemberMutations,
-} from "@/hooks";
+import { useProject, useProjectModals } from "@/hooks";
 
 import {
   ProjectHeader,
@@ -36,7 +29,30 @@ function ProjectBoard() {
   const projectId = searchParams.get("id") as string;
   const { user } = useAuthContext();
 
-  const { project, phases, members, invitations, loading, userRole, refetch } = useProjectData(projectId);
+  const {
+    project,
+    phases,
+    members,
+    invitations,
+    loading,
+    userRole,
+    refetch,
+    updateProject,
+    deleteProject,
+    createPhase,
+    deletePhase,
+    createTask,
+    updateTask,
+    deleteTask,
+    updateTaskStatus,
+    requestTaskUpdate,
+    acceptPendingUpdate,
+    rejectPendingUpdate,
+    addMember,
+    removeMember,
+    updateMemberAccess,
+    leaveProject,
+  } = useProject(projectId);
 
   const {
     isMembersPaneOpen,
@@ -50,19 +66,6 @@ function ProjectBoard() {
     updateForm,
     resetForm,
   } = useProjectModals();
-
-  const { updateProject, deleteProject } = useProjectMutations(projectId);
-  const { createPhase, deletePhase } = usePhaseMutations(projectId);
-  const {
-    createTask,
-    updateTask,
-    deleteTask,
-    updateTaskStatus,
-    requestTaskUpdate,
-    acceptPendingUpdate,
-    rejectPendingUpdate,
-  } = useTaskMutations(projectId);
-  const { addMember, removeMember, updateMemberAccess, leaveProject } = useMemberMutations(projectId);
 
   const isOwnerOrAdmin = userRole === "owner" || userRole === "admin";
   const [isSavingSettings, setIsSavingSettings] = useState(false);

@@ -8,10 +8,10 @@ import { logger } from "./lib/index.js";
 import { exitHandler } from "./utils/index.js";
 import loader from "./loaders/index.js";
 
-const startServer = () => {
+const startServer = async () => {
   const app = express();
 
-  loader(app);
+  await loader(app);
 
   const httpServer = http.createServer(app);
 

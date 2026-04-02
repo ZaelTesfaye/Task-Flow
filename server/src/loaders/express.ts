@@ -12,7 +12,6 @@ import {
   projectRoutes,
   userRoutes,
   adminRoutes,
-  superAdminRoutes,
   stripeRoutes,
   notificationRoutes,
 } from "../routes/index.js";
@@ -78,7 +77,6 @@ const expressLoader = (app: Express) => {
   app.use(xssMiddleware);
   app.use(cookieParser());
 
-  app.use("/api/super-admin", authMiddleware, superAdminRoutes);
   app.use("/api/admin", authMiddleware, adminRoutes);
 
   app.use("/api/custom-auth", authRateLimiter, authRoutes);

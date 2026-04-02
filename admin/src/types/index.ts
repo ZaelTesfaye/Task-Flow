@@ -4,7 +4,6 @@ export interface User {
   email: string;
   role?: string;
   createdAt?: string;
-  updatedAt?: string;
 }
 
 export interface AdminUser extends User {

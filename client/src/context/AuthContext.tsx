@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState, ReactNode, Dispatch, SetStateAction } from "react";
 import { authClient } from "@/lib/auth-client";
-import { userApiClient } from "@/lib";
+import { userApi } from "@/lib";
 
 interface User {
   id: string;
@@ -36,7 +36,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const { data } = await authClient.getSession();
         if (data?.user) {
           try {
-            const fullUser = await userApiClient.get<User>("me");
+            const fullUser = await userApi.get<User>("me");
             setUser(fullUser);
           } catch (err) {
             console.error("Failed to fetch full user profile:", err);
