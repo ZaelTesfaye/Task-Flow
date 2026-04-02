@@ -6,7 +6,14 @@ import toast from "react-hot-toast";
 import { Plus } from "lucide-react";
 
 import { useAuthContext } from "@/context";
-import { useProject, useProjectModals } from "@/hooks";
+import {
+  useProjectData,
+  useProjectMutations,
+  usePhaseMutations,
+  useTaskMutations,
+  useMemberMutations,
+  useProjectModals,
+} from "@/hooks";
 
 import {
   ProjectHeader,
@@ -29,18 +36,11 @@ function ProjectBoard() {
   const projectId = searchParams.get("id") as string;
   const { user } = useAuthContext();
 
+  const { project, phases, members, invitations, loading, userRole, refetch } = useProjectData(projectId);
+
+  const { updateProject, deleteProject } = useProjectMutations(projectId as string);
+  const { createPhase, deletePhase } = usePhaseMutations(projectId as string);
   const {
-    project,
-    phases,
-    members,
-    invitations,
-    loading,
-    userRole,
-    refetch,
-    updateProject,
-    deleteProject,
-    createPhase,
-    deletePhase,
     createTask,
     updateTask,
     deleteTask,
@@ -48,11 +48,8 @@ function ProjectBoard() {
     requestTaskUpdate,
     acceptPendingUpdate,
     rejectPendingUpdate,
-    addMember,
-    removeMember,
-    updateMemberAccess,
-    leaveProject,
-  } = useProject(projectId);
+  } = useTaskMutations(projectId as string);
+  const { addMember, removeMember, updateMemberAccess, leaveProject } = useMemberMutations(projectId as string);
 
   const {
     isMembersPaneOpen,
