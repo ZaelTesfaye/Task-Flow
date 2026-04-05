@@ -1,12 +1,12 @@
 import { APIError } from "../utils/error.js";
-import { envSchema, type EnvSchemaType } from "../validations/index.js";
+import { envSchema, type EnvSchemaType } from "../schemas/index.js";
 
-const { value, error } = envSchema.validate(process.env);
-if (error) {
-  throw new APIError(`Config validation error: ${error.message}`, 500);
+const result = envSchema.safeParse(process.env);
+if (!result.success) {
+  throw new APIError(`Config validation error: ${result.error.message}`, 500);
 }
 
-const envVars = value as EnvSchemaType;
+const envVars = result.data;
 
 const env = {
   port: envVars.PORT,

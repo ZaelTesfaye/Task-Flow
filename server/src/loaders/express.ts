@@ -1,24 +1,27 @@
-import express, { type Express } from "express";
+import express, { type Express, type Request, type Response } from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { register } from "prom-client";
 import { toNodeHandler } from "better-auth/node";
 import { handleStudioRequest } from "better-auth-studio";
+import swaggerUi from "swagger-ui-express";
+import { apiReference } from "@scalar/express-api-reference";
 
-import {
-  taskRoutes,
-  authRoutes,
-  phaseRoutes,
-  projectRoutes,
-  userRoutes,
-  adminRoutes,
-  stripeRoutes,
-  notificationRoutes,
-} from "../routes/index.js";
 import { corsOptions } from "../config/index.js";
-import { authMiddleware, errorHandler, notFoundHandler, xssMiddleware, authRateLimiter } from "../middlewares/index.js";
+import { errorHandler, notFoundHandler, xssMiddleware } from "../middlewares/index.js";
 import { auth } from "../lib/auth.js";
 import studioConfig from "../studio.config.js";
+import { generateOpenAPIDocument } from "../docs/openapi.js";
+
+// Import routes
+import taskRoutes from "../routes/task.routes.js";
+import userRoutes from "../routes/user.routes.js";
+import projectRoutes from "../routes/project.routes.js";
+import phaseRoutes from "../routes/phase.routes.js";
+import authRoutes from "../routes/auth.routes.js";
+import notificationRoutes from "../routes/notification.routes.js";
+import adminRoutes from "../routes/admin.routes.js";
+import stripeRoutes from "../routes/stripe.routes.js";
 
 const expressLoader = (app: Express) => {
   app.set("view engine", "ejs");
@@ -26,6 +29,30 @@ const expressLoader = (app: Express) => {
   app.disable("x-powered-by");
 
   app.use(cors(corsOptions));
+
+  const openApiDocument = generateOpenAPIDocument();
+
+  app.get("/swagger.json", (_req: Request, res: Response) => {
+    res.json(openApiDocument);
+  });
+
+  // Setup Swagger UI
+  app.use("/api-docs", swaggerUi.serve);
+  app.get(
+    "/api-docs",
+    swaggerUi.setup(openApiDocument, {
+      customCss: ".swagger-ui { max-width: 100%; }",
+      customSiteTitle: "TaskFlow API Docs",
+    }),
+  );
+
+  // Setup Scalar UI
+  app.get(
+    "/api-reference",
+    apiReference({
+      url: "/swagger.json",
+    }),
+  );
 
   app.use("/api/auth", toNodeHandler(auth));
   app.use("/api/admin/studio", express.urlencoded({ extended: true }), express.json(), async (req, res) => {
@@ -66,6 +93,7 @@ const expressLoader = (app: Express) => {
 
     res.status(response.status).send(response.body);
   });
+
   app.use(express.static("public"));
   app.use((req, res, next) => {
     if (req.originalUrl === "/api/stripe/webhook") {
@@ -77,14 +105,14 @@ const expressLoader = (app: Express) => {
   app.use(xssMiddleware);
   app.use(cookieParser());
 
-  app.use("/api/admin", authMiddleware, adminRoutes);
-
-  app.use("/api/custom-auth", authRateLimiter, authRoutes);
-  app.use("/api/task", authMiddleware, taskRoutes);
-  app.use("/api/project", authMiddleware, projectRoutes);
-  app.use("/api/phase", authMiddleware, phaseRoutes);
-  app.use("/api/user", authMiddleware, userRoutes);
-  app.use("/api/notification", authMiddleware, notificationRoutes);
+  // Register API routes
+  app.use("/api/task", taskRoutes);
+  app.use("/api/user", userRoutes);
+  app.use("/api/project", projectRoutes);
+  app.use("/api/phase", phaseRoutes);
+  app.use("/api/auth", authRoutes);
+  app.use("/api/notification", notificationRoutes);
+  app.use("/api/admin", adminRoutes);
   app.use("/api/stripe", stripeRoutes);
 
   // ejs
@@ -106,10 +134,8 @@ const expressLoader = (app: Express) => {
     res.end(await register.metrics());
   });
 
-  // not found handler
+  // error handlers - must be last
   app.use(notFoundHandler);
-
-  // global error handler
   app.use(errorHandler);
 
   return app;
