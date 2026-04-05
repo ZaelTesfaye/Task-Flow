@@ -1,48 +1,47 @@
 import { status } from "http-status";
 import type { Request, Response, NextFunction } from "express";
-import type { ObjectSchema } from "joi";
+import { z } from "zod";
 
 import { APIError } from "../utils/index.js";
 
 interface ValidationSchema {
-  body?: ObjectSchema<any>;
-  query?: ObjectSchema<any>;
-  params?: ObjectSchema<any>;
+  body?: z.ZodSchema<any>;
+  query?: z.ZodSchema<any>;
+  params?: z.ZodSchema<any>;
 }
 
 const validate =
   (schema: ValidationSchema) =>
   (req: Request, res: Response, next: NextFunction): void => {
-    if (schema.body) {
-      const { error, value } = schema.body.validate(req.body, {
-        abortEarly: true,
-      });
-      if (error) {
-        return next(new APIError(error.message, status.BAD_REQUEST));
+    try {
+      if (schema.body) {
+        const result = schema.body.safeParse(req.body);
+        if (!result.success) {
+          return next(new APIError(result.error.issues[0]?.message || "Invalid body", status.BAD_REQUEST));
+        }
+        req.body = result.data;
       }
-      req.body = value;
-    }
 
-    if (schema.query) {
-      const { error, value } = schema.query.validate(req.query, {
-        abortEarly: true,
-      });
-      if (error) {
-        return next(new APIError(error.message, status.BAD_REQUEST));
+      if (schema.query) {
+        const result = schema.query.safeParse(req.query);
+        if (!result.success) {
+          return next(new APIError(result.error.issues[0]?.message || "Invalid query parameters", status.BAD_REQUEST));
+        }
+        req.query = result.data;
       }
-      req.query = value;
-    }
 
-    if (schema.params) {
-      const { error, value } = schema.params.validate(req.params, {
-        abortEarly: true,
-      });
-      if (error) {
-        return next(new APIError(error.message, status.BAD_REQUEST));
+      if (schema.params) {
+        const result = schema.params.safeParse(req.params);
+        if (!result.success) {
+          return next(new APIError(result.error.issues[0]?.message || "Invalid path parameters", status.BAD_REQUEST));
+        }
+        req.params = result.data;
       }
-      req.params = value;
+
+      next();
+    } catch {
+      return next(new APIError("Validation error", status.BAD_REQUEST));
     }
-    next();
   };
 
 export default validate;
