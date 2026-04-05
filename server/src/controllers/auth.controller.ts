@@ -1,9 +1,11 @@
 import type { CookieOptions, Request, Response, RequestHandler } from "express";
+import { z } from "zod";
 import httpStatus from "http-status";
 
 import { asyncWrapper } from "../lib/index.js";
 import { authServices } from "../services/index.js";
 import { type RegisterBody, type LoginBody } from "../types/index.js";
+import { AuthResponseSchema, PasswordResetResponseSchema } from "../schemas/index.js";
 import config from "../config/env.config.js";
 
 export const defaultCookieConfig: CookieOptions = {
@@ -14,25 +16,30 @@ export const defaultCookieConfig: CookieOptions = {
   maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
 };
 
-export const register: RequestHandler = asyncWrapper(async (req: Request<{}, {}, RegisterBody>, res: Response) => {
-  const { name, email, password } = req.body;
-  const userData = await authServices.register(name, email, password);
+export const register: RequestHandler = asyncWrapper(
+  async (req: Request<{}, {}, RegisterBody>, res: Response<z.infer<typeof AuthResponseSchema>>) => {
+    const { name, email, password } = req.body;
+    const userData = await authServices.register(name, email, password);
 
-  res.cookie("auth", userData.token, defaultCookieConfig).status(httpStatus.CREATED).json({
-    message: "User registered successfully",
-    data: userData,
-  });
-});
+    res.cookie("auth", userData.token, defaultCookieConfig).status(httpStatus.CREATED).json({
+      message: "User registered successfully",
+      data: userData,
+    });
+  },
+);
 
-export const login: RequestHandler = asyncWrapper(async (req: Request<{}, {}, LoginBody>, res: Response) => {
-  const { email, password } = req.body;
-  // check if the user exists
-  const data = await authServices.login(email, password);
-  res.cookie(`${data.user.role === "user" ? "auth" : "adminAuth"}`, data.token, defaultCookieConfig).json({
-    message: "User logged in successfully",
-    data: data,
-  });
-});
+export const login: RequestHandler = asyncWrapper(
+  async (req: Request<{}, {}, LoginBody>, res: Response<z.infer<typeof AuthResponseSchema>>) => {
+    const { email, password } = req.body;
+    // check if the user exists
+    const data = await authServices.login(email, password);
+
+    res.cookie(`${data.user.role === "user" ? "auth" : "adminAuth"}`, data.token, defaultCookieConfig).json({
+      message: "User logged in successfully",
+      data: data,
+    });
+  },
+);
 
 export const logout: RequestHandler = asyncWrapper(async (req: Request, res: Response) => {
   res
@@ -46,9 +53,10 @@ export const logout: RequestHandler = asyncWrapper(async (req: Request, res: Res
 });
 
 export const requestPasswordReset: RequestHandler = asyncWrapper(
-  async (req: Request<{}, {}, { email: string }>, res: Response) => {
+  async (req: Request<{}, {}, { email: string }>, res: Response<z.infer<typeof PasswordResetResponseSchema>>) => {
     const { email } = req.body;
     const result = await authServices.requestPasswordReset(email);
+
     res.json({
       message: result.message,
     });
@@ -56,9 +64,13 @@ export const requestPasswordReset: RequestHandler = asyncWrapper(
 );
 
 export const verifyResetCode: RequestHandler = asyncWrapper(
-  async (req: Request<{}, {}, { email: string; code: string }>, res: Response) => {
+  async (
+    req: Request<{}, {}, { email: string; code: string }>,
+    res: Response<z.infer<typeof PasswordResetResponseSchema>>,
+  ) => {
     const { email, code } = req.body;
     const result = await authServices.verifyResetCode(email, code);
+
     res.json({
       message: result.message,
     });
@@ -66,9 +78,13 @@ export const verifyResetCode: RequestHandler = asyncWrapper(
 );
 
 export const resetPassword: RequestHandler = asyncWrapper(
-  async (req: Request<{}, {}, { email: string; newPassword: string }>, res: Response) => {
+  async (
+    req: Request<{}, {}, { email: string; newPassword: string }>,
+    res: Response<z.infer<typeof AuthResponseSchema>>,
+  ) => {
     const { email, newPassword } = req.body;
     const data = await authServices.resetPassword(email, newPassword);
+
     res.cookie("auth", data.token, defaultCookieConfig).json({
       message: data.message,
       data: {

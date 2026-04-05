@@ -1,4 +1,5 @@
 import type { Request, Response, RequestHandler } from "express";
+import { z } from "zod";
 import httpStatus from "http-status";
 import { asyncWrapper, redis } from "../lib/index.js";
 import { taskServices, phaseServices, projectServices } from "../services/index.js";
@@ -9,9 +10,13 @@ import type {
   RequestTaskUpdateDTO as TaskUpdateRequestDTO,
   AcceptPendingUpdateDTO,
 } from "../types/index.js";
+import { TaskResponseSchema, TaskUpdateRequestResponseSchema, TaskDeleteResponseSchema } from "../schemas/index.js";
 
 export const createTask: RequestHandler = asyncWrapper(
-  async (req: Request<{ projectId: string; phaseId: string }, {}, CreateTaskDTO>, res: Response) => {
+  async (
+    req: Request<{ projectId: string; phaseId: string }, {}, CreateTaskDTO>,
+    res: Response<z.infer<typeof TaskResponseSchema>>,
+  ) => {
     const { projectId, phaseId } = req.params;
     const { id: userId } = req.user!;
     const { title, description, assignedTo } = req.body;
@@ -20,14 +25,14 @@ export const createTask: RequestHandler = asyncWrapper(
     if (!hasAccess) {
       return res.status(httpStatus.FORBIDDEN).json({
         message: "Only project owner or admin can create tasks",
-      });
+      } as any);
     }
 
     const phase = await phaseServices.getPhase(phaseId, projectId);
     if (!phase) {
       return res.status(httpStatus.FORBIDDEN).json({
         message: "Phase does not belong to the specified project",
-      });
+      } as any);
     }
 
     const result = await taskServices.createTask(title, description, userId, phaseId, assignedTo, projectId);
@@ -43,7 +48,10 @@ export const createTask: RequestHandler = asyncWrapper(
 );
 
 export const updateTask: RequestHandler = asyncWrapper(
-  async (req: Request<{ projectId: string; taskId: string }, {}, UpdateTaskDTO>, res: Response) => {
+  async (
+    req: Request<{ projectId: string; taskId: string }, {}, UpdateTaskDTO>,
+    res: Response<z.infer<typeof TaskResponseSchema>>,
+  ) => {
     const { projectId, taskId } = req.params;
     const { id: userId } = req.user!;
     const updates = req.body;
@@ -52,7 +60,7 @@ export const updateTask: RequestHandler = asyncWrapper(
     if (!hasAccess) {
       return res.status(httpStatus.FORBIDDEN).json({
         message: "Only project owner or admin can update tasks",
-      });
+      } as any);
     }
 
     const result = await taskServices.updateProjectTask(taskId, updates, projectId);
@@ -68,7 +76,10 @@ export const updateTask: RequestHandler = asyncWrapper(
 );
 
 export const removeTask: RequestHandler = asyncWrapper(
-  async (req: Request<{ projectId: string; taskId: string }>, res: Response) => {
+  async (
+    req: Request<{ projectId: string; taskId: string }>,
+    res: Response<z.infer<typeof TaskDeleteResponseSchema>>,
+  ) => {
     const { projectId, taskId } = req.params;
     const { id: userId } = req.user!;
 
@@ -76,7 +87,7 @@ export const removeTask: RequestHandler = asyncWrapper(
     if (!hasAccess) {
       return res.status(httpStatus.FORBIDDEN).json({
         message: "Only project owner or admin can remove tasks",
-      });
+      } as any);
     }
 
     await taskServices.removeTask(taskId, projectId);
@@ -91,7 +102,10 @@ export const removeTask: RequestHandler = asyncWrapper(
 );
 
 export const requestTaskUpdate: RequestHandler = asyncWrapper(
-  async (req: Request<{ projectId: string; taskId: string }, {}, TaskUpdateRequestDTO>, res: Response) => {
+  async (
+    req: Request<{ projectId: string; taskId: string }, {}, TaskUpdateRequestDTO>,
+    res: Response<z.infer<typeof TaskUpdateRequestResponseSchema>>,
+  ) => {
     const { projectId, taskId } = req.params;
     const { id: userId } = req.user!;
     const updateData = req.body;
@@ -100,7 +114,7 @@ export const requestTaskUpdate: RequestHandler = asyncWrapper(
     if (!hasAccess) {
       return res.status(httpStatus.FORBIDDEN).json({
         message: "Only project members can request task updates",
-      });
+      } as any);
     }
 
     const result = await taskServices.requestTaskUpdate(taskId, userId, projectId, updateData);
@@ -116,7 +130,10 @@ export const requestTaskUpdate: RequestHandler = asyncWrapper(
 );
 
 export const acceptPendingUpdate: RequestHandler = asyncWrapper(
-  async (req: Request<{ projectId: string; pendingUpdateId: string }, {}, AcceptPendingUpdateDTO>, res: Response) => {
+  async (
+    req: Request<{ projectId: string; pendingUpdateId: string }, {}, AcceptPendingUpdateDTO>,
+    res: Response<z.infer<typeof TaskUpdateRequestResponseSchema>>,
+  ) => {
     const { projectId, pendingUpdateId } = req.params;
     const { id: userId } = req.user!;
 
@@ -124,7 +141,7 @@ export const acceptPendingUpdate: RequestHandler = asyncWrapper(
     if (!hasAccess) {
       return res.status(httpStatus.FORBIDDEN).json({
         message: "Only project owner or admin can accept pending updates",
-      });
+      } as any);
     }
 
     const result = await taskServices.acceptPendingUpdate(pendingUpdateId, projectId);
@@ -140,7 +157,10 @@ export const acceptPendingUpdate: RequestHandler = asyncWrapper(
 );
 
 export const rejectPendingUpdate: RequestHandler = asyncWrapper(
-  async (req: Request<{ projectId: string; pendingUpdateId: string }>, res: Response) => {
+  async (
+    req: Request<{ projectId: string; pendingUpdateId: string }>,
+    res: Response<z.infer<typeof TaskUpdateRequestResponseSchema>>,
+  ) => {
     const { projectId, pendingUpdateId } = req.params;
     const { id: userId } = req.user!;
 
@@ -148,7 +168,7 @@ export const rejectPendingUpdate: RequestHandler = asyncWrapper(
     if (!hasAccess) {
       return res.status(httpStatus.FORBIDDEN).json({
         message: "Only project owner or admin can reject pending updates",
-      });
+      } as any);
     }
 
     const result = await taskServices.rejectPendingUpdate(pendingUpdateId, projectId);

@@ -1,12 +1,22 @@
 import type { Request, Response, RequestHandler } from "express";
+import { z } from "zod";
 import httpStatus from "http-status";
 
 import { asyncWrapper, redis } from "../lib/index.js";
 import { projectServices } from "../services/index.js";
 import type { CreateProjectDTO, UpdateProjectDTO, AddMemberDTO, RespondInvitationDTO } from "../types/project.type.js";
+import {
+  ProjectResponseSchema,
+  ProjectsListResponseSchema,
+  ProjectMembersResponseSchema,
+  InvitationsListResponseSchema,
+  ProjectDeleteResponseSchema,
+  MemberResponseSchema,
+  InvitationResponseSchema,
+} from "../schemas/index.js";
 
 export const createProject: RequestHandler = asyncWrapper(
-  async (req: Request<{}, {}, CreateProjectDTO>, res: Response) => {
+  async (req: Request<{}, {}, CreateProjectDTO>, res: Response<z.infer<typeof ProjectResponseSchema>>) => {
     const { id } = req.user!;
     const { title, description } = req.body;
 
@@ -20,7 +30,10 @@ export const createProject: RequestHandler = asyncWrapper(
 );
 
 export const updateProject: RequestHandler = asyncWrapper(
-  async (req: Request<{ projectId: string }, {}, UpdateProjectDTO>, res: Response) => {
+  async (
+    req: Request<{ projectId: string }, {}, UpdateProjectDTO>,
+    res: Response<z.infer<typeof ProjectResponseSchema>>,
+  ) => {
     const { projectId } = req.params;
     const { id: userId } = req.user!;
     const updates = req.body;
@@ -29,7 +42,7 @@ export const updateProject: RequestHandler = asyncWrapper(
     if (!hasAccess) {
       return res.status(httpStatus.FORBIDDEN).json({
         message: "Only project owner can update the project",
-      });
+      } as any);
     }
 
     const result = await projectServices.updateProject(projectId, updates);
@@ -42,7 +55,7 @@ export const updateProject: RequestHandler = asyncWrapper(
 );
 
 export const removeProject: RequestHandler = asyncWrapper(
-  async (req: Request<{ projectId: string }>, res: Response) => {
+  async (req: Request<{ projectId: string }>, res: Response<z.infer<typeof ProjectDeleteResponseSchema>>) => {
     const { projectId } = req.params;
     const { id: userId } = req.user!;
 
@@ -51,7 +64,7 @@ export const removeProject: RequestHandler = asyncWrapper(
     if (!hasAccess) {
       return res.status(httpStatus.FORBIDDEN).json({
         message: "Only project owner can delete the project",
-      });
+      } as any);
     }
 
     await projectServices.removeProject(projectId);
@@ -63,7 +76,10 @@ export const removeProject: RequestHandler = asyncWrapper(
 );
 
 export const addMember: RequestHandler = asyncWrapper(
-  async (req: Request<{ projectId: string }, {}, AddMemberDTO>, res: Response) => {
+  async (
+    req: Request<{ projectId: string }, {}, AddMemberDTO>,
+    res: Response<z.infer<typeof InvitationResponseSchema>>,
+  ) => {
     const { projectId } = req.params;
     const { id: requesterId } = req.user!;
 
@@ -72,7 +88,7 @@ export const addMember: RequestHandler = asyncWrapper(
     if (!hasAccess) {
       return res.status(httpStatus.FORBIDDEN).json({
         message: "Only project owner can add members",
-      });
+      } as any);
     }
 
     const payload: { userId?: string; email?: string; access?: string } = {};
@@ -88,23 +104,28 @@ export const addMember: RequestHandler = asyncWrapper(
 
     res.json({
       message: "Invitation sent successfully",
+    });
+  },
+);
+
+export const getUserProjects: RequestHandler = asyncWrapper(
+  async (req: Request, res: Response<z.infer<typeof ProjectsListResponseSchema>>) => {
+    const { id: userId } = req.user!;
+
+    const result = await projectServices.getUserProjects(userId);
+
+    res.json({
+      message: "Projects retrieved successfully",
       data: result,
     });
   },
 );
 
-export const getUserProjects: RequestHandler = asyncWrapper(async (req: Request, res: Response) => {
-  const { id: userId } = req.user!;
-
-  const result = await projectServices.getUserProjects(userId);
-
-  res.json({
-    data: result,
-  });
-});
-
 export const removeProjectMember: RequestHandler = asyncWrapper(
-  async (req: Request<{ projectId: string; userId: string }>, res: Response) => {
+  async (
+    req: Request<{ projectId: string; userId: string }>,
+    res: Response<z.infer<typeof MemberResponseSchema>>,
+  ) => {
     const { projectId, userId: targetUserId } = req.params;
     const { id: requesterUserId } = req.user!;
 
@@ -117,7 +138,7 @@ export const removeProjectMember: RequestHandler = asyncWrapper(
       if (!isRequesterTarget) {
         return res.status(httpStatus.FORBIDDEN).json({
           message: "Only project owner or member itself can remove members",
-        });
+        } as any);
       }
     }
 
@@ -133,7 +154,10 @@ export const removeProjectMember: RequestHandler = asyncWrapper(
 );
 
 export const promoteProjectMember: RequestHandler = asyncWrapper(
-  async (req: Request<{ projectId: string; userId: string }, {}, { access: string }>, res: Response) => {
+  async (
+    req: Request<{ projectId: string; userId: string }, {}, { access: string }>,
+    res: Response<z.infer<typeof MemberResponseSchema>>,
+  ) => {
     const { projectId, userId } = req.params;
     const { access } = req.body;
     const { id: promoterId } = req.user!;
@@ -143,7 +167,7 @@ export const promoteProjectMember: RequestHandler = asyncWrapper(
     if (!hasAccess) {
       return res.status(httpStatus.FORBIDDEN).json({
         message: "Only project owner can promote members",
-      });
+      } as any);
     }
 
     await projectServices.promoteProjectMember(projectId, userId, access);
@@ -158,7 +182,10 @@ export const promoteProjectMember: RequestHandler = asyncWrapper(
 );
 
 export const getProjectMembers: RequestHandler = asyncWrapper(
-  async (req: Request<{ projectId: string }>, res: Response) => {
+  async (
+    req: Request<{ projectId: string }>,
+    res: Response<z.infer<typeof ProjectMembersResponseSchema>>,
+  ) => {
     const { projectId } = req.params;
     const { id: userId } = req.user!;
 
@@ -168,19 +195,23 @@ export const getProjectMembers: RequestHandler = asyncWrapper(
     if (!hasAccess) {
       return res.status(httpStatus.FORBIDDEN).json({
         message: "Only project members can view project members",
-      });
+      } as any);
     }
 
     const result = await projectServices.getProjectMembers(projectId);
 
     res.json({
+      message: "Project members retrieved successfully",
       data: result,
     });
   },
 );
 
 export const getProjectInvitations: RequestHandler = asyncWrapper(
-  async (req: Request<{ projectId: string }>, res: Response) => {
+  async (
+    req: Request<{ projectId: string }>,
+    res: Response<z.infer<typeof InvitationsListResponseSchema>>,
+  ) => {
     const { projectId } = req.params;
     const { id: requesterId } = req.user!;
 
@@ -189,29 +220,36 @@ export const getProjectInvitations: RequestHandler = asyncWrapper(
     if (!hasAccess) {
       return res.status(httpStatus.FORBIDDEN).json({
         message: "Only project owner or admin can view invitations",
-      });
+      } as any);
     }
 
     const invitations = await projectServices.getProjectInvitations(projectId);
 
     res.json({
+      message: "Project invitations retrieved successfully",
       data: invitations,
     });
   },
 );
 
-export const getUserInvitations: RequestHandler = asyncWrapper(async (req: Request, res: Response) => {
-  const { id: userId } = req.user!;
+export const getUserInvitations: RequestHandler = asyncWrapper(
+  async (req: Request, res: Response<z.infer<typeof InvitationsListResponseSchema>>) => {
+    const { id: userId } = req.user!;
 
-  const invitations = await projectServices.getUserInvitations(userId);
+    const invitations = await projectServices.getUserInvitations(userId);
 
-  res.json({
-    data: invitations,
-  });
-});
+    res.json({
+      message: "User invitations retrieved successfully",
+      data: invitations,
+    });
+  },
+);
 
 export const respondToInvitation: RequestHandler = asyncWrapper(
-  async (req: Request<{ invitationId: string }, {}, RespondInvitationDTO>, res: Response) => {
+  async (
+    req: Request<{ invitationId: string }, {}, RespondInvitationDTO>,
+    res: Response<z.infer<typeof InvitationResponseSchema>>,
+  ) => {
     const { invitationId } = req.params;
     const { action } = req.body;
     const { id: userId } = req.user!;
@@ -231,7 +269,6 @@ export const respondToInvitation: RequestHandler = asyncWrapper(
 
     res.json({
       message: action === "accept" ? "Invitation accepted successfully" : "Invitation declined successfully",
-      data: result,
     });
   },
 );
