@@ -2,78 +2,50 @@ import express, { Router } from "express";
 import { projectController } from "../controllers/index.js";
 import { validatorMiddleware } from "../middlewares/index.js";
 import {
-  createProjectSchema,
-  updateProjectSchema,
-  removeProjectSchema,
-  addMemberSchema,
-  updateMemberSchema,
-  removeMemberSchema,
-  getProjectMembersSchema,
-  getProjectInvitationsSchema,
-  respondInvitationSchema,
-} from "../validations/index.js";
+  CreateProjectRequestSchema,
+  UpdateProjectRequestSchema,
+  RemoveProjectRequestSchema,
+  AddMemberRequestSchema,
+  UpdateMemberRequestSchema,
+  RemoveMemberRequestSchema,
+  GetProjectMembersRequestSchema,
+  GetProjectInvitationsRequestSchema,
+  RespondInvitationRequestSchema,
+} from "../schemas/index.js";
 
 const router: Router = express.Router();
 
-// create project
-router.post(
-  "/",
-  validatorMiddleware(createProjectSchema),
-  projectController.createProject,
-);
+router.post("/", validatorMiddleware(CreateProjectRequestSchema), projectController.createProject);
 
-// update project
-router.patch(
-  "/:projectId",
-  validatorMiddleware(updateProjectSchema),
-  projectController.updateProject,
-);
+router.get("/", projectController.getUserProjects);
 
-// Get all projects for a user
+router.patch("/:projectId", validatorMiddleware(UpdateProjectRequestSchema), projectController.updateProject);
+
+router.delete("/:projectId", validatorMiddleware(RemoveProjectRequestSchema), projectController.removeProject);
+
+router.post("/member/:projectId", validatorMiddleware(AddMemberRequestSchema), projectController.addMember);
+
 router.get(
-  "/",
-  // no request content
-  projectController.getUserProjects,
-);
-
-// remove project
-router.delete(
-  "/:projectId",
-  validatorMiddleware(removeProjectSchema),
-  projectController.removeProject,
-);
-
-// create project member
-router.post(
   "/member/:projectId",
-  validatorMiddleware(addMemberSchema),
-  projectController.addMember,
+  validatorMiddleware(GetProjectMembersRequestSchema),
+  projectController.getProjectMembers,
 );
 
 router.get(
   "/member/:projectId/invitations",
-  validatorMiddleware(getProjectInvitationsSchema),
+  validatorMiddleware(GetProjectInvitationsRequestSchema),
   projectController.getProjectInvitations,
 );
 
-// update project member
 router.patch(
   "/member/:projectId/:userId",
-  validatorMiddleware(updateMemberSchema),
+  validatorMiddleware(UpdateMemberRequestSchema),
   projectController.promoteProjectMember,
 );
 
-// Get all project members
-router.get(
-  "/member/:projectId",
-  validatorMiddleware(getProjectMembersSchema),
-  projectController.getProjectMembers,
-);
-
-// remove project members
 router.delete(
   "/member/:projectId/:userId",
-  validatorMiddleware(removeMemberSchema),
+  validatorMiddleware(RemoveMemberRequestSchema),
   projectController.removeProjectMember,
 );
 
@@ -81,7 +53,7 @@ router.get("/invitations", projectController.getUserInvitations);
 
 router.patch(
   "/invitations/:invitationId",
-  validatorMiddleware(respondInvitationSchema),
+  validatorMiddleware(RespondInvitationRequestSchema),
   projectController.respondToInvitation,
 );
 
