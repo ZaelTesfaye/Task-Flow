@@ -8,6 +8,7 @@ import { Toaster } from "react-hot-toast";
 import { useThemeStore } from "@/stores";
 import { useEffect } from "react";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import Head from "next/head";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,8 +20,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     initializeTheme();
   }, [initializeTheme]);
 
+  useEffect(() => {
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js");
+    }
+  }, []);
+
   return (
     <html lang="en">
+      <Head>
+        <meta name="theme-color" content="#ffffff" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="MyApp" />
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="apple-touch-icon" href="/favicon.ico" />
+      </Head>
       <body className={inter.className}>
         <QueryProvider>
           <AuthProvider>
