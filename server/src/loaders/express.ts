@@ -8,20 +8,21 @@ import swaggerUi from "swagger-ui-express";
 import { apiReference } from "@scalar/express-api-reference";
 
 import { corsOptions } from "../config/index.js";
-import { errorHandler, notFoundHandler, xssMiddleware } from "../middlewares/index.js";
+import { errorHandler, notFoundHandler, xssMiddleware, authMiddleware } from "../middlewares/index.js";
 import { auth } from "../lib/auth.js";
 import studioConfig from "../studio.config.js";
 import { generateOpenAPIDocument } from "../docs/openapi.js";
 
-// Import routes
-import taskRoutes from "../routes/task.routes.js";
-import userRoutes from "../routes/user.routes.js";
-import projectRoutes from "../routes/project.routes.js";
-import phaseRoutes from "../routes/phase.routes.js";
-import authRoutes from "../routes/auth.routes.js";
-import notificationRoutes from "../routes/notification.routes.js";
-import adminRoutes from "../routes/admin.routes.js";
-import stripeRoutes from "../routes/stripe.routes.js";
+import {
+  taskRoutes,
+  userRoutes,
+  projectRoutes,
+  phaseRoutes,
+  authRoutes,
+  notificationRoutes,
+  adminRoutes,
+  stripeRoutes,
+} from "../routes/index.js";
 
 const expressLoader = (app: Express) => {
   app.set("view engine", "ejs");
@@ -105,15 +106,15 @@ const expressLoader = (app: Express) => {
   app.use(xssMiddleware);
   app.use(cookieParser());
 
-  // Register API routes
-  app.use("/api/task", taskRoutes);
-  app.use("/api/user", userRoutes);
-  app.use("/api/project", projectRoutes);
-  app.use("/api/phase", phaseRoutes);
+  // API routes
+  app.use("/api/task", authMiddleware, taskRoutes);
+  app.use("/api/user", authMiddleware, userRoutes);
+  app.use("/api/project", authMiddleware, projectRoutes);
+  app.use("/api/phase", authMiddleware, phaseRoutes);
   app.use("/api/auth", authRoutes);
-  app.use("/api/notification", notificationRoutes);
-  app.use("/api/admin", adminRoutes);
-  app.use("/api/stripe", stripeRoutes);
+  app.use("/api/notification", authMiddleware, notificationRoutes);
+  app.use("/api/admin", authMiddleware, adminRoutes);
+  app.use("/api/stripe", authMiddleware, stripeRoutes);
 
   // ejs
   app.get("/home", (req, res) => {
@@ -134,7 +135,7 @@ const expressLoader = (app: Express) => {
     res.end(await register.metrics());
   });
 
-  // error handlers - must be last
+  // error handler
   app.use(notFoundHandler);
   app.use(errorHandler);
 

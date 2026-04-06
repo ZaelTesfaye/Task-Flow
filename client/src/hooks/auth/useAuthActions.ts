@@ -3,10 +3,13 @@ import { authClient } from "@/lib/auth-client";
 import { userApi } from "@/lib";
 import type { User } from "@/types";
 import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export const useAuthActions = () => {
   const { setUser, setLoading } = useAuthContext();
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const login = async (data: { email: string; password: string }) => {
     const { data: result } = await authClient.signIn.email({
@@ -80,11 +83,37 @@ export const useAuthActions = () => {
     }
   };
 
+  const googleLogin = async (credentialToken: string) => {
+    await authClient.signIn.social({
+      provider: "google",
+      idToken: {
+        token: credentialToken,
+      },
+    });
+    await checkSession();
+  };
+
+  const handleGoogleLogin = async (credentialToken: string, setLoading?: (loading: boolean) => void) => {
+    setLoading?.(true);
+    try {
+      await googleLogin(credentialToken);
+      toast.success("Login successful!");
+      router.push("/dashboard");
+    } catch (error) {
+      toast.error("Google Login failed.");
+      throw error;
+    } finally {
+      setLoading?.(false);
+    }
+  };
+
   return {
     login,
     register,
     logout,
     updateUserData,
     checkSession,
+    googleLogin,
+    handleGoogleLogin,
   };
 };
