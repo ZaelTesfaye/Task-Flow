@@ -50,3 +50,21 @@ jobs:
 
       - name: Build
         run: pnpm run build
+
+      - name: Security Audit
+        run: |
+          echo "Checking for security vulnerabilities..."
+          pnpm audit --json > audit-results.json || true
+
+          if [ -f "audit-results.json" ]; then
+            HIGH_VULNS=$(cat audit-results.json | jq '.metadata.vulnerabilities.high // 0')
+            CRITICAL_VULNS=$(cat audit-results.json | jq '.metadata.vulnerabilities.critical // 0')
+            
+            if [ "$HIGH_VULNS" -gt 0 ] || [ "$CRITICAL_VULNS" -gt 0 ]; then
+              echo "Found $HIGH_VULNS high and $CRITICAL_VULNS critical vulnerabilities"
+              echo "Please review and fix these security issues"
+              exit 1
+            else
+              echo "No high or critical vulnerabilities found"
+            fi
+          fi
