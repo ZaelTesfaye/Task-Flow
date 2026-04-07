@@ -54,7 +54,7 @@ export default function ProfileMenu({
 
   const getBadge = () => {
     if (!user?.stripePriceId) {
-      return <span className="ml-2 rounded-full bg-gray-200 px-2 py-0.5 text-xs dark:bg-gray-700">Free</span>;
+      return <span className="ml-2 rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">Free</span>;
     }
 
     // Determine if it's starter or pro based on price
@@ -63,7 +63,7 @@ export default function ProfileMenu({
 
     if (isStarterPrice) {
       return (
-        <span className="ml-2 rounded-full bg-gray-400 px-2 py-0.5 text-xs text-white dark:bg-gray-600">Starter</span>
+        <span className="ml-2 rounded-full bg-secondary px-2 py-0.5 text-xs text-secondary-foreground">Starter</span>
       );
     }
 

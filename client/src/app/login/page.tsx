@@ -186,7 +186,7 @@ export default function LoginPage() {
     <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
       <div className="flex min-h-screen items-center justify-center bg-[hsl(var(--background))] p-4 dark:bg-[hsl(var(--background))]">
         {/* Theme Toggle*/}
-        <div className="absolute z-10 right-4 top-4">
+        <div className="absolute right-4 top-4 z-10">
           <ThemeToggle />
         </div>
 
@@ -195,8 +195,8 @@ export default function LoginPage() {
           {showForgotPassword ? (
             <div>
               <div className="mb-8 text-center">
-                <div className="inline-flex items-center justify-center w-16 h-16 mb-4 bg-blue-600 rounded-full">
-                  <KeyRound className="w-8 h-8 text-white" />
+                <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-blue-600">
+                  <KeyRound className="h-8 w-8 text-white" />
                 </div>
                 <h1 className="text-3xl font-bold text-[hsl(var(--foreground))]">Reset Password</h1>
                 <p className="mt-2 text-[hsl(var(--muted-foreground))]">
@@ -224,7 +224,7 @@ export default function LoginPage() {
                     <button
                       onClick={handleForgotPasswordClick}
                       disabled={isResetting}
-                      className="w-full py-3 font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+                      className="w-full rounded-lg bg-blue-600 py-3 font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       {isResetting ? "Sending..." : "Send Reset Code"}
                     </button>
@@ -250,7 +250,7 @@ export default function LoginPage() {
                     <button
                       onClick={handleVerifyCodeClick}
                       disabled={isResetting || resetCode.length !== 6}
-                      className="w-full py-3 font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+                      className="w-full rounded-lg bg-blue-600 py-3 font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       {isResetting ? "Verifying..." : "Verify Code"}
                     </button>
@@ -286,7 +286,7 @@ export default function LoginPage() {
                     <button
                       onClick={handleResetPasswordClick}
                       disabled={isResetting || !newPassword || newPassword !== confirmPassword}
-                      className="w-full py-3 font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+                      className="w-full rounded-lg bg-blue-600 py-3 font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       {isResetting ? "Resetting..." : "Reset Password"}
                     </button>
@@ -308,11 +308,11 @@ export default function LoginPage() {
             <>
               {/* Normal Login/Register Form */}
               <div className="mb-8 text-center">
-                <div className="inline-flex items-center justify-center w-16 h-16 mb-4 bg-blue-600 rounded-full">
+                <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-blue-600">
                   {mode === "login" ? (
-                    <LogIn className="w-8 h-8 text-white" />
+                    <LogIn className="h-8 w-8 text-white" />
                   ) : (
-                    <UserPlus className="w-8 h-8 text-white" />
+                    <UserPlus className="h-8 w-8 text-white" />
                   )}
                 </div>
                 <h1 className="text-3xl font-bold text-[hsl(var(--foreground))]">
@@ -384,7 +384,7 @@ export default function LoginPage() {
                 >
                   {isLoading ? (
                     <>
-                      <div className="w-5 h-5 border-2 border-white rounded-full animate-spin border-t-transparent"></div>
+                      <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
                       <span>{mode === "login" ? "Signing in..." : "Creating account..."}</span>
                     </>
                   ) : mode === "login" ? (
@@ -402,40 +402,38 @@ export default function LoginPage() {
                       setShowForgotPassword(true);
                       setResetEmail(formData.email);
                     }}
-                    className="flex items-center justify-center w-full gap-2 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+                    className="flex w-full items-center justify-center gap-2 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
                   >
-                    <Mail className="w-4 h-4" />
+                    <Mail className="h-4 w-4" />
                     Forgot Password?
                   </button>
                 )}
 
-                <div className="flex justify-center w-full mt-4">
+                <div className="mt-4 flex w-full justify-center">
                   {/* Custom styled container with Google's button as overlay */}
                   <div className={`group relative w-full ${isGoogleLoaded ? "cursor-pointer" : "cursor-not-allowed"}`}>
                     {/* Loading Overlay */}
                     {isGoogleLoading && (
-                      <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-white/80 backdrop-blur-sm dark:bg-neutral-800/80">
+                      <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-card/80 backdrop-blur-sm">
                         <div className="flex flex-col items-center gap-2">
-                          <div className="w-6 h-6 border-2 border-blue-600 rounded-full animate-spin border-t-transparent"></div>
-                          <span className="text-sm text-gray-700 dark:text-gray-200">Signing in...</span>
+                          <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
+                          <span className="text-sm text-foreground">Signing in...</span>
                         </div>
                       </div>
                     )}
 
                     {/* Custom visual button (underneath) */}
                     <div
-                      className={`flex w-full items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-3 font-medium shadow-sm transition-all duration-200 ease-in-out dark:border-neutral-700 dark:bg-neutral-800 ${isGoogleLoaded ? "group-hover:border-gray-300 group-hover:bg-gray-50 group-hover:shadow-md dark:group-hover:border-neutral-600 dark:group-hover:bg-neutral-700" : "opacity-50"} pointer-events-none`}
+                      className={`flex w-full items-center justify-center rounded-lg border border-border bg-card px-4 py-3 font-medium shadow-sm transition-all duration-200 ease-in-out ${isGoogleLoaded ? "group-hover:border-border/60 group-hover:bg-accent group-hover:shadow-md" : "opacity-50"} pointer-events-none`}
                     >
                       <Image
                         src="https://www.svgrepo.com/show/475656/google-color.svg"
                         alt="Google"
-                        className="w-5 h-5 mr-3"
+                        className="mr-3 h-5 w-5"
                         width={20}
                         height={20}
                       />
-                      <span className="text-gray-700 group-hover:text-gray-900 dark:text-gray-200 dark:group-hover:text-white">
-                        Sign in with Google
-                      </span>
+                      <span className="text-foreground">Sign in with Google</span>
                     </div>
 
                     {/* Google's actual button (transparent overlay on top - clickable) */}

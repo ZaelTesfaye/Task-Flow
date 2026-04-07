@@ -68,7 +68,7 @@ export default function AdminLayout() {
               className="text-2xl font-bold text-blue-600 cursor-pointer dark:text-blue-400"
               onClick={() => (window.location.href = "/dashboard")}
             >
-              TaskFlow
+              TaskFlows
             </h1>
           </div>
 

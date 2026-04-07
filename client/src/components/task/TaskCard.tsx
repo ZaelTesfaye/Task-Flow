@@ -41,8 +41,8 @@ const TaskCard: React.FC<TaskCardProps> = ({
       <div
         className={`cursor-pointer rounded-lg border p-2 transition-colors ${
           task.assignedTo === currentUserId
-            ? "border-blue-300 bg-blue-50 hover:bg-blue-100 dark:border-blue-700 dark:bg-blue-950/30 dark:hover:bg-blue-950/50"
-            : "border-[hsl(var(--border))] bg-gray-100 hover:bg-gray-200 dark:bg-gray-900/50 dark:hover:bg-gray-800/50"
+            ? "border-blue-300 bg-blue-50 hover:bg-blue-100 dark:border-blue-500/30 dark:bg-blue-500/10 dark:hover:bg-blue-500/15"
+            : "border-[hsl(var(--border))] bg-muted hover:bg-accent"
         }`}
         onClick={() => setShowDetailsModal(true)}
       >

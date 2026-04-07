@@ -34,8 +34,8 @@ export default function Header() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-blue-600"></div>
+      <div className="flex items-center justify-center min-h-screen bg-background">
+        <div className="w-12 h-12 border-b-2 rounded-full animate-spin border-primary"></div>
       </div>
     );
   }
@@ -61,27 +61,27 @@ export default function Header() {
       <header className="sticky top-0 z-50 border-b border-[hsl(var(--border))] bg-[hsl(var(--card))] text-[hsl(var(--card-foreground))]">
         <div className="flex items-center justify-between px-6 py-4">
           <h1
-            className="cursor-pointer text-2xl font-bold text-blue-600 hover:cursor-pointer dark:text-blue-400"
+            className="text-2xl font-bold text-blue-600 cursor-pointer hover:cursor-pointer dark:text-blue-400"
             onClick={() => router.push("/dashboard")}
           >
-            TaskFlow
+            TaskFlows
           </h1>
 
           {/* User Profile */}
           <div className="relative">
             <button
               onClick={() => setShowProfileMenu(!showProfileMenu)}
-              className="relative flex items-center gap-3 rounded-lg px-3 py-2 transition hover:cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600"
+              className="relative flex items-center gap-3 px-3 py-2 transition rounded-lg hover:cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600"
             >
               <div className="text-right">
                 <p className="text-sm font-semibold text-[hsl(var(--foreground))]">{user.name}</p>
                 <p className="text-xs text-[hsl(var(--muted-foreground))]">{user.email}</p>
               </div>
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 font-semibold text-white">
+              <div className="flex items-center justify-center w-10 h-10 font-semibold text-white bg-blue-600 rounded-full">
                 {user.name?.charAt(0).toUpperCase()}
               </div>
               {/* Red dot notification for invitations */}
-              {invitationsCount > 0 && <div className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-red-500"></div>}
+              {invitationsCount > 0 && <div className="absolute w-2 h-2 bg-red-500 rounded-full -right-1 -top-1"></div>}
             </button>
 
             <ProfileMenu

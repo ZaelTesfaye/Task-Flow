@@ -14,16 +14,15 @@ export interface ProjectProps {
 const getRoleIcon = (role: string) => {
   switch (role) {
     case "owner":
-      return <Folder className="h-5 w-5 text-yellow-500" />;
+      return <Folder className="w-5 h-5 text-yellow-500" />;
     case "admin":
-      return <Shield className="h-5 w-5 text-blue-500" />;
+      return <Shield className="w-5 h-5 text-blue-500" />;
     default:
-      return <Users className="h-5 w-5 text-green-500" />;
+      return <Users className="w-5 h-5 text-green-500" />;
   }
 };
 
 const ProjectCard = ({ project, role }: { project: ProjectProps; role: string }) => {
-  console.log("ProjectCard role:", role);
   const router = useRouter();
   const { notificationCount } = useProjectNotifications(project.id);
   const { markProjectNotificationsAsRead } = useNotificationMutations(project.id);
@@ -35,7 +34,7 @@ const ProjectCard = ({ project, role }: { project: ProjectProps; role: string })
         ? "badge-role-admin"
         : role === "member"
           ? "badge-role-member"
-          : "bg-gray-100 text-gray-900 border border-gray-300 dark:bg-gray-800 dark:text-gray-100";
+          : "bg-muted text-foreground border border-border";
 
   const handleCardClick = async () => {
     await markProjectNotificationsAsRead();
@@ -45,11 +44,11 @@ const ProjectCard = ({ project, role }: { project: ProjectProps; role: string })
   return (
     <Card
       onClick={handleCardClick}
-      className="group relative cursor-pointer border transition-all duration-300 hover:scale-[1.02] hover:shadow-sm dark:border-gray-600 dark:shadow-gray-700 hover:dark:shadow-md"
+      className="group relative cursor-pointer border transition-all duration-300 hover:scale-[1.02] hover:shadow-lg"
     >
       {/* Notification Badge */}
       {notificationCount > 0 && (
-        <div className="absolute -right-2 -top-2 z-10">
+        <div className="absolute z-10 -right-2 -top-2">
           <div className="flex h-6 min-w-[24px] items-center justify-center rounded-full bg-red-500 px-2 shadow-lg">
             <span className="text-xs font-bold text-white">{notificationCount > 99 ? "99+" : notificationCount}</span>
           </div>
@@ -57,10 +56,10 @@ const ProjectCard = ({ project, role }: { project: ProjectProps; role: string })
       )}
 
       <CardHeader>
-        <div className="mb-2 flex items-start justify-between">
+        <div className="flex items-start justify-between mb-2">
           <div className="flex items-center gap-2">
-            <div className="rounded-lg bg-gradient-to-br from-blue-200 to-indigo-300 p-2 shadow-sm dark:from-blue-800 dark:to-indigo-800">
-              <FolderOpen className="h-5 w-5 text-blue-500" />
+            <div className="p-2 rounded-lg shadow-sm bg-gradient-to-br from-blue-200 to-indigo-300 dark:from-blue-800 dark:to-indigo-800">
+              <FolderOpen className="w-5 h-5 text-blue-500" />
             </div>
             <CardTitle className="text-xl text-[hsl(var(--foreground))] transition-colors group-hover:text-blue-600 dark:group-hover:text-blue-400">
               {project.title}

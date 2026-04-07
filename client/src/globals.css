@@ -27,31 +27,35 @@
     --radius: 0.5rem;
   }
 
-  /* dark mode */
+  /* dark mode - Deep professional theme */
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 217.2 32.6% 17.5%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
+    --background: 0 0% 2%; /* Almost black (#080808) */
+    --foreground: 0 0% 98%; /* Crisp white text */
+    --card: 0 0% 7%; /* Elevated surface (#121212) */
+    --card-foreground: 0 0% 95%; /* Slightly softer white */
+    --popover: 0 0% 5%; /* Deeper popover (#0d0d0d) */
+    --popover-foreground: 0 0% 98%; /* Crisp white */
+    --primary: 217 91% 60%; /* Vibrant blue */
+    --primary-foreground: 0 0% 100%; /* Pure white */
+    --secondary: 0 0% 10%; /* Subtle secondary (#1a1a1a) */
+    --secondary-foreground: 0 0% 90%; /* Light gray text */
+    --muted: 0 0% 9%; /* Muted background (#171717) */
+    --muted-foreground: 0 0% 60%; /* Medium gray */
+    --accent: 0 0% 12%; /* Accent surface (#1f1f1f) */
+    --accent-foreground: 0 0% 95%; /* Light text */
+    --destructive: 0 72% 51%; /* Vibrant red */
+    --destructive-foreground: 0 0% 100%; /* Pure white */
+    --border: 0 0% 25%; /* Subtle white border */
+    --input: 0 0% 18%; /* Input border */
+    --ring: 217 91% 20%; /* Focus ring matches primary */
   }
 }
 
 @layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
+  
   body {
     background: hsl(var(--background));
     color: hsl(var(--foreground));
@@ -74,32 +78,32 @@
 @layer components {
   /* Role Badge Styles */
   .badge-role-owner {
-    @apply border border-yellow-600 bg-yellow-500/10 text-yellow-500 dark:border-yellow-500 dark:bg-yellow-900/10 dark:text-yellow-500;
+    @apply text-yellow-400 border border-yellow-600/40 bg-yellow-500/10 dark:border-yellow-500/30 dark:bg-yellow-500/10 dark:text-yellow-400;
   }
 
   .badge-role-admin {
-    @apply border border-blue-600 bg-blue-500/10 text-blue-500 dark:border-blue-800 dark:bg-blue-900/10 dark:text-blue-500;
+    @apply text-blue-400 border border-blue-600/40 bg-blue-500/10 dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-blue-400;
   }
 
   .badge-role-member {
-    @apply border border-green-600 bg-green-500/10 text-green-500 dark:border-green-700 dark:bg-green-900/10 dark:text-green-500;
+    @apply text-green-400 border border-green-600/40 bg-green-500/10 dark:border-green-500/30 dark:bg-green-500/10 dark:text-green-400;
   }
 
   /* Invitation Status Badge Styles */
   .badge-invitation-pending {
-    @apply border border-yellow-300 bg-yellow-500 dark:border-yellow-800/60 dark:bg-yellow-900/10 dark:text-yellow-500;
+    @apply bg-yellow-500 border border-yellow-300 dark:border-yellow-500/30 dark:bg-yellow-500/15 dark:text-yellow-400;
   }
 
   .badge-invitation-accepted {
-    @apply border border-green-300 bg-green-200 text-green-900 dark:border-green-800/60 dark:bg-green-900/40 dark:text-green-500;
+    @apply text-green-900 bg-green-200 border border-green-300 dark:border-green-500/30 dark:bg-green-500/15 dark:text-green-400;
   }
 
   .badge-invitation-declined {
-    @apply border border-red-300 bg-red-200 text-red-900 dark:border-red-800/60 dark:bg-red-900/40 dark:text-red-500;
+    @apply text-red-900 bg-red-200 border border-red-300 dark:border-red-500/30 dark:bg-red-500/15 dark:text-red-400;
   }
 
   .badge-invitation-expired {
-    @apply border border-gray-300 bg-gray-200 text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300;
+    @apply text-gray-900 bg-gray-200 border border-gray-300 dark:border-gray-600/30 dark:bg-gray-600/15 dark:text-gray-400;
   }
 }
 
@@ -115,7 +119,20 @@
 }
 
 .dark ::-webkit-scrollbar-track {
-  background: rgb(31 41 55);
+  background: rgb(18 18 18); /* Matches card background */
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(209 213 219);
+  border-radius: 9999px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgb(64 64 64); /* Subtle but visible */
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgb(82 82 82); /* Slightly brighter on hover */
 }
 
 ::-webkit-scrollbar-thumb {

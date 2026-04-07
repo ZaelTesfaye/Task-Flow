@@ -44,8 +44,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Toaster
               position="top-right"
               toastOptions={{
-                className:
-                  "bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-700",
+                className: "bg-card text-card-foreground border border-border",
               }}
             />
           </AuthProvider>

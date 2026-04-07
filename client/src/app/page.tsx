@@ -82,7 +82,7 @@ export default function HomePage() {
         <div className="container mx-auto px-6 py-16">
           <div className="mb-16 text-center">
             <h1 className="bg-linear-to-r mb-6 from-blue-600 via-blue-600 to-indigo-600 bg-clip-text text-5xl font-bold md:text-6xl">
-              TaskFlow
+              TaskFlows
             </h1>
             <p className="mx-auto mb-8 max-w-2xl text-xl text-gray-600 dark:text-gray-300">
               Streamline your project management with powerful tools designed for teams and individuals. Organize,
@@ -240,9 +240,9 @@ export default function HomePage() {
           </div>
 
           {/* Moto */}
-          <div className="rounded-2xl bg-white p-8 text-center shadow-lg dark:bg-gray-800">
+          <div className="rounded-2xl bg-card p-8 text-center shadow-lg">
             <h2 className="mb-4 text-3xl font-bold">Ready to boost your productivity?</h2>
-            <p className="mx-auto mb-6 max-w-md text-gray-600 dark:text-gray-300">
+            <p className="mx-auto mb-6 max-w-md text-muted-foreground">
               Join teams already using TaskFlow to manage their projects efficiently.
             </p>
           </div>

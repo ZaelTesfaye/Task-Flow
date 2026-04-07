@@ -36,7 +36,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
 }) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent overlayClassName="bg-black/50W backdrop-blur-sm" className="bg-white dark:bg-gray-700">
+      <DialogContent overlayClassName="bg-black/50 backdrop-blur-sm" className="bg-card">
         <DialogHeader>
           <DialogTitle>Create New Project</DialogTitle>
           <DialogDescription>

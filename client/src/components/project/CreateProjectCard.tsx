@@ -28,7 +28,7 @@ const AddProjectCard = ({
       </CardDescription>
     </CardHeader>
     <CardContent className="flex justify-start">
-      <span className="rounded-full border border-[hsl(var(--border))] bg-[hsl(var(--muted))] px-3 py-1.5 text-xs font-semibold text-[hsl(var(--foreground))] dark:bg-gray-900/50">
+      <span className="rounded-full border border-[hsl(var(--border))] bg-[hsl(var(--muted))] px-3 py-1.5 text-xs font-semibold text-[hsl(var(--foreground))]">
         New Project
       </span>
     </CardContent>

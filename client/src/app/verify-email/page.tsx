@@ -60,10 +60,10 @@ function VerifyEmailContent() {
       <div className="flex min-h-screen items-center justify-center bg-[hsl(var(--background))] p-4">
         <div className="w-full max-w-lg rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] p-8 shadow-xl">
           <div className="flex flex-col items-center justify-center text-center">
-            <CheckCircle className="w-20 h-20 mb-6 text-green-500" />
+            <CheckCircle className="mb-6 h-20 w-20 text-green-500" />
             <h2 className="mb-2 text-3xl font-bold text-[hsl(var(--foreground))]">Email Verified!</h2>
             <p className="mb-8 max-w-md text-[hsl(var(--muted-foreground))]">
-              Your email has been successfully verified. You can now access all features of TaskFlow.
+              Your email has been successfully verified. You can now access all features of TaskFlows.
             </p>
             <p className="text-sm text-[hsl(var(--muted-foreground))]">Redirecting to login...</p>
           </div>
@@ -76,7 +76,7 @@ function VerifyEmailContent() {
     <div className="flex min-h-screen items-center justify-center bg-[hsl(var(--background))] p-4">
       <div className="w-full max-w-lg rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] p-8 shadow-xl">
         <div className="mb-8 text-center">
-          <Mail className="w-16 h-16 mx-auto mb-4 text-blue-500" />
+          <Mail className="mx-auto mb-4 h-16 w-16 text-blue-500" />
           <h1 className="mb-2 text-3xl font-bold text-[hsl(var(--foreground))]">Verify Your Email</h1>
           <p className="text-[hsl(var(--muted-foreground))]">
             We&apos;ve sent a 6-digit verification code to {email || "your email"}. Enter it below to verify your
@@ -103,7 +103,7 @@ function VerifyEmailContent() {
 
           {errorMessage && (
             <div className="flex items-center justify-center space-x-2 text-red-500">
-              <XCircle className="w-5 h-5" />
+              <XCircle className="h-5 w-5" />
               <span className="text-sm">{errorMessage}</span>
             </div>
           )}
@@ -111,11 +111,11 @@ function VerifyEmailContent() {
           <button
             type="submit"
             disabled={status === "loading" || code.length !== 6}
-            className="flex items-center justify-center w-full px-4 py-3 space-x-2 font-semibold text-white transition-colors bg-blue-600 rounded-lg hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-400"
+            className="flex w-full items-center justify-center space-x-2 rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-400"
           >
             {status === "loading" ? (
               <>
-                <Loader2 className="w-5 h-5 animate-spin" />
+                <Loader2 className="h-5 w-5 animate-spin" />
                 <span>Verifying...</span>
               </>
             ) : (
