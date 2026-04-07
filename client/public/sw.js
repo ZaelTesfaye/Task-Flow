@@ -1,4 +1,4 @@
-const CACHE_NAME = "v1";
+const CACHE_NAME = "v3";
 const urlsToCache = ["/"];
 
 self.addEventListener("install", (event) => {
@@ -30,30 +30,28 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Skip caching for API requests
   const url = new URL(event.request.url);
+  
+  // Skip caching for API requests
   if (url.pathname.startsWith("/api/")) {
     return;
   }
 
+  // fall back to cache if offline
   event.respondWith(
-    caches.match(event.request).then((response) => {
-      if (response) {
-        return response;
-      }
-
-      return fetch(event.request).then((response) => {
-        if (!response || response.status !== 200 || response.type === "error") {
-          return response;
+    fetch(event.request)
+      .then((response) => {
+        // Cache successful responses
+        if (response && response.status === 200) {
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseToCache);
+          });
         }
-
-        const responseToCache = response.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseToCache);
-        });
-
         return response;
-      });
-    })
+      })
+      .catch(() => {
+        return caches.match(event.request);
+      })
   );
 });
