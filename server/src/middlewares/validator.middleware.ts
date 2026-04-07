@@ -13,11 +13,18 @@ interface ValidationSchema {
 const validate =
   (schema: ValidationSchema) =>
   (req: Request, res: Response, next: NextFunction): void => {
+    const getErrorMessage = (result: z.SafeParseError<unknown>, fallback: string) => {
+      const issue = result.error.issues[0];
+      if (!issue) return fallback;
+      const path = issue.path.length > 0 ? issue.path.join(".") : "request";
+      return `${path}: ${issue.message}`;
+    };
+
     try {
       if (schema.body) {
         const result = schema.body.safeParse(req.body);
         if (!result.success) {
-          return next(new APIError(result.error.issues[0]?.message || "Invalid body", status.BAD_REQUEST));
+          return next(new APIError(getErrorMessage(result, "Invalid body"), status.BAD_REQUEST));
         }
         req.body = result.data;
       }
@@ -25,7 +32,7 @@ const validate =
       if (schema.query) {
         const result = schema.query.safeParse(req.query);
         if (!result.success) {
-          return next(new APIError(result.error.issues[0]?.message || "Invalid query parameters", status.BAD_REQUEST));
+          return next(new APIError(getErrorMessage(result, "Invalid query parameters"), status.BAD_REQUEST));
         }
         req.query = result.data;
       }
@@ -33,7 +40,7 @@ const validate =
       if (schema.params) {
         const result = schema.params.safeParse(req.params);
         if (!result.success) {
-          return next(new APIError(result.error.issues[0]?.message || "Invalid path parameters", status.BAD_REQUEST));
+          return next(new APIError(getErrorMessage(result, "Invalid path parameters"), status.BAD_REQUEST));
         }
         req.params = result.data;
       }

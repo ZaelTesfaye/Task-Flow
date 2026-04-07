@@ -23,7 +23,7 @@ export const CreateTaskRequestSchema = {
     .object({
       title: z.string().min(1).max(60),
       description: z.string().min(1).max(255),
-      assignedTo: z.string().uuid(),
+      assignedTo: z.string().min(1),
     })
     .openapi("CreateTaskBody"),
   params: z.object({

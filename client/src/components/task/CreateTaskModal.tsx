@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState } from "react";
 import { X } from "lucide-react";
 
 import { Modal, Spinner } from "@/components";
@@ -21,34 +21,24 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
   members,
   loading = false,
 }) => {
-  const initialFormData = useMemo(
-    () => ({
-      title: "",
-      description: "",
-      assignee: members.length > 0 ? members[0].userId : "",
-    }),
-    [members],
-  );
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    assignee: "",
+  });
 
-  const [formData, setFormData] = useState(initialFormData);
-
-  // Reset form when modal opens
-  useEffect(() => {
-    if (isOpen) {
-      setFormData(initialFormData);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen]);
+  const currentAssignee = formData.assignee || (members.length > 0 ? members[0].userId : "");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.title.trim() || !formData.description.trim() || !formData.assignee) return;
+    const isValidAssignee = members.some((m) => m.userId === currentAssignee);
+    if (!formData.title.trim() || !formData.description.trim() || !isValidAssignee) return;
 
     try {
       await onSubmit({
         title: formData.title.trim(),
         description: formData.description.trim(),
-        assignee: formData.assignee,
+        assignee: currentAssignee,
       });
       setFormData({ title: "", description: "", assignee: "" });
       onClose();
@@ -108,7 +98,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
         <div>
           <label className="mb-2 block text-sm font-medium text-[hsl(var(--muted-foreground))]">Assign To</label>
           <select
-            value={formData.assignee}
+            value={currentAssignee}
             onChange={(e) => setFormData((prev) => ({ ...prev, assignee: e.target.value }))}
             required
             className="w-full rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--background))] px-4 py-2.5 text-[hsl(var(--foreground))] outline-none focus:border-transparent focus:ring-2 focus:ring-blue-500"
@@ -131,7 +121,12 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
           </button>
           <button
             type="submit"
-            disabled={loading || !formData.title.trim() || !formData.description.trim() || !formData.assignee}
+            disabled={
+              loading ||
+              !formData.title.trim() ||
+              !formData.description.trim() ||
+              !members.some((m) => m.userId === currentAssignee)
+            }
             className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-[hsl(var(--primary-foreground))] transition hover:cursor-pointer hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {loading ? (
