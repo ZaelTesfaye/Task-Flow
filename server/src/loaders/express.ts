@@ -3,14 +3,14 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import { register } from "prom-client";
 import { toNodeHandler } from "better-auth/node";
-import { handleStudioRequest } from "better-auth-studio";
 import swaggerUi from "swagger-ui-express";
 import { apiReference } from "@scalar/express-api-reference";
 
 import { corsOptions } from "../config/index.js";
 import { errorHandler, notFoundHandler, xssMiddleware, authMiddleware } from "../middlewares/index.js";
+import { betterAuthStudio } from "better-auth-studio/express";
 import { auth } from "../lib/auth.js";
-import studioConfig from "../studio.config.js";
+import { studioConfig } from "../config/index.js";
 import { generateOpenAPIDocument } from "../docs/openapi.js";
 
 import {
@@ -18,7 +18,6 @@ import {
   userRoutes,
   projectRoutes,
   phaseRoutes,
-  authRoutes,
   notificationRoutes,
   adminRoutes,
   stripeRoutes,
@@ -30,6 +29,7 @@ const expressLoader = (app: Express) => {
   app.disable("x-powered-by");
 
   app.use(cors(corsOptions));
+  app.use(cookieParser());
 
   const openApiDocument = generateOpenAPIDocument();
 
@@ -56,44 +56,7 @@ const expressLoader = (app: Express) => {
   );
 
   app.use("/api/auth", toNodeHandler(auth));
-  app.use("/api/admin/studio", express.urlencoded({ extended: true }), express.json(), async (req, res) => {
-    const headers = Object.fromEntries(
-      Object.entries(req.headers)
-        .filter(([, value]) => value)
-        .map(([key, value]) => [key, Array.isArray(value) ? value[0] : value]),
-    ) as Record<string, string>;
-
-    const hasBody = req.body !== undefined && (typeof req.body !== "object" || Object.keys(req.body).length > 0);
-
-    let body: string | undefined;
-    if (hasBody) {
-      if (typeof req.body === "string") {
-        body = req.body;
-      } else if (req.is("application/x-www-form-urlencoded")) {
-        body = new URLSearchParams(
-          Object.entries(req.body as Record<string, unknown>).map(([key, value]) => [key, String(value)]),
-        ).toString();
-      } else {
-        body = JSON.stringify(req.body);
-      }
-    }
-
-    const response = await handleStudioRequest(
-      {
-        method: req.method,
-        url: req.originalUrl.replace("/api/admin/studio", "") || "/",
-        headers,
-        body,
-      },
-      studioConfig,
-    );
-
-    Object.entries(response.headers || {}).forEach(([key, value]) => {
-      res.setHeader(key, value as string);
-    });
-
-    res.status(response.status).send(response.body);
-  });
+  app.use("/api/admin/studio", express.urlencoded({ extended: true }), express.json(), betterAuthStudio(studioConfig));
 
   app.use(express.static("public"));
   app.use((req, res, next) => {
@@ -104,14 +67,12 @@ const expressLoader = (app: Express) => {
     }
   });
   app.use(xssMiddleware);
-  app.use(cookieParser());
 
   // API routes
   app.use("/api/task", authMiddleware, taskRoutes);
   app.use("/api/user", authMiddleware, userRoutes);
   app.use("/api/project", authMiddleware, projectRoutes);
   app.use("/api/phase", authMiddleware, phaseRoutes);
-  app.use("/api/auth", authRoutes);
   app.use("/api/notification", authMiddleware, notificationRoutes);
   app.use("/api/admin", authMiddleware, adminRoutes);
   app.use("/api/stripe", authMiddleware, stripeRoutes);

@@ -19,9 +19,26 @@ function Login() {
 
   // Check if user is authenticated
   useEffect(() => {
-    if (localStorage.getItem("adminUser")) {
-      navigate("/dashboard");
-    }
+    const checkExistingSession = async () => {
+      if (!localStorage.getItem("adminUser")) return;
+
+      try {
+        const session = await authApiClient.get<{ user: AdminUser | null }>(
+          "get-session",
+        );
+
+        if (session.user && (session.user.role === "admin" || session.user.role === "owner")) {
+          navigate("/users-custom", { replace: true });
+          return;
+        }
+      } catch {
+        // Fall through and clear stale local state.
+      }
+
+      localStorage.removeItem("adminUser");
+    };
+
+    void checkExistingSession();
   }, [navigate]);
 
   const validateForm = () => {
@@ -46,13 +63,22 @@ function Login() {
 
     setLoading(true);
     try {
-      const result = await authApiClient.post<{ data: { user: AdminUser } }>(
-        { email, password },
-        "login",
+      await authApiClient.post({ email, password }, "sign-in/email");
+      const session = await authApiClient.get<{ user: AdminUser | null }>(
+        "get-session",
       );
-      localStorage.setItem("adminUser", JSON.stringify(result.data.user));
+
+      if (
+        !session.user ||
+        (session.user.role !== "admin" && session.user.role !== "owner")
+      ) {
+        await authApiClient.post(undefined, "sign-out");
+        throw new Error("Only admin users can access this app");
+      }
+
+      localStorage.setItem("adminUser", JSON.stringify(session.user));
       toast.success("Login successful!");
-      navigate("/dashboard");
+      navigate("/users-custom", { replace: true });
     } catch {
       toast.error("Login failed. Please check your credentials.");
     } finally {
@@ -74,17 +100,17 @@ function Login() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-4 bg-linear-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
+    <div className="flex items-center justify-center min-h-screen p-4 bg-[hsl(var(--background))]">
       <Toaster position="top-right" />
-      <div className="w-full max-w-md p-8 bg-white shadow-xl dark:bg-gray-800 rounded-2xl">
+      <div className="w-full max-w-md p-8 border shadow-xl bg-[hsl(var(--card))] border-[hsl(var(--border))] rounded-2xl text-[hsl(var(--card-foreground))]">
         <div className="mb-8 text-center">
           <div className="inline-flex items-center justify-center w-16 h-16 mb-4 bg-blue-600 rounded-full">
             <Shield className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+          <h1 className="text-3xl font-bold">
             Admin Portal
           </h1>
-          <p className="mt-2 text-gray-600 dark:text-gray-400">
+          <p className="mt-2 text-[hsl(var(--muted-foreground))]">
             Sign in to access the admin dashboard
           </p>
         </div>
@@ -93,7 +119,7 @@ function Login() {
           <div>
             <Label
               htmlFor="email"
-              className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300"
+              className="block mb-2 text-sm font-medium"
             >
               Email Address
             </Label>
@@ -102,15 +128,15 @@ function Login() {
               type="text"
               value={email}
               onChange={(e) => handleInputChange("email", e.target.value)}
-              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
+              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition bg-[hsl(var(--background))] text-[hsl(var(--foreground))] ${
                 errors.email
                   ? "border-red-500"
-                  : "border-gray-300 dark:border-gray-600"
+                  : "border-[hsl(var(--border))]"
               }`}
               placeholder="admin@example.com"
             />
             {errors.email && (
-              <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+              <p className="mt-1 text-sm text-red-500">
                 {errors.email}
               </p>
             )}
@@ -119,7 +145,7 @@ function Login() {
           <div>
             <Label
               htmlFor="password"
-              className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300"
+              className="block mb-2 text-sm font-medium"
             >
               Password
             </Label>
@@ -128,15 +154,15 @@ function Login() {
               type="password"
               value={password}
               onChange={(e) => handleInputChange("password", e.target.value)}
-              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
+              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition bg-[hsl(var(--background))] text-[hsl(var(--foreground))] ${
                 errors.password
                   ? "border-red-500"
-                  : "border-gray-300 dark:border-gray-600"
+                  : "border-[hsl(var(--border))]"
               }`}
               placeholder="••••••••"
             />
             {errors.password && (
-              <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+              <p className="mt-1 text-sm text-red-500">
                 {errors.password}
               </p>
             )}
@@ -162,7 +188,7 @@ function Login() {
         </form>
 
         <div className="mt-6 text-center">
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          <p className="text-sm text-[hsl(var(--muted-foreground))]">
             Secure admin access only
           </p>
         </div>

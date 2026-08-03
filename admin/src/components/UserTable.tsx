@@ -21,7 +21,7 @@ const UserTable: React.FC<UserTableProps> = ({
     return (
       <div className="flex items-center justify-center py-12">
         <div className="w-8 h-8 border-b-2 border-blue-600 rounded-full animate-spin"></div>
-        <span className="ml-3 text-gray-600 dark:text-gray-400">
+        <span className="ml-3 text-[hsl(var(--muted-foreground))]">
           Loading users...
         </span>
       </div>
@@ -29,28 +29,28 @@ const UserTable: React.FC<UserTableProps> = ({
   }
 
   return (
-    <div className="overflow-x-auto border border-gray-200 rounded-lg dark:border-gray-700">
-      <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-        <thead className="bg-gray-50 dark:bg-gray-700">
+    <div className="overflow-x-auto border rounded-lg border-[hsl(var(--border))]">
+      <table className="min-w-full divide-y divide-[hsl(var(--border))]">
+        <thead className="bg-[hsl(var(--secondary))]">
           <tr>
-            <th className="px-6 py-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-300">
+            <th className="px-6 py-4 text-xs font-medium tracking-wider text-left uppercase text-[hsl(var(--muted-foreground))]">
               Name
             </th>
-            <th className="px-6 py-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-300">
+            <th className="px-6 py-4 text-xs font-medium tracking-wider text-left uppercase text-[hsl(var(--muted-foreground))]">
               Email
             </th>
-            <th className="px-6 py-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-300">
+            <th className="px-6 py-4 text-xs font-medium tracking-wider text-left uppercase text-[hsl(var(--muted-foreground))]">
               Role
             </th>
-            <th className="px-6 py-4 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-300">
+            <th className="px-6 py-4 text-xs font-medium tracking-wider text-left uppercase text-[hsl(var(--muted-foreground))]">
               Created
             </th>
-            <th className="px-6 py-4 pl-10 text-xs font-medium tracking-wider text-left text-gray-500 uppercase dark:text-gray-300">
+            <th className="px-6 py-4 pl-10 text-xs font-medium tracking-wider text-left uppercase text-[hsl(var(--muted-foreground))]">
               Actions
             </th>
           </tr>
         </thead>
-        <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
+        <tbody className="divide-y bg-[hsl(var(--card))] divide-[hsl(var(--border))]">
           {users.map((user) => {
             const canDelete =
               user.role !== "owner" &&
@@ -59,26 +59,26 @@ const UserTable: React.FC<UserTableProps> = ({
             return (
               <tr
                 key={user.id}
-                className="transition-colors hover:bg-gray-50 dark:hover:bg-gray-700"
+                className="transition-colors hover:bg-[hsl(var(--accent))]"
               >
-                <td className="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                <td className="px-6 py-4 text-sm font-medium whitespace-nowrap">
                   {user.name}
                 </td>
-                <td className="px-6 py-4 text-sm text-gray-600 whitespace-nowrap dark:text-gray-300">
+                <td className="px-6 py-4 text-sm whitespace-nowrap text-[hsl(var(--muted-foreground))]">
                   {user.email}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span
                     className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                       user.role === "admin" || user.role === "owner"
-                        ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
-                        : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300"
+                        ? "bg-blue-500/15 text-blue-500"
+                        : "bg-[hsl(var(--accent))] text-[hsl(var(--muted-foreground))]"
                     }`}
                   >
                     {user.role || "user"}
                   </span>
                 </td>
-                <td className="px-6 py-4 text-sm text-gray-600 whitespace-nowrap dark:text-gray-300">
+                <td className="px-6 py-4 text-sm whitespace-nowrap text-[hsl(var(--muted-foreground))]">
                   {user.createdAt
                     ? new Date(user.createdAt).toLocaleDateString()
                     : "N/A"}

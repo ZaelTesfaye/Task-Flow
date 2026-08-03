@@ -23,9 +23,10 @@ export const deleteUser = (userId: string) => {
 };
 
 export const updateUserPassword = (userId: string, password: string) => {
-  return prisma.user.update({
+  return prisma.account.updateMany({
     where: {
-      id: userId,
+      userId,
+      providerId: "credential",
     },
     data: {
       password,

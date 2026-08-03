@@ -3,7 +3,7 @@ import { z } from "zod";
 import httpStatus from "http-status";
 
 import type { AddAdmin, GetAllUsers as GetAllUsersParams, RemoveUser, UpdateUserPassword } from "../types/index.js";
-import { adminServices, authServices } from "../services/index.js";
+import { adminServices } from "../services/index.js";
 import { asyncWrapper } from "../lib/index.js";
 import {
   UsersListResponseSchema,
@@ -48,10 +48,7 @@ export const removeUser: RequestHandler = asyncWrapper(
 );
 
 export const updateUserPassword: RequestHandler = asyncWrapper(
-  async (
-    req: Request<{}, {}, UpdateUserPassword>,
-    res: Response<z.infer<typeof UserPasswordUpdateResponseSchema>>,
-  ) => {
+  async (req: Request<{}, {}, UpdateUserPassword>, res: Response<z.infer<typeof UserPasswordUpdateResponseSchema>>) => {
     console.log("Update User Password called with body:", req.body);
     const { userId, password } = req.body;
 
@@ -66,11 +63,13 @@ export const updateUserPassword: RequestHandler = asyncWrapper(
 export const createAdmin: RequestHandler = asyncWrapper(
   async (req: Request<{}, {}, AddAdmin>, res: Response<z.infer<typeof AddAdminResponseSchema>>) => {
     const { username, name, password } = req.body;
-    const adminUser = await authServices.register(username, name, password, "admin");
+    const adminUser = await adminServices.createAdmin(username, name, password);
 
     res.json({
       message: "Admin created successfully",
-      data: adminUser,
+      data: {
+        user: adminUser,
+      },
     });
   },
 );

@@ -1,5 +1,5 @@
 import type { StudioConfig } from "better-auth-studio";
-import { auth } from "./lib/auth.js";
+import { auth } from "../lib/auth.js";
 
 const config: StudioConfig = {
   auth,

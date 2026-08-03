@@ -1,5 +1,5 @@
 import { APIError } from "../utils/error.js";
-import { envSchema, type EnvSchemaType } from "../schemas/index.js";
+import { envSchema } from "../schemas/index.js";
 
 const result = envSchema.safeParse(process.env);
 if (!result.success) {

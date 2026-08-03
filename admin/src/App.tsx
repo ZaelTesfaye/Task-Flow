@@ -1,24 +1,37 @@
-import { Routes, Route, Outlet } from "react-router-dom";
+import { Routes, Route, Outlet, Navigate } from "react-router-dom";
+import { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Header from "./components/Header";
+import Sidebar from "./components/Sidebar";
+import { useThemeStore } from "./lib/theme-store";
 
 function Layout() {
-  // Wraps protected pages with the shared header
   return (
-    <>
+    <div className="min-h-screen">
       <Header />
-      <Outlet />
-    </>
+      <div className="flex min-h-[calc(100vh-73px)] flex-col md:flex-row">
+        <Sidebar />
+        <main className="flex-1 bg-[hsl(var(--background))]">
+          <Outlet />
+        </main>
+      </div>
+    </div>
   );
 }
 
 function App() {
+  const initializeTheme = useThemeStore((state) => state.initializeTheme);
+
+  useEffect(() => {
+    initializeTheme();
+  }, [initializeTheme]);
+
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-[hsl(var(--background))] text-[hsl(var(--foreground))]">
       <Toaster position="top-right" />
       <Routes>
         <Route path="/" element={<Login />} />
@@ -27,7 +40,8 @@ function App() {
         {/* Protected routes */}
         <Route element={<ProtectedRoute />}>
           <Route element={<Layout />}>
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard" element={<Navigate to="/users-custom" replace />} />
+            <Route path="/users-custom" element={<Dashboard />} />
           </Route>
         </Route>
 

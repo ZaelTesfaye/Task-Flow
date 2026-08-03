@@ -9,13 +9,18 @@ import {
 } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import toast from "react-hot-toast";
-import { Shield } from "lucide-react";
+import { Shield, Users } from "lucide-react";
 import {
   UserTable,
   ChangePasswordDialog,
   CreateAdminDialog,
   DeleteUserDialog,
 } from "../components";
+
+interface ApiResponse<T> {
+  message?: string;
+  data?: T;
+}
 
 const Dashboard = () => {
   const [users, setUsers] = useState<AdminUser[]>([]);
@@ -37,9 +42,17 @@ const Dashboard = () => {
   const loadUsers = useCallback(async () => {
     try {
       setLoading(true);
-      const data = await adminUserApiClient.get<AdminUser[]>(`${page}/10`);
-      console.log("Fetched users:", data);
-      setUsers(data);
+      const response = await adminUserApiClient.get<AdminUser[] | ApiResponse<AdminUser[]>>(
+        `${page}/10`,
+      );
+
+      const nextUsers = Array.isArray(response)
+        ? response
+        : Array.isArray(response?.data)
+          ? response.data
+          : [];
+
+      setUsers(nextUsers);
     } catch (error) {
       console.error("Error loading users:", error);
       toast.error("Failed to load users");
@@ -116,17 +129,17 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="container px-4 py-8 mx-auto max-w-7xl">
+    <div className="container px-4 py-8 mx-auto space-y-6 max-w-7xl">
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center space-x-3">
           <div className="inline-flex items-center justify-center w-10 h-10 bg-blue-600 rounded-lg">
             <Shield className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            <h1 className="text-3xl font-bold text-[hsl(var(--foreground))]">
               Admin Dashboard
             </h1>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-sm text-[hsl(var(--muted-foreground))]">
               Manage users and system settings
             </p>
           </div>
@@ -144,9 +157,43 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <Card className="w-full bg-white border-0 shadow-lg dark:bg-gray-800 rounded-xl">
+      <div className="grid gap-4 md:grid-cols-3">
+        <Card className="border border-[hsl(var(--border))] bg-[hsl(var(--card))]">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm text-[hsl(var(--muted-foreground))]">
+              Total Users
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="text-3xl font-semibold">{users.length}</CardContent>
+        </Card>
+
+        <Card className="border border-[hsl(var(--border))] bg-[hsl(var(--card))]">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm text-[hsl(var(--muted-foreground))]">
+              Admins
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="text-3xl font-semibold">
+            {users.filter((u) => u.role === "admin" || u.role === "owner").length}
+          </CardContent>
+        </Card>
+
+        <Card className="border border-[hsl(var(--border))] bg-[hsl(var(--card))]">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm text-[hsl(var(--muted-foreground))]">
+              Standard Users
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="text-3xl font-semibold">
+            {users.filter((u) => u.role !== "admin" && u.role !== "owner").length}
+          </CardContent>
+        </Card>
+      </div>
+
+      <Card className="w-full border shadow-sm bg-[hsl(var(--card))] border-[hsl(var(--border))] rounded-xl">
         <CardHeader className="pb-4">
-          <CardTitle className="flex items-center text-xl font-semibold text-gray-900 dark:text-white">
+          <CardTitle className="flex items-center gap-2 text-xl font-semibold">
+            <Users className="w-5 h-5 text-blue-600" />
             User Management
           </CardTitle>
         </CardHeader>
@@ -166,18 +213,18 @@ const Dashboard = () => {
               onClick={() => setPage(Math.max(1, page - 1))}
               disabled={page === 1}
               variant="outline"
-              className="border-gray-300 dark:border-gray-600"
+              className="border-[hsl(var(--border))]"
             >
               Previous
             </Button>
-            <span className="text-sm text-gray-600 dark:text-gray-400">
+            <span className="text-sm text-[hsl(var(--muted-foreground))]">
               Page {page}
             </span>
             <Button
               onClick={() => setPage(page + 1)}
               disabled={users.length < 10}
               variant="outline"
-              className="border-gray-300 dark:border-gray-600"
+              className="border-[hsl(var(--border))]"
             >
               Next
             </Button>

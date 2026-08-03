@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { LogOut, Shield } from "lucide-react";
+import { LogOut, Moon, Shield, Sun } from "lucide-react";
 import { Button } from "./ui/button";
 import {
   Dialog,
@@ -9,6 +9,7 @@ import {
   DialogFooter,
 } from "./ui/dialog";
 import { authApiClient } from "../lib/api-client";
+import { useThemeStore } from "../lib/theme-store";
 
 interface AdminUser {
   id: string;
@@ -22,6 +23,8 @@ export default function AdminLayout() {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const profileMenuRef = useRef<HTMLDivElement>(null);
+  const theme = useThemeStore((state) => state.theme);
+  const toggleTheme = useThemeStore((state) => state.toggleTheme);
 
   useEffect(() => {
     const raw = localStorage.getItem("adminUser");
@@ -53,30 +56,48 @@ export default function AdminLayout() {
   }, [showProfileMenu]);
 
   const logout = async () => {
-    await authApiClient.post(undefined, "logout");
+    await authApiClient.post(undefined, "sign-out");
     localStorage.removeItem("adminUser");
     window.location.href = "/login";
   };
 
   return (
     <div className="bg-[hsl(var(--background))] text-[hsl(var(--foreground))]">
-      <header className="bg-[hsl(var(--card))] text-[hsl(var(--card-foreground))] border-b border-[hsl(var(--border))] sticky top-0 z-50">
+      <header className="bg-[hsl(var(--card))]/95 backdrop-blur text-[hsl(var(--card-foreground))] border-b border-[hsl(var(--border))] sticky top-0 z-50">
         <div className="flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-2">
             <Shield className="w-5 h-5 text-blue-600" />
             <h1
               className="text-2xl font-bold text-blue-600 cursor-pointer dark:text-blue-400"
-              onClick={() => (window.location.href = "/dashboard")}
+              onClick={() => (window.location.href = "/users-custom")}
             >
               TaskFlows
             </h1>
           </div>
 
           <div className="flex items-center gap-4">
+            <Button
+              variant="outline"
+              onClick={toggleTheme}
+              className="gap-2 border-[hsl(var(--border))]"
+            >
+              {theme === "dark" ? (
+                <>
+                  <Sun className="w-4 h-4" />
+                  Light
+                </>
+              ) : (
+                <>
+                  <Moon className="w-4 h-4" />
+                  Dark
+                </>
+              )}
+            </Button>
+
             <div className="relative" ref={profileMenuRef}>
               <button
                 onClick={() => setShowProfileMenu((s) => !s)}
-                className="flex items-center gap-3 px-3 py-2 transition rounded-lg hover:cursor-pointer hover:bg-gray-600"
+                className="flex items-center gap-3 px-3 py-2 transition rounded-lg hover:cursor-pointer hover:bg-[hsl(var(--accent))]"
               >
                 <div className="text-right">
                   <p className="text-sm font-semibold">
@@ -91,13 +112,12 @@ export default function AdminLayout() {
 
               {showProfileMenu && (
                 <div className="absolute right-0 mt-2 w-72 bg-[hsl(var(--card))] text-[hsl(var(--card-foreground))] rounded-lg shadow-lg border border-[hsl(var(--border))] py-2">
-                  <hr className="my-0.5 border-[hsl(var(--border))]" />
                   <button
                     onClick={() => {
                       setShowLogoutModal(true);
                       setShowProfileMenu(false);
                     }}
-                    className="flex items-center w-full gap-3 px-4 py-3 text-left hover:cursor-pointer hover:bg-gray-600"
+                    className="flex items-center w-full gap-3 px-4 py-3 text-left hover:cursor-pointer hover:bg-[hsl(var(--accent))]"
                   >
                     <LogOut className="w-4 h-4" />
                     Logout

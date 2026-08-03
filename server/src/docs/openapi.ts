@@ -3,7 +3,6 @@ import type { OpenAPIObject } from "openapi3-ts/oas30";
 import { registry } from "./registry.js";
 
 // Import all route definitions
-import "./routes/auth.js";
 import "./routes/user.js";
 import "./routes/project.js";
 import "./routes/task.js";

@@ -2,111 +2,42 @@ import { APIError } from "../utils/index.js";
 import httpStatus from "http-status";
 import type { Request, Response, NextFunction } from "express";
 import { auth } from "../lib/auth.js";
-import jwt from "jsonwebtoken";
-import config from "../config/env.config.js";
-import type { JwtPayload } from "../types/jwt.type.js";
 
 const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   const isAdminPath = req.baseUrl.includes("/admin");
-  let isAdmin = false;
 
   try {
-    const token = req.cookies.adminAuth;
-
-    // admin auth
-    if (token) {
-      try {
-        const userData = jwt.verify(token, config.jwtSecret) as JwtPayload;
-        if (userData.role === "admin") isAdmin = true;
-
-        req.user = userData;
-      } catch {
-        throw new APIError("Unauthorized", httpStatus.UNAUTHORIZED);
+    const headers: Record<string, string> = {};
+    for (const [key, value] of Object.entries(req.headers)) {
+      if (value) {
+        headers[key] = Array.isArray(value) ? value.join(", ") : value;
       }
-      // user auth
-    } else {
-      const headers: Record<string, string> = {};
-      for (const [key, value] of Object.entries(req.headers)) {
-        if (value) {
-          headers[key] = Array.isArray(value) ? value.join(", ") : value;
-        }
-      }
-      const session = await auth.api.getSession({
-        headers,
-      });
-
-      if (!session?.user) {
-        throw new APIError("Unauthorized", httpStatus.UNAUTHORIZED);
-      }
-
-      req.user = {
-        id: session.user.id,
-        email: session.user.email,
-        name: session.user.name,
-        role: session.user.role!,
-      };
     }
 
-    if ((!isAdmin && !isAdminPath) || (isAdmin && isAdminPath)) {
-      return next();
-    } else {
+    const session = await auth.api.getSession({
+      headers,
+    });
+
+    if (!session?.user) {
+      throw new APIError("Unauthorized", httpStatus.UNAUTHORIZED);
+    }
+
+    const role = session.user.role ?? "user";
+    req.user = {
+      id: session.user.id,
+      email: session.user.email,
+      name: session.user.name,
+      role,
+    };
+
+    if (isAdminPath && role !== "admin") {
       throw new APIError("Forbidden", httpStatus.FORBIDDEN);
     }
+
+    return next();
   } catch (error) {
     next(error);
   }
 };
 
 export default authMiddleware;
-
-// JWT auth middleware
-
-// import { APIError } from "../utils/index.js";
-// import httpStatus from "http-status";
-// import type { Request, Response, NextFunction } from "express";
-// import jwt from "jsonwebtoken";
-// import config from "../config/config.js";
-// import type { JwtPayload } from "../types/jwt.js";
-
-// const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
-//   console.log("Auth Midddleware", req.baseUrl);
-//   const isAdminPath = req.baseUrl.includes("/admin");
-//   console.log("isAdminPath", isAdminPath);
-//   const isSuperAdminPath = req.baseUrl.includes("/super-admin");
-
-//   let token;
-//   if (isAdminPath || isSuperAdminPath) {
-//     token = req.cookies.adminAuth;
-//   } else {
-//     // token = req.cookies.auth;
-//     token = req.cookies["better-auth.session_token"];
-//   }
-//   if (!token) throw new APIError("Unauthorized", httpStatus.UNAUTHORIZED);
-
-//   let userData;
-//   try {
-//     userData = jwt.verify(token, config.jwtSecret) as JwtPayload;
-//     console.log("User Data:", userData);
-//   } catch (error) {
-//     console.error("JWT Verification Error:", error);
-//     throw new APIError("Unauthorized", httpStatus.UNAUTHORIZED);
-//   }
-
-//   req.user = userData;
-
-//   // Role-based access
-//   const isAdmin = userData.role === "admin" || userData.role === "super-admin";
-//   const isSuperAdmin = userData.role == "super-admin";
-
-//   if (
-//     (!isAdmin && !isAdminPath) ||
-//     (isAdmin && isAdminPath) ||
-//     (isSuperAdmin && (isSuperAdminPath || isAdminPath))
-//   ) {
-//     return next(); // allowed
-//   } else {
-//     throw new APIError("Forbidden", httpStatus.FORBIDDEN);
-//   }
-// };
-
-// export default authMiddleware;

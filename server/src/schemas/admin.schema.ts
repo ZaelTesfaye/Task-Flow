@@ -78,7 +78,6 @@ export const AddAdminResponseSchema = z
     message: z.string(),
     data: z.object({
       user: UserSchema,
-      token: z.string(),
     }),
   })
   .openapi("AddAdminResponse");

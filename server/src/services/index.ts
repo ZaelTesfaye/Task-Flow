@@ -1,5 +1,4 @@
 export * as adminServices from "./admin.service.js";
-export * as authServices from "./auth.service.js";
 export * as phaseServices from "./phase.service.js";
 export * as projectServices from "./project.service.js";
 export * as taskServices from "./task.service.js";

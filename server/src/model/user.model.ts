@@ -1,16 +1,10 @@
 import prisma from "../lib/prisma.js";
 
-export const createUser = async (
-  name: string,
-  email: string,
-  password: string,
-  role: string,
-) => {
+export const createUser = async (name: string, email: string, role: string) => {
   return prisma.user.create({
     data: {
       name,
       email,
-      password,
       role,
     },
   });
@@ -40,10 +34,7 @@ export const getUser = async (userId: string) => {
   });
 };
 
-export const updateUser = async (
-  userId: string,
-  updates: { name?: string; password?: string },
-) => {
+export const updateUser = async (userId: string, updates: { name?: string }) => {
   return prisma.user.update({
     where: {
       id: userId,
