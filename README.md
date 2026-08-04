@@ -1,534 +1,312 @@
 # TaskFlows - Enterprise Project Management Platform
 
-A production-grade, full-stack project management application built with modern technologies, demonstrating enterprise-level software architecture, security practices, and deployment excellence.
+A production-grade, full-stack TypeScript application demonstrating modern software architecture, DevOps practices, and scalable system design deployed on AWS.
+
+**Live:** [task-flows.tech](https://task-flows.tech) | **Admin:** [admin.task-flows.tech](https://admin.task-flows.tech) | **Monitoring:** [monitor.task-flows.tech](https://monitor.task-flows.tech)
 
 ---
 
-## Overview
+## Architecture Overview
 
-TaskFlows is a comprehensive project management platform designed for teams to collaborate on projects, manage tasks, organize work phases, and track team contributions. The application is built with a complete separation of concerns across multiple frontends (admin dashboard, client application) and a robust backend API, all deployed with industry-standard CI/CD pipelines and containerization.
+**Monorepo Structure:**
+- **Client** - Next.js 16 (React 19) static export
+- **Admin** - Vite + React 19 SPA
+- **Backend** - Express 5 + TypeScript, containerized with Docker
+- **Database** - PostgreSQL 15 with Prisma ORM, PgBouncer connection pooling
+- **Infrastructure** - AWS EC2 deployment with Nginx load balancing (2 backend replicas)
 
-**Key Highlights:**
-- Full-stack TypeScript ecosystem with strict type safety
-- Production-ready deployment pipeline with automated testing and security audits
-- Scalable microservices-ready architecture
-- Enterprise authentication with role-based access control
-- Real-time data synchronization and API monitoring
-
----
-
-## Technology Stack
-
-### Backend API
-
-#### Express.js + Node.js
-- **Framework:** Express 5 (stable, mature)
-- **Language:** TypeScript with strict mode enabled
-- **Database:** PostgreSQL with Prisma ORM
-- **Authentication:** Better Auth + JWT tokens
-- **Redis:** Session storage and caching layer
-- **API Documentation:** OpenAPI 3.0 spec with TSOA auto-generation
-
-**Core Infrastructure:**
-- Modular controller-service-repository pattern
-- Comprehensive request validation (Joi, Zod)
-- XSS protection and input sanitization
-- Rate limiting with rate-limiter-flexible
-- CORS configuration for multi-origin support
-- Cookie-based session management
-
-**Advanced Features:**
-- Email service integration (Resend)
-- Stripe payment processing
-- Winston-based structured logging with daily rotation
-- Prometheus metrics and monitoring
-- Health check endpoints for container orchestration
-- Database migration system with Prisma
+**Tech Stack:**
+- **Language:** TypeScript 5.9 (100% coverage, strict mode)
+- **State Management:** TanStack Query v5, Zustand
+- **Authentication:** Better Auth + OAuth 2.0 (Google One Tap)
+- **Payments:** Stripe with webhooks
+- **Caching:** Redis (sessions, rate limiting)
+- **Monitoring:** Grafana + Prometheus + Loki + Promtail
+- **CI/CD:** GitHub Actions (6 workflows - separate CI/CD per service)
 
 ---
 
+## What Makes This Impressive
 
-#### Admin Dashboard (Vite + React)
-- **Framework:** React 19 with TypeScript
-- **Build Tool:** Vite 7 (sub-second HMR)
-- **Styling:** Tailwind CSS v4 with CSS variable theming
-- **State Management:** Zustand (lightweight, performant)
-- **UI Components:** Radix UI (accessible, unstyled primitives)
-- **HTTP Client:** Axios with custom APIClient wrapper
-- **Routing:** React Router v7
-- **Validation:** Zod runtime schema validation
-- **Notifications:** React Hot Toast
+### 🚀 Production-Ready Infrastructure
 
-**Features:**
-- Admin user management with CRUD operations
-- Real-time user activity monitoring
-- Password management and security controls
-- Dark/light theme toggle with persistent storage
-- Role-based access control (RBAC)
-- Responsive design with mobile support
+**Multi-Instance Deployment:**
+- 2 Express replicas behind Nginx load balancer (round-robin)
+- Zero-downtime deployments via Docker Compose rolling restarts
+- Health checks with automatic container recovery (Autoheal)
+- PgBouncer transaction pooling (20 connections, 1000 max clients)
 
-#### Client Application (Next.js v16)
-- **Framework:** Next.js 16 with React 19
-- **Type Safety:** Full TypeScript coverage
-- **Styling:** Tailwind CSS with class sorting
-- **Data Fetching:** TanStack React Query v5 (server state management)
-- **Authentication:** Better Auth (modern auth framework)
-- **OAuth Integration:** Google OAuth 2.0
-- **Email Rendering:** React Email for transactional emails
-- **API Documentation:** Scalar Express API Reference (interactive docs)
-- **Performance:** Static export with ISR capabilities
+**Observability Stack:**
+- Grafana dashboards with Prometheus metrics (15s scrape interval)
+- Centralized logging via Loki (31-day retention, Snappy compression)
+- Promtail shipping logs from 11 Docker containers
+- Winston structured logging with daily rotation
+- Smart log filtering (drops health checks, reduces volume 40%)
 
-**Features:**
-- Project creation and management
-- Task creation, assignment, and tracking
-- Phase-based project organization
-- Team member management and invitations
-- Real-time collaboration features
-- Email verification and account management
-- Subscription management integration
-- Task update request/review workflow
+**CI/CD Pipeline:**
+- 6 automated workflows (3 CI + 3 CD)
+- Independent pipelines per service (path-based triggers)
+- Quality gates: TypeScript, ESLint, tests, security audits
+- Docker multi-stage builds with GitHub Actions caching
+- Immutable deployments (images tagged with Git SHA)
+- Automated S3 database backups with email alerts
 
-## Code Quality & Standards
+**Load Balancing & Performance:**
+- Nginx reverse proxy with HTTP/1.1 keepalive (32 connections)
+- Gzip compression (level 5, min 1KB)
+- Static asset caching (1 year immutable, 60s for HTML)
+- SSL/TLS termination with Let's Encrypt
+- 4 virtual hosts with security headers (CSP, X-Frame-Options, HSTS)
 
-### Development Practices
+### 🔐 Advanced Authentication & Security
 
-**Type Safety:**
-- TypeScript strict mode across all projects
-- End-to-end type coverage (backend to frontend)
-- Zod schemas for runtime validation
-- Prisma generated types for database models
+**Google One Tap Integration:**
+- Frictionless OAuth with `useOneTap` and `auto_select`
+- Custom styled overlay with loading states
+- Theme-aware button (dark/light mode support)
 
-**Code Quality:**
-- ESLint with React Hooks and TypeScript rules
-- Prettier for consistent code formatting (120 char width)
-- Automated code formatting on save
-- TypeScript compilation verification in CI
+**Email OTP System:**
+- Better Auth `emailOTP` plugin (10-minute expiration)
+- Auto sign-in after verification
+- React Email templates with branding
 
-**Pre-commit Hooks (Husky):**
-- Lint-staged for staged file validation
-- Automatic ESLint fixes before commit
-- Code formatting enforcement
-- Prevents committing broken code
+**Password Reset Pipeline:**
+- 3-step flow: Request → OTP verification → New password
+- Email notifications via Resend
+- Shows "Forgot Password" after 3 failed login attempts
+
+**Rate Limiting (Redis-backed):**
+- Dual windows: 5 attempts/10min (burst), 15/hour (sustained)
+- Email + IP tracking per user
+- `Retry-After` headers for proper HTTP compliance
+- Automatic blocking with exponential backoff
+
+### 💳 Subscription & Billing System
+
+**Stripe Integration:**
+- 3-tier pricing: Free (5 projects, 3 members), Starter $5 (10 projects, 10 members), Pro $10 (unlimited)
+- Checkout sessions with metadata tracking
+- Webhook handling: `checkout.session.completed`, `invoice.paid`
+- Plan upgrades with prorated billing
+- Billing portal integration (customer self-service)
+- Feature enforcement at API layer (project/member limits)
+
+### 📬 Notification System
+
+**Dual-Channel Notifications:**
+- In-app notifications (task_assigned, task_updated, task_completed)
+- React Email templates (4 types: invitations, password reset, task assignment)
+- Unread count tracking per project
+- Mark as read (individual/bulk)
+
+**Invitation System:**
+- Dual-path: Registered users (instant) vs non-registered (signup prompt)
+- Status tracking: pending, accepted, declined, expired
+- Automatic member addition on acceptance
+
+### 🔄 Task Update Approval Workflow
+
+**Request/Review Pattern:**
+- Assignees submit update requests with description + new status
+- Stored as `PendingUpdates` in database
+- Project owners/admins approve or reject via modal UI
+- Prevents unauthorized task status changes
+- Audit trail for all updates
+
+### 🗃️ Database Design Excellence
+
+**Schema Highlights:**
+- Strategic indexes on foreign keys and query patterns (`@@index([userId, isRead])`)
+- Composite unique constraints (`@@unique([ownerId, title])`)
+- Cascade deletes for referential integrity
+- Soft deletes (user bans with expiry dates)
+- Temporal fields (createdAt, updatedAt) for audit trails
+
+**Backup & Disaster Recovery:**
+- Automated daily backups via cron + `pg_dump`
+- Gzip compression (60-70% size reduction)
+- S3 offsite storage (`s3://task-flows/db`)
+- Email alerts on failure (Resend API)
+- Local retention: 1 day, S3 retention: configurable
+
+### 🎨 UI/UX Features
+
+**Progressive Web App (PWA):**
+- Service worker with intelligent caching
+- Offline support with cache fallback
+- Installable on desktop/mobile
+- Manifest with theme colors
+
+**Dark/Light Theme:**
+- CSS variable-based theming (HSL)
+- localStorage persistence
+- Smooth transitions (`.disable-transitions` class)
+
+**Component Architecture:**
+- Radix UI primitives (accessible, unstyled)
+- Tailwind CSS v4 with class variance authority
+- Reusable modal system
+- Slide-out panels (settings, members)
+- Toast notifications (React Hot Toast)
+
+---
+
+## Code Quality & DevOps
 
 **Testing:**
-- Vitest for unit and integration tests
-- Test setup files for common configurations
-- Integration test suites for API endpoints
+- Vitest with unit + integration tests
+- Test setup files for mocks
+- CI testing gates (all tests must pass)
 
-### Folder Structure
+**Code Standards:**
+- ESLint + Prettier (120-char width)
+- Husky pre-commit hooks (lint-staged)
+- Pre-push hooks (full test suite)
+- TypeScript strict mode (100% coverage)
 
+**Docker Orchestration:**
+- 11-service stack: 2 app replicas, PostgreSQL, PgBouncer, Redis, Nginx, Loki, Prometheus, Promtail, Grafana, Autoheal
+- Multi-stage Dockerfile (build + runtime, 60% size reduction)
+- Non-root user execution
+- Volume management for persistence
+- Health checks on all services
+
+**Folder Structure (Backend):**
 ```
-admin/                          # Admin dashboard
-├── src/
-│   ├── components/            # Reusable UI components
-│   │   ├── ui/               # Base UI primitives
-│   │   ├── modals/           # Dialog components
-│   │   └── ProtectedRoute.tsx
-│   ├── pages/                # Route-based pages
-│   ├── lib/                  # Utilities and clients
-│   │   ├── api-client.ts     # HTTP client wrapper
-│   │   ├── auth-client.ts    # Auth utilities
-│   │   └── theme-store.ts    # State management
-│   └── types/                # TypeScript interfaces
-└── tsconfig.app.json
-
-client/                         # Main application
-├── src/
-│   ├── app/                  # Next.js app directory
-│   │   ├── (header)/         # Protected routes layout
-│   │   ├── api/              # API routes
-│   │   └── login/            # Auth pages
-│   ├── components/           # Feature components
-│   │   ├── project/          # Project management
-│   │   ├── task/             # Task management
-│   │   ├── phase/            # Phase organization
-│   │   └── ui/               # UI primitives
-│   └── types/
-
-server/                         # Backend API
-├── src/
-│   ├── controllers/          # Request handlers
-│   ├── services/             # Business logic
-│   ├── models/               # Data models
-│   ├── routes/               # API endpoints
-│   ├── middlewares/          # Express middleware
-│   ├── schemas/              # Request validation
-│   ├── config/               # Environment config
-│   ├── lib/                  # Database, auth, cache
-│   ├── loaders/              # Initialization
-│   └── emails/               # Email templates
-├── prisma/                   # Database schema
-│   ├── schema.prisma
-│   └── migrations/
-├── test/                     # Test suites
-└── Dockerfile
+server/src/
+├── config/          # Environment & CORS configuration
+├── controllers/     # Request handlers (thin layer)
+├── services/        # Business logic (fat layer)
+├── model/           # Data access (repository pattern)
+├── routes/          # API endpoint definitions
+├── middlewares/     # Auth, error handling, rate limiting, XSS, validation
+├── schemas/         # Zod/Joi request validation
+├── lib/             # Prisma, Redis, Winston, Better Auth
+├── loaders/         # App initialization
+├── emails/          # React Email templates
+├── docs/            # OpenAPI spec generation
+├── utils/           # APIError, asyncWrapper, exit handlers
+└── scripts/         # DB backups, seeders
 ```
 
 ---
 
-## CI/CD Pipeline & DevOps
+## API Documentation
 
-### Automated Quality Gates
-
-**Continuous Integration (Pull Requests):**
-
-Every pull request to `main` triggers automated checks:
-
-1. **TypeScript Validation** - Compile-time type checking
-2. **Linting** - ESLint code quality analysis
-3. **Testing** - Full test suite execution
-4. **Build Verification** - Production build compilation
-5. **Security Audit** - Automated vulnerability scanning with hard block on high/critical issues
-
-Independent workflows for each service:
-- Admin Dashboard CI/CD
-- Client Application CI/CD  
-- Backend API CI/CD
-
-Changes only trigger their respective pipeline (efficient resource usage).
-
-### Continuous Deployment
-
-#### Admin Dashboard Deployment
-- Vite production build
-- Environment variable injection (API endpoints)
-- Artifact upload with 1-day retention
-- SSH deployment to VPS using RSA keys
-- Static file deployment to `~/task-flow/admin`
-
-#### Client Application Deployment
-- Next.js static export build
-- Multi-environment secret injection (API URLs, OAuth credentials)
-- Google OAuth client ID configuration
-- SSH deployment to `~/task-flow/client`
-
-#### Backend API Deployment (Docker)
-- **Containerization:** Multi-stage Dockerfile
-- **Image Registry:** Docker Hub with semantic versioning
-  - `latest` tag for current production
-  - `{SHA}` tag for immutable version tracking
-- **Build Caching:** GitHub Actions cache layer for faster builds
-- **Orchestration:** Docker Compose for service coordination
-- **Configuration Management:**
-  - Nginx reverse proxy configuration
-  - Environment-specific .env injection
-  - Prisma migration execution
-- **Health Verification:** Automated health check against `/api/health`
-- **Monitoring Stack:** Prometheus, Loki, and Promtail for observability
-
-### Pipeline Features
-
-**Reliability:**
-- Concurrency groups prevent duplicate workflow runs
-- Cancellation of in-progress runs on new commits
-- Separate build and deploy stages with artifact handoff
-- Timeout limits (30 minutes per job)
-- Health checks before considering deployment successful
-
-**Security:**
-- SSH key authentication (no credentials in logs)
-- GitHub Actions secrets vault integration
-- Read-only permissions on workflow level
-- No credentials stored in configuration files
-- Automatic vulnerability scanning on every PR
-
-**Efficiency:**
-- Path-based workflow triggers (only affected services run)
-- GitHub Actions cache for Docker layers and node_modules
-- Parallel job execution where possible
-- Manual `workflow_dispatch` for emergency deployments
-
----
-
-## Architecture Highlights
-
-### API Design
-
-**RESTful with Type Safety:**
-- Structured API client wrapper for consistent HTTP operations
-- Generic type parameters for all endpoints (`<T>`)
-- Endpoint-specific API clients for logical separation
-- Automatic request/response validation with Zod
-
-**Modular Organization:**
-```
-APIClient
-├── GET <T>     // Type-safe GET requests
-├── POST <T>    // Type-safe POST requests
-├── PATCH <T>   // Type-safe PATCH requests
-└── DELETE <T>  // Type-safe DELETE requests
-
-Instances:
-├── adminUserApiClient    (/admin/user)
-├── authApiClient         (/auth)
-└── adminApiClient        (/admin)
-```
-
-### State Management
-
-**Frontend State:**
-- Zustand for lightweight global state (theme, authentication)
-- React Query for server state (API data)
-- Local component state for UI interactions
-- Persistent storage for user preferences
-
-### Database Layer
-
-**Prisma ORM:**
-- Type-safe database access
-- Automated migrations with version control
-- Seed scripts for development data
-- PostgreSQL for production reliability
-- Redis adapter for session storage
-
-**Data Modeling:**
-- Relational schema with proper indexing
-- Foreign key constraints
-- Temporal audit fields (createdAt, updatedAt)
-- Soft deletes where appropriate
-
-### Security Measures
-
-**Authentication & Authorization:**
-- Better Auth framework for modern auth
-- JWT tokens for stateless API authentication
-- Role-based access control (RBAC)
-- Protected routes with middleware verification
-- OAuth 2.0 integration for social login
-
-**Input Protection:**
-- Request validation with Joi and Zod
-- XSS sanitization on all user inputs
-- Rate limiting on sensitive endpoints
-- CORS whitelist configuration
-- SQL injection prevention via Prisma
-
-**Data Protection:**
-- Bcrypt password hashing
-- HTTPS/TLS encryption (certificates included)
-- Environment-based configuration
-- Secure header middleware
+- **Scalar UI** - Modern interactive docs at `/api-reference`
+- **Swagger UI** - Traditional docs at `/api-docs`
+- **OpenAPI 3.0** - Auto-generated from TSOA annotations at `/swagger.json`
+- **Better Auth Studio** - Admin auth dashboard at `/api/admin/studio`
 
 ---
 
 ## Deployment Architecture
 
-### Infrastructure
+**AWS EC2 Setup:**
+- Ubuntu instances with Docker + Docker Compose
+- Elastic IP for static DNS mapping
+- Security groups (ports 80, 443, 22)
+- EBS volumes for persistence
+- S3 for offsite backups
 
-**VPS Deployment:**
-- SSH-based deployment from GitHub Actions
-- Isolated directories per service (`~/task-flow/{service}`)
-- SSL/TLS certificates for HTTPS
-- Nginx reverse proxy configuration
+**Nginx Configuration:**
+- Round-robin load balancing across 2 backend replicas
+- Keepalive connections (32 pool)
+- JSON logging with smart filtering (errors + slow requests >1s)
+- 4 virtual hosts: main app, admin, auth studio, Grafana
 
-**Docker Containerization:**
-- Backend API fully containerized
-- Docker Compose for multi-container orchestration
-- Volume management for persistent data
-- Network isolation between services
-- Auto-restart policies
-
-### Monitoring & Observability
-
-**Metrics & Logging:**
-- Prometheus for metrics collection
-- Loki for centralized log aggregation
-- Promtail for log shipping
-- Winston structured logging in backend
-- Daily log rotation to manage disk space
-
-**Health Checks:**
-- API health endpoint (`/api/health`)
-- Container health verification
-- Deployment verification gates
-
----
-
-## Performance Optimization
-
-### Frontend
-- Vite for sub-second HMR and fast builds
-- Next.js static export for client app
-- Code splitting and lazy loading
-- CSS-in-JS optimization with Tailwind
-- Efficient state management with minimal re-renders
-
-### Backend
-- Connection pooling for database
-- Redis caching layer
-- Request rate limiting
-- Efficient query optimization via Prisma
-- Gzip compression for API responses
-
-### Build & Deployment
-- GitHub Actions caching layers
-- Docker multi-stage builds
-- Artifact minimization (1-day retention)
-- Parallel job execution
-
----
-
-## Development Workflow
-
-### Local Development
-
-**Setup:**
-```bash
-# Admin Dashboard
-cd admin && pnpm install && pnpm run dev
-
-# Client Application
-cd client && pnpm install && pnpm run dev
-
-# Backend API
-cd server && pnpm install && pnpm run dev
-```
-
-**Database:**
-```bash
-cd server
-npx prisma migrate dev        # Run migrations
-npx prisma db seed            # Seed test data
-```
-
-### Git Workflow
-
-1. Create feature branch from `main`
-2. Make changes with pre-commit hooks enforcing quality
-3. Push to GitHub (CI runs automatically)
-4. All checks must pass before merge
-5. Merge to `main` triggers deployment pipeline
-6. Services deployed automatically to production
-
----
-
-## Feature Capabilities
-
-### Project Management
-- Create, read, update, delete projects
-- Project owner and member roles
-- Team-based collaboration
-- Project settings and customization
-
-### Task Management
-- Task creation with descriptions and assignments
-- Task status tracking
-- Task updates with review workflow
-- Task history and audit trail
-- Deadline and priority management
-
-### Phase Organization
-- Create phases within projects
-- Phase-based task grouping
-- Phase progress tracking
-- Timeline visualization
-
-### Team Collaboration
-- User invitations to projects
-- Role-based permissions
-- Member activity tracking
-- Email notifications
-
-### Administrative Controls
-- User management dashboard
-- Admin role assignment
-- System monitoring
-- Security audit logs
-
----
-
-## Production Readiness Checklist
-
-- [x] Type-safe codebase across all services
-- [x] Automated testing and quality gates
-- [x] Security vulnerability scanning
-- [x] Containerized backend with orchestration
-- [x] CI/CD pipeline with automated deployment
-- [x] Health monitoring and observability
-- [x] Role-based access control
-- [x] Input validation and XSS protection
-- [x] Database migrations and versioning
-- [x] Structured logging and error handling
-- [x] SSL/TLS encryption
-- [x] Rate limiting and DDoS protection
-- [x] Responsive design and accessibility
-- [x] Code formatting and linting standards
-- [x] Git hooks for quality enforcement
-- [x] Environment-based configuration
-- [x] Immutable container image tagging
-- [x] Artifact retention policies
+**CI/CD Flow:**
+1. Push to `main` triggers pipeline
+2. Run TypeScript check, lint, tests, security audit
+3. Build Docker image, push to Docker Hub (`latest` + SHA tags)
+4. SSH to EC2, inject `.env`, pull image
+5. `docker compose up -d` (rolling restart)
+6. Health check verification at `/api/health`
+7. Deployment fails if health check returns non-200
 
 ---
 
 ## Key Metrics
 
-**Code Quality:**
-- 100% TypeScript coverage
-- ESLint on every commit
-- Prettier formatting standard
-- Pre-commit validation
-
-**Testing:**
-- Unit and integration tests via Vitest
-- CI/CD testing gates
-- Health check verification on deployment
-
-**Security:**
-- Automated vulnerability scanning
-- Rate limiting on all endpoints
-- XSS protection via sanitization
-- CSRF tokens for state-changing operations
+**Architecture:**
+- 100% TypeScript coverage with strict mode
+- 11 Docker containers orchestrated
+- 2 backend replicas load balanced
+- 6 CI/CD workflows (independent per service)
+- 31-day log retention, 72-hour metrics retention
 
 **Performance:**
 - Sub-1s HMR (Vite)
-- ~50ms API response times (optimized)
-- Docker builds cached for 80%+ hit rate
+- 15-second metric scrape interval
+- HTTP/1.1 keepalive for connection reuse
+- Gzip compression on all text assets
+- 1-year cache for immutable assets
+
+**Security:**
+- Rate limiting (5/10min, 15/hour)
+- HTTPS everywhere with Let's Encrypt
+- XSS sanitization on all inputs
+- RBAC with 3 access levels (owner/admin/member)
+- Automated vulnerability scanning in CI
 
 ---
 
-## Dependencies Overview
+## Production Readiness Checklist
 
-### Frontend Stack
-- React 19, Next.js 16, Vite 7
-- Tailwind CSS v4, Radix UI
-- TanStack React Query, Zustand
-- Axios, Zod, Better Auth
-
-### Backend Stack
-- Express 5, Node.js 20
-- PostgreSQL, Prisma ORM
-- Redis, Winston logging
-- Better Auth, JWT, Bcrypt
-
-### DevOps & Tooling
-- Docker & Docker Compose
-- GitHub Actions CI/CD
-- Nginx reverse proxy
-- Prometheus, Loki observability
-
----
-
-## Documentation
-
-- API documentation available at `/api/docs` (Scalar)
-- Swagger UI at `/api/swagger` (alternative format)
-- Prisma schema documentation: `server/prisma/schema.prisma`
-- Environment configuration: `.env.example` files in each service
+- [x] TypeScript strict mode (100% coverage)
+- [x] Unit & integration tests with Vitest
+- [x] Multi-stage Docker builds with caching
+- [x] Load balancing (Nginx + 2 replicas)
+- [x] Connection pooling (PgBouncer)
+- [x] Automated database backups to S3
+- [x] Complete observability (Grafana, Prometheus, Loki)
+- [x] CI/CD with 6 automated workflows
+- [x] Zero-downtime deployments
+- [x] Health checks with auto-recovery
+- [x] Rate limiting + XSS protection
+- [x] HTTPS/TLS with Let's Encrypt
+- [x] Redis session storage
+- [x] Strategic database indexes
+- [x] Email OTP verification
+- [x] Stripe webhooks + subscriptions
+- [x] PWA with offline support
+- [x] AWS EC2 deployment
+- [x] Immutable Docker tags (Git SHA)
 
 ---
 
-## Conclusion
+## What This Demonstrates
 
-TaskFlows represents a complete, production-ready application that demonstrates:
+**Backend Engineering:**
+- Scalable architecture (controller-service-repository pattern)
+- Database design with proper indexing and constraints
+- Connection pooling and caching strategies
+- Error handling with graceful shutdown
+- Rate limiting and security best practices
 
-- **Engineering Excellence:** Type safety, code quality standards, and architectural best practices
-- **DevOps Maturity:** Automated CI/CD, containerization, and infrastructure as code
-- **Security Focus:** Authentication, authorization, input validation, and vulnerability scanning
-- **Scalability:** Microservices-ready architecture with clear separation of concerns
-- **Observability:** Comprehensive logging, monitoring, and health checks
+**DevOps Proficiency:**
+- Docker containerization and orchestration
+- Multi-stage builds for optimization
+- CI/CD pipeline design and automation
+- Infrastructure monitoring and alerting
+- Log aggregation and analysis
+- Zero-downtime deployment strategies
 
-Every aspect of this application follows enterprise software engineering standards, making it suitable for teams, startups, and enterprise deployments.
+**Full-Stack Expertise:**
+- End-to-end TypeScript (database to UI)
+- State management patterns (server state vs client state)
+- Authentication and authorization systems
+- Payment integration and webhook handling
+- Real-time notifications (in-app + email)
+- Progressive web app implementation
+
+**System Design:**
+- Load balancing and horizontal scaling
+- High availability with multiple replicas
+- Disaster recovery with automated backups
+- Observability and debugging capabilities
+- Performance optimization (caching, compression, connection pooling)
 
 ---
 
-**Built with modern technologies, deployed with confidence.**
+**Built with TypeScript. Deployed with confidence on AWS.**
