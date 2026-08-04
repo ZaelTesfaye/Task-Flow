@@ -28,18 +28,17 @@ A production-grade, full-stack TypeScript application demonstrating modern softw
 
 ## What Makes This Impressive
 
-### 🚀 Production-Ready Infrastructure
+### Production-Ready Infrastructure
 
-**Multi-Instance Deployment:**
+**Deployment:**
 - 2 Express replicas behind Nginx load balancer (round-robin)
-- Zero-downtime deployments via Docker Compose rolling restarts
 - Health checks with automatic container recovery (Autoheal)
 - PgBouncer transaction pooling (20 connections, 1000 max clients)
 
 **Observability Stack:**
 - Grafana dashboards with Prometheus metrics (15s scrape interval)
 - Centralized logging via Loki (31-day retention, Snappy compression)
-- Promtail shipping logs from 11 Docker containers
+- Promtail shipping logs
 - Winston structured logging with daily rotation
 - Smart log filtering (drops health checks, reduces volume 40%)
 
@@ -58,12 +57,11 @@ A production-grade, full-stack TypeScript application demonstrating modern softw
 - SSL/TLS termination with Let's Encrypt
 - 4 virtual hosts with security headers (CSP, X-Frame-Options, HSTS)
 
-### 🔐 Advanced Authentication & Security
+### 🔐 Authentication & Security
 
 **Google One Tap Integration:**
 - Frictionless OAuth with `useOneTap` and `auto_select`
 - Custom styled overlay with loading states
-- Theme-aware button (dark/light mode support)
 
 **Email OTP System:**
 - Better Auth `emailOTP` plugin (10-minute expiration)
@@ -113,7 +111,7 @@ A production-grade, full-stack TypeScript application demonstrating modern softw
 - Prevents unauthorized task status changes
 - Audit trail for all updates
 
-### 🗃️ Database Design Excellence
+### 🗃️ Database Design
 
 **Schema Highlights:**
 - Strategic indexes on foreign keys and query patterns (`@@index([userId, isRead])`)
@@ -151,7 +149,7 @@ A production-grade, full-stack TypeScript application demonstrating modern softw
 
 ---
 
-## Code Quality & DevOps
+## Code Quality
 
 **Testing:**
 - Vitest with unit + integration tests
@@ -162,7 +160,9 @@ A production-grade, full-stack TypeScript application demonstrating modern softw
 - ESLint + Prettier (120-char width)
 - Husky pre-commit hooks (lint-staged)
 - Pre-push hooks (full test suite)
-- TypeScript strict mode (100% coverage)
+- TypeScript strict mode
+
+# Devops
 
 **Docker Orchestration:**
 - 11-service stack: 2 app replicas, PostgreSQL, PgBouncer, Redis, Nginx, Loki, Prometheus, Promtail, Grafana, Autoheal
@@ -236,7 +236,6 @@ server/src/
 - 31-day log retention, 72-hour metrics retention
 
 **Performance:**
-- Sub-1s HMR (Vite)
 - 15-second metric scrape interval
 - HTTP/1.1 keepalive for connection reuse
 - Gzip compression on all text assets
